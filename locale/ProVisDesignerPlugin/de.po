@@ -1,0 +1,68 @@
+msgid "New swimlane"
+msgstr "Neue Schwimmbahn"
+
+msgid "Shapes"
+msgstr "Schablonen"
+
+msgid "Layout"
+msgstr "Ausrichtung"
+
+msgid "Process"
+msgstr "Prozess"
+
+msgid "Decision"
+msgstr "Entscheidung"
+
+msgid "Document"
+msgstr "Dokument"
+
+msgid "Database"
+msgstr "Datenbank"
+
+msgid "Start/End"
+msgstr "Start/Ende"
+
+msgid "Junction"
+msgstr "Knotenpunkt"
+
+msgid "Save"
+msgstr "Speichern"
+
+msgid "Undo"
+msgstr "Rückgängig"
+
+msgid "Redo"
+msgstr "Wiederholen"
+
+msgid "Cut"
+msgstr "Ausschneiden"
+
+msgid "Copy"
+msgstr "Kopieren"
+
+msgid "Paste"
+msgstr "Einfügen"
+
+msgid "Snap to grid"
+msgstr "An Raster ausrichten"
+
+msgid "Show grid"
+msgstr "Raster anzeigen"
+
+msgid "Select"
+msgstr "Auswählen"
+
+msgid "Draw"
+msgstr "Zeichnen"
+
+msgid "Connect"
+msgstr "Verbinden"
+
+msgid "Pan"
+msgstr "Schwenken"
+
+msgid "Zoom in"
+msgstr "Vergrößern"
+
+msgid "Zoom out"
+msgstr "Verkleinern"

@@ -41,7 +41,7 @@
     adjustSwimlaneCommand: 'adjustSwimlaneWidth',
     adjustWhitepaperCommand: 'adjustWhitepaperHeight',
     modifyCommand: 'Modify'
-  }
+  };
 
   var $anchorPattern = null;
 
@@ -51,7 +51,8 @@
 
   var $stats = {
     lanes: [],
-    saving: false
+    saving: false,
+    modifying: false
   };
 
   $.fn.extend( {
@@ -80,6 +81,7 @@
     // due to compatibility reasons we have to adjust the drawing area
     // by one half of the grid size
     adjustDrawingArea: function( diagram, offsetX, offsetY ) {
+      return;
       var whitepaper = diagram.findNode( $constants.whitepaperTag );
       var wb = whitepaper.getBounds();
       whitepaper.setBounds( offsetX + wb.getX(), offsetY + wb.getY(), wb.getWidth(), wb.getHeight() );
@@ -208,11 +210,12 @@
       var titleNode = factory.createShapeNode( offsetX + wpb.getWidth(), offsetY, $config.swimlaneWidth, $config.captionHeight );
 
       titleNode.setLocked( false );
-      // titleNode.setFont(lanefont);
-      // titleNode.setPen(lanepen);
+      // ToDo: lanefont + lanepen (siehe applyDefaultStyle)
+      // titleNode.setFont( lanefont );
+      // titleNode.setPen( lanepen );
       titleNode.setBrush( $(this).createSolidBrush( $config.defaultCaptionBrush ) );
       titleNode.setObstacle( true );
-      // titleNode.setText("Label"+ (idx+1));
+      titleNode.setText( "Label" + ($stats.lanes.length + 1) ); // ToDo!!
       titleNode.setTag( $constants.swimlaneTopTag );
       titleNode.setAllowIncomingLinks( false );
       titleNode.setAllowOutgoingLinks( false );
@@ -223,11 +226,13 @@
       var titleConstraints = titleNode.getConstraints();
       titleConstraints.setMoveDirection( 1 );
 
+      // Add to lanes array
+      $stats.lanes.push( titleNode );
+
       // // Content
       var laneNode = factory.createShapeNode( offsetX + wpb.getWidth(), offsetY + $config.captionHeight, $config.swimlaneWidth, wpb.getHeight() - $config.captionHeight );
       // laneNode.setPen(lanepen);
       laneNode.setZIndex(1);
-      // // laneNode.setLocked(true);
 
       laneNode.setLocked( true );
       laneNode.setEnabledHandles( $config.swimlaneHandles );
@@ -479,7 +484,7 @@
         });
       }
 
-      // In case there's an unfished (undo) composition -> execute/finish it.
+      // In case there's an unfinished (undo) composition -> execute/finish it.
       if ( $undoComposition != null ) {
         $undoComposition.execute();
         $undoComposition = null;
@@ -487,6 +492,10 @@
     },
 
     onNodeModifying: function( diagram, nodeValidationEvent ) {
+      // for( var i = 0; i < $stats.lanes.length; i++ ) {
+      //   var c = $stats.lanes[i];
+      // }
+
       var undoManager = diagram.getUndoManager();
       var node = nodeValidationEvent.getNode();
       var bounds = node.getBounds();
@@ -496,12 +505,6 @@
 
         // move:
         if ( handle == 8 ) {
-          if ( !Array.prototype.move ) {
-            Array.prototype.move = function ( from, to ) {
-              this.splice( to, 0, this.splice( from, 1 )[0] );
-            };
-          }
-
           var nodeX = bounds.getX();
           var nodeW = bounds.getWidth();
           var nodeIndex = $stats.lanes.indexOf( node );
@@ -522,7 +525,7 @@
             var leftTrigger = leftBounds.getX() + leftBounds.getWidth() / 2;
             if ( nodeX < leftTrigger ) {
               $stats.lanes.move( nodeIndex, nodeIndex - 1 );
-              nodeLeft.moveTo( leftBounds.getX() + leftBounds.getWidth(), leftBounds.getY() );
+              nodeLeft.moveTo( leftBounds.getX() + nodeW, leftBounds.getY() );
             }
           }
 
@@ -534,7 +537,6 @@
               nodeRight.moveTo( rightBounds.getX() - nodeW, rightBounds.getY() );
             }
           }
-
         } else {
           // resize:
           $undoComposition = undoManager.startComposite( $constants.adjustSwimlaneCommand, true );
@@ -750,8 +752,8 @@
 
       // Testing..
       var opts = d.getRoutingOptions();
-      opts.setNodeVicinitySize( 50 );
-      opts.setNodeVicinityCost( 75 );
+      opts.setNodeVicinitySize( 550 );
+      opts.setNodeVicinityCost( 575 );
       opts.setSmartPolylineEnds( true );
     },
 
@@ -807,6 +809,10 @@
   });
 
   $(document).ready( function() {
+    Array.prototype.move = function ( from, to ) {
+      this.splice( to, 0, this.splice( from, 1 )[0] );
+    };
+
     window.onNodeDeleted = $(this).onNodeDeleted;
     window.onNodeModifying = $(this).onNodeModifying;
     window.onNodeModified = $(this).onNodeModified;
@@ -825,6 +831,16 @@
     provis.undoManager = provis.diagram.getUndoManager();
     provis.view = provis.applet.getDiagramView();
     this.provis = provis;
+
+    // var uri = 'http://qwiki.ma.lan/pub/Main/WebHome/xcvxcv12.aqm';
+    // $.ajax({
+    //   url: uri,
+    //   dataType: 'text',
+    //   error: function( xhr, status, error ) { console.log( error ); },
+    //   success: function( data, status, xhr ) {
+    //     provis.diagram.loadFromString( data );
+    //   }
+    // });
 
     // top menu
     $('a.btn').on( 'click', function() {

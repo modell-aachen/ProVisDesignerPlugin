@@ -9,8 +9,6 @@ locale/ProVisDesignerPlugin/de.po 0644
 
 pub/System/ProVisDesignerPlugin/applet/JDiagram.jar 0644
 pub/System/ProVisDesignerPlugin/applet/ProVis.jar 0644
-pub/System/ProVisDesignerPlugin/applet/ProVis.signed.jar 0644
-pub/System/ProVisDesignerPlugin/applet/ProVis.unsigned.jar 0644
 
 pub/System/ProVisDesignerPlugin/assets/adornerDown.png 0644
 pub/System/ProVisDesignerPlugin/assets/adornerUp.png 0644

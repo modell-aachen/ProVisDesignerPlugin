@@ -58,5 +58,6 @@ pub/System/ProVisDesignerPlugin/scripts/designer.js 0644
 
 pub/System/ProVisDesignerPlugin/css/designer.css 0644
 pub/System/ProVisDesignerPlugin/css/pie.htc 0644
+pub/System/ProVisDesignerPlugin/css/ie.fix.css 0644
 
 templates/foswiki.provis.tmpl 0644

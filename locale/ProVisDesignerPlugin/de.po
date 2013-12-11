@@ -7,6 +7,9 @@ msgstr "Schablonen"
 msgid "Layout"
 msgstr "Ausrichtung"
 
+msgid "Preview"
+msgstr "Vorschau"
+
 msgid "Process"
 msgstr "Prozess"
 

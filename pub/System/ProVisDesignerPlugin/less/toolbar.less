@@ -1,0 +1,57 @@
+img {
+  &#ma-logo-small {
+    float: left;
+    margin: 10px 0 0 25px;
+  }
+}
+
+a.btn {
+  > img {
+    padding: 5px;
+
+    &:hover {
+      background: #eee;
+      background-image: url(/pub/System/ProVisDesignerPlugin/assets/btn-inset.png);
+    }
+  }
+
+  &.btn-selected,
+  &.btn-toggled {
+    > img {
+      padding: 5px;
+      background: #eee;
+      background-image: url(/pub/System/ProVisDesignerPlugin/assets/btn-inset.png);
+    }
+  }
+}
+
+select#select-zoom {
+  float: right;
+  margin: 5px 15px 0 0;
+}
+
+div {
+  &.toolbar-group {
+    background: #fff;
+
+    border: 1px solid #d8d8d8;
+    .pie;
+    .border-radius(3px);
+  }
+
+  &.provis-menu {
+    width: auto;
+    margin-left: 125px;
+    margin-top: 6px;
+
+    > div {
+      float: left;
+      margin-right: 15px;
+
+      &.toolbar-zoom {
+        float: right;
+        margin-right: 15px;
+      }
+    }
+  }
+}

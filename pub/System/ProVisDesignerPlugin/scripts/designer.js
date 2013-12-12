@@ -53,7 +53,8 @@
   var $stats = {
     lanes: [],
     saving: false,
-    modifying: false
+    modifying: false,
+    moving: false
   };
 
   $.fn.extend( {
@@ -519,7 +520,9 @@
 
           var mouseX = nodeValidationEvent.getMousePosition().getX();
           if ( $mouseX == null ) $mouseX = mouseX;
-          if ( $mouseX == mouseX ) return;
+          if ( $mouseX == mouseX ) {
+            return;
+          }
 
           var isDragLeft = $mouseX > mouseX;
           $mouseX = mouseX;
@@ -529,18 +532,22 @@
           if ( nodeIndex + 1 < $stats.lanes.length ) nodeRight = $stats.lanes[nodeIndex + 1];
 
           if ( nodeLeft != null && isDragLeft ) {
+            console.log( '2' );
             var leftBounds = nodeLeft.getBounds();
             var leftTrigger = leftBounds.getX() + leftBounds.getWidth() / 2;
             if ( nodeX < leftTrigger ) {
+              console.log( '3' );
               $stats.lanes.move( nodeIndex, nodeIndex - 1 );
               nodeLeft.moveTo( leftBounds.getX() + nodeW, leftBounds.getY() );
             }
           }
 
           if ( nodeRight != null && !isDragLeft ) {
+            console.log( '4' );
             var rightBounds = nodeRight.getBounds();
             var rightTrigger = rightBounds.getX() + rightBounds.getWidth() / 2;
             if ( nodeX + nodeW > rightTrigger ) {
+              console.log( '5' );
               $stats.lanes.move( nodeIndex, nodeIndex + 1 );
               nodeRight.moveTo( rightBounds.getX() - nodeW, rightBounds.getY() );
             }
@@ -555,6 +562,11 @@
           );
         }
       }
+
+      // for( var i = 0; i < $stats.lanes.length; i++ ) {
+      //   console.log( $stats.lanes[i].getText() );
+      // }
+      $stats.modifying = false;
     },
 
     onNodeTextChanged: function( diagram, textEvent ) {

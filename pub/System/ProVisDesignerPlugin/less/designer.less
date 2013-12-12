@@ -1,0 +1,123 @@
+@import "vars.less";
+@import "mixins.less";
+@import "toolbar.less";
+@import "leftbar.less";
+
+html {
+  body{
+    background-image: none;
+    background: @body-bg !important;
+    color: @body-fg;
+    .overflow( hidden, hidden );
+  }
+}
+
+// general layout
+div {
+  &.provis-container{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+  }
+
+  // CKE like menu
+  &.provis-topbar {
+    height: 41px;
+    background-image: url(/pub/System/ProVisDesignerPlugin/assets/toolbar-bg.png);
+    background-repeat: repeat-x;
+    border-top: 1px solid #d8d8d8;
+
+    .pie;
+    .drop-shadow( 0px, 2px, 5px, @dark-gray );
+  }
+
+  // shapes container
+  &.provis-left-container {
+    position: absolute;
+    top: @offset-top;
+    bottom: @offset-bottom;
+    left: 10px;
+    width: 100px;
+    margin-top: -2px;
+    .overflow( hidden, auto );
+
+    > div {
+      display: block;
+      float: left;
+      width: auto;
+      height: auto;
+      margin: 2px 5px 0 5px;
+      padding-bottom: 10px;
+      background: white;
+      color: #777;
+
+      .pie;
+      .border-radius;
+      .drop-shadow;
+    }
+  }
+
+  // applet container
+  &.provis-apparea {
+    background: white;
+    position: absolute;
+    top: @offset-top;
+    bottom: @offset-bottom;
+    left: 125px;
+    right: 355px;
+    padding: 10px;
+
+    .pie;
+    .overflow( hidden, hidden );
+    .drop-shadow;
+    .border-radius;
+
+    // visibility: hidden;
+  }
+
+  // topic preview area
+  &.provis-right-container {
+    background: white;
+    position: absolute;
+    top: @offset-top;
+    bottom: @offset-bottom;
+    right: 15px;
+    padding: 10px;
+    width: 300px;
+
+    .pie;
+    .overflow;
+    .drop-shadow;
+    .border-radius;
+  }
+
+  &#adorner {
+    background: @adorner-bg;
+    width: @adorner-width;
+    height: 100%;
+    background-position: 8px center;
+    background-repeat: no-repeat;
+
+    &:hover {
+      background-color: @light-gray;
+    }
+
+    &.chevron-left {
+      background-image: url(/pub/System/ProVisDesignerPlugin/assets/chevronLeft.png);
+    }
+
+    &.chevron-left-right {
+      background-image: url(/pub/System/ProVisDesignerPlugin/assets/chevronLeftRight.png);
+    }
+
+    &.chevron-right {
+      background-image: url(/pub/System/ProVisDesignerPlugin/assets/chevronRight.png);
+    }
+  }
+
+  &#topic-content {
+    padding-left: @adorner-width;
+  }
+}

@@ -10,11 +10,12 @@
     isAlt: false
   };
 
-  // 3508x2480 =  DIN A4 @ 300dpi, landscape
-  // see http://www.din-formate.de/reihe-a-din-groessen-mm-pixel-dpi.html
+  /*
+   * Set gridWidth and/or gridHeight to 'null' to (initially) fit the parent container
+   */
   var $config = {
-    gridWidth: 3508,
-    gridHeight: 2480,
+    gridWidth: null,
+    gridHeight: null,
     gridSizeX: 15,
     gridSizeY: 15,
     gridColor: '#eee',
@@ -41,7 +42,7 @@
     adjustSwimlaneCommand: 'adjustSwimlaneWidth',
     adjustWhitepaperCommand: 'adjustWhitepaperHeight',
     modifyCommand: 'Modify'
-  }
+  };
 
   var $anchorPattern = null;
 
@@ -51,35 +52,44 @@
 
   var $stats = {
     lanes: [],
-    saving: false
+    saving: false,
+    modifying: false
   };
 
   $.fn.extend( {
-    adjustAppletSize: function() {
-      var area = $('div.provis-apparea');
-      var cssToInt = function( selector ) {
-        return parseInt( area.css(selector).replace( 'px', '' ) );
+    adjustAppletSize: function( ui ) {
+      var $area = $('div.provis-apparea');
+      var $applet = $('#jDiagApplet');
+      var $container = $('div.provis-right-container');
+
+      // resize handler for jQuery Resizable
+      if ( ui != null ) {
+        var right = 20 + $(window).width() - ui.position.left;
+        $area.css( 'right', right );
+
+        var $adorner = $('#adorner');
+        var min = 300, max = $(window).width() / 2;
+        var width = ui.size.width;
+
+        if ( width < max && width > min ) {
+          $adorner.addClass( 'chevron-left-right' ).removeClass( 'chevron-left' ).removeClass( 'chevron-right' );
+        } else if ( width == max ) {
+          $adorner.addClass( 'chevron-right' ).removeClass( 'chevron-left' ).removeClass( 'chevron-left-right' );
+        } else if ( width == min ) {
+          $adorner.addClass( 'chevron-left' ).removeClass( 'chevron-left-right' ).removeClass( 'chevron-right' );
+        }
       }
 
-      var padLeft = cssToInt( 'padding-left' );
-      var padRight = cssToInt( 'padding-right' );
-      var padTop = cssToInt( 'padding-top' );
-      var padBottom = cssToInt( 'padding-bottom' );
-      var posTop = cssToInt( 'top' );
-      var left = cssToInt( 'left' );
-
-      var width = $(this).width() - left - (padLeft + padRight);
-      var height = $(this).height() - (padTop + padBottom + posTop);
-
-      var applet = $('#jDiagApplet');
-      applet.width( width );
-      applet.height( height );
+      // window resize
+      $applet.width( $area.width() );
+      $applet.height( $area.height() );
     },
 
     // foobar inc.
     // due to compatibility reasons we have to adjust the drawing area
     // by one half of the grid size
     adjustDrawingArea: function( diagram, offsetX, offsetY ) {
+      return;
       var whitepaper = diagram.findNode( $constants.whitepaperTag );
       var wb = whitepaper.getBounds();
       whitepaper.setBounds( offsetX + wb.getX(), offsetY + wb.getY(), wb.getWidth(), wb.getHeight() );
@@ -208,11 +218,12 @@
       var titleNode = factory.createShapeNode( offsetX + wpb.getWidth(), offsetY, $config.swimlaneWidth, $config.captionHeight );
 
       titleNode.setLocked( false );
-      // titleNode.setFont(lanefont);
-      // titleNode.setPen(lanepen);
+      // ToDo: lanefont + lanepen (siehe applyDefaultStyle)
+      // titleNode.setFont( lanefont );
+      // titleNode.setPen( lanepen );
       titleNode.setBrush( $(this).createSolidBrush( $config.defaultCaptionBrush ) );
       titleNode.setObstacle( true );
-      // titleNode.setText("Label"+ (idx+1));
+      titleNode.setText( "Label" + ($stats.lanes.length + 1) ); // ToDo!!
       titleNode.setTag( $constants.swimlaneTopTag );
       titleNode.setAllowIncomingLinks( false );
       titleNode.setAllowOutgoingLinks( false );
@@ -223,11 +234,13 @@
       var titleConstraints = titleNode.getConstraints();
       titleConstraints.setMoveDirection( 1 );
 
+      // Add to lanes array
+      $stats.lanes.push( titleNode );
+
       // // Content
       var laneNode = factory.createShapeNode( offsetX + wpb.getWidth(), offsetY + $config.captionHeight, $config.swimlaneWidth, wpb.getHeight() - $config.captionHeight );
       // laneNode.setPen(lanepen);
       laneNode.setZIndex(1);
-      // // laneNode.setLocked(true);
 
       laneNode.setLocked( true );
       laneNode.setEnabledHandles( $config.swimlaneHandles );
@@ -479,7 +492,7 @@
         });
       }
 
-      // In case there's an unfished (undo) composition -> execute/finish it.
+      // In case there's an unfinished (undo) composition -> execute/finish it.
       if ( $undoComposition != null ) {
         $undoComposition.execute();
         $undoComposition = null;
@@ -487,6 +500,10 @@
     },
 
     onNodeModifying: function( diagram, nodeValidationEvent ) {
+      // for( var i = 0; i < $stats.lanes.length; i++ ) {
+      //   var c = $stats.lanes[i];
+      // }
+
       var undoManager = diagram.getUndoManager();
       var node = nodeValidationEvent.getNode();
       var bounds = node.getBounds();
@@ -496,12 +513,6 @@
 
         // move:
         if ( handle == 8 ) {
-          if ( !Array.prototype.move ) {
-            Array.prototype.move = function ( from, to ) {
-              this.splice( to, 0, this.splice( from, 1 )[0] );
-            };
-          }
-
           var nodeX = bounds.getX();
           var nodeW = bounds.getWidth();
           var nodeIndex = $stats.lanes.indexOf( node );
@@ -522,7 +533,7 @@
             var leftTrigger = leftBounds.getX() + leftBounds.getWidth() / 2;
             if ( nodeX < leftTrigger ) {
               $stats.lanes.move( nodeIndex, nodeIndex - 1 );
-              nodeLeft.moveTo( leftBounds.getX() + leftBounds.getWidth(), leftBounds.getY() );
+              nodeLeft.moveTo( leftBounds.getX() + nodeW, leftBounds.getY() );
             }
           }
 
@@ -534,7 +545,6 @@
               nodeRight.moveTo( rightBounds.getX() - nodeW, rightBounds.getY() );
             }
           }
-
         } else {
           // resize:
           $undoComposition = undoManager.startComposite( $constants.adjustSwimlaneCommand, true );
@@ -664,6 +674,11 @@
       provis.view.setBehavior( behavior );
     },
 
+    setGridBounds: function( provis, width, height ) {
+      var rect = provis.scriptHelper.createRectangleF( 0, 0, width, height );
+      provis.diagram.setBounds( rect );
+    },
+
     setup: function( provis ) {
       // set default shape brush
       var defaultBrush = $(this).createSolidBrush( $config.defaultShapeBrush );
@@ -680,8 +695,10 @@
       d.setShowGrid( true );
 
       // grid size
-      var rect = provis.scriptHelper.createRectangleF( 0, 0, $config.gridWidth, $config.gridHeight );
-      d.setBounds( rect );
+      var $apparea = $('div.provis-apparea');
+      var gridWidth = $config.gridWidth ? $config.gridWidth : ($apparea.width() - 5);
+      var gridHeight = $config.gridHeight ? $config.gridHeight : ($apparea.height() - 5);
+      $(this).setGridBounds( provis, gridWidth, gridHeight );
 
       // fix placement of the drawing area to match grid lines x/y offset
       var offsetX = d.getGridSizeX() / 2;
@@ -750,8 +767,8 @@
 
       // Testing..
       var opts = d.getRoutingOptions();
-      opts.setNodeVicinitySize( 50 );
-      opts.setNodeVicinityCost( 75 );
+      opts.setNodeVicinitySize( 550 );
+      opts.setNodeVicinityCost( 575 );
       opts.setSmartPolylineEnds( true );
     },
 
@@ -785,13 +802,13 @@
     },
 
     zoomIn: function( provis ) {
-      var zoom = provis.view.getZoomFactor();
-      $(this).zoomTo( provis, zoom + $config.zoomStep );
+      var zoom = provis.view.getZoomFactor() + $config.zoomStep;
+      $(this).zoomTo( provis, zoom );
     },
 
     zoomOut: function( provis ) {
-      var zoom = provis.view.getZoomFactor();
-      $(this).zoomTo( provis, zoom - $config.zoomStep );
+      var zoom = provis.view.getZoomFactor() - $config.zoomStep;
+      $(this).zoomTo( provis, zoom );
     },
 
     zoomTo: function( provis, value ) {
@@ -807,6 +824,10 @@
   });
 
   $(document).ready( function() {
+    Array.prototype.move = function ( from, to ) {
+      this.splice( to, 0, this.splice( from, 1 )[0] );
+    };
+
     window.onNodeDeleted = $(this).onNodeDeleted;
     window.onNodeModifying = $(this).onNodeModifying;
     window.onNodeModified = $(this).onNodeModified;
@@ -818,29 +839,43 @@
     window.onKeyDown = $(this).onKeyDown;
     window.onKeyUp = $(this).onKeyUp;
 
-    var provis = new Object();
-    provis.applet = $('#jDiagApplet').get(0);
-    provis.diagram = provis.applet.getDiagram();
-    provis.scriptHelper = provis.applet.getScriptHelper();
-    provis.undoManager = provis.diagram.getUndoManager();
-    provis.view = provis.applet.getDiagramView();
-    this.provis = provis;
+    var applet = $('#jDiagApplet').get(0);
+    this.provis = {
+      applet: applet,
+      diagram: applet.getDiagram(),
+      scriptHelper: applet.getScriptHelper(),
+      undoManager: applet.getDiagram().getUndoManager(),
+      view: applet.getDiagramView()
+    };
+
+    // scrolling to 0 seems to be broken.
+    this.provis.view.scrollTo( 0, -1 * $config.gridSizeY );
+
+    // var uri = 'http://qwiki.ma.lan/pub/Main/WebHome/xcvxcv12.aqm';
+    // $.ajax({
+    //   url: uri,
+    //   dataType: 'text',
+    //   error: function( xhr, status, error ) { console.log( error ); },
+    //   success: function( data, status, xhr ) {
+    //     provis.diagram.loadFromString( data );
+    //   }
+    // });
 
     // top menu
     $('a.btn').on( 'click', function() {
       var selectable = $(this).data( 'selectable' );
       if ( selectable == '1' ) {
-        $('a.selected').removeClass( 'selected' );
-        $(this).addClass( 'selected' );
+        $('a.btn-selected').removeClass( 'btn-selected' );
+        $(this).addClass( 'btn-selected' );
       }
 
       // toggable, e.g. 'Snap to grid' or 'Show grid'
       var toggable = $(this).data( 'toggable' );
       if ( toggable == '1' ) {
-        if ( $(this).hasClass( 'toggled' ) ) {
-          $(this).removeClass( 'toggled' );
+        if ( $(this).hasClass( 'btn-toggled' ) ) {
+          $(this).removeClass( 'btn-toggled' );
         } else {
-          $(this).addClass( 'toggled' );
+          $(this).addClass( 'btn-toggled' );
         }
       }
 
@@ -859,28 +894,24 @@
     });
 
     $('#btn-save').on( 'click', function() {
-      $(this).onSave( document.provis );
-      return false;
+      // $(this).onSave( document.provis );
+      return event.preventDefault();
     });
 
     $('#btn-cancel').on( 'click', function() {
-      $(this).onCancel( document.provis );
+      // $(this).onCancel( document.provis );
+      return event.preventDefault();
     });
 
     // shapes menu
     $('div.node').on( 'click', function() {
       $('div.node.selected').removeClass('selected');
       $(this).addClass('selected');
-      var shapeName = $(this).data('shape');
-      var shape = provis.scriptHelper.shapeFromId( shapeName );
-      provis.diagram.setDefaultShape( shape );
-      provis.diagram.setShapeOrientation( shapeName == 'Cylinder' ? 90 : 0 );
-    });
 
-    // layout menu
-    $('div.layout').on( 'click', function() {
-      $('div.layout.selected').removeClass('selected');
-      $(this).addClass('selected');
+      var shapeName = $(this).data('shape');
+      var shape = document.provis.scriptHelper.shapeFromId( shapeName );
+      document.provis.diagram.setDefaultShape( shape );
+      document.provis.diagram.setShapeOrientation( shapeName == 'Cylinder' ? 90 : 0 );
     });
 
     // bind to (zoom) selection changed event
@@ -892,7 +923,7 @@
     $('#select-zoom option:selected').removeAttr( 'selected' );
     $('#select-zoom option[value=100]').attr( 'selected', 'selected' );
 
-    // adjust applet size and listen to the window's resize event
+    // adjust applet initial size and listen to the window's resize event
     // we gonna keep the applet sized according to its parent bounds
     $(this).adjustAppletSize();
     $(window).resize( function() {
@@ -903,5 +934,92 @@
 
     // final initialization, default values, etc.
     $(this).setup( this.provis );
+
+    // observer callback. Called by CKE.
+    window.notify = function( d ) {
+      $('div#topic-content').html( d );
+    }
+
+    // set initial topic content within preview area
+    if ( window.opener.topic != null ) {
+      $('div#topic-content').html( window.opener.topic );
+    }
+
+    // Some magic for the topic preview area.
+    $('div.provis-right-container').resizable({
+      handles: "w",
+      ghost: false, // disable eye-candy. seems broken (corrupts the absolute layout)
+      animate: false,
+      maxWidth: $(window).width() / 2,
+      minWidth: 300,
+      resize: function( e, ui ) {
+        $(this).adjustAppletSize( ui );
+      }
+    });
+
+    $('#adorner').dblclick( function( e ) {
+      var $cnt = $('div.provis-right-container');
+      var $area = $('div.provis-apparea');
+
+      var wndWidth = $(window).width();
+      var minWidth = 300;
+      var maxWidth = wndWidth / 2;
+      var speed = 400;
+
+      var appLeft = $area.position().left;
+      var appWidth = $area.width();
+      var appRight = wndWidth - (appLeft + $area.outerWidth() );
+
+      var cntLeft = $cnt.position().left;
+      var cntWidth = $cnt.width();
+      var cntRight = wndWidth - (cntLeft + $cnt.outerWidth() );
+
+      // set animation properties explicitly.
+      $area.css( 'left', appLeft ).css( 'right', appRight ).css( 'width', appWidth );
+      $cnt.css( 'left', cntLeft ).css( 'right', cntRight ).css( 'width', cntWidth );
+
+      // expand
+      if ( cntWidth < maxWidth ) {
+        var cntDiff = maxWidth - cntWidth;
+        cntLeft = cntLeft - cntDiff;
+
+        $cnt.animate({
+          left: cntLeft,
+          right: cntRight,
+          width: maxWidth },
+          speed );
+
+        var offset = $area.outerWidth() - $area.width();
+        appRight = wndWidth - cntLeft + offset;
+        appWidth = wndWidth - appLeft - appRight - offset;
+        $area.animate({
+          left: appLeft,
+          right: appRight,
+          width: appWidth },
+          speed, function() {
+            $(this).adjustAppletSize( { position: { left: appLeft}, size: { width: maxWidth } } );
+          });
+      } else {
+        // collapse
+        var cntDiff = maxWidth - minWidth;
+        cntLeft = cntLeft + cntDiff;
+        $cnt.animate({
+          left: cntLeft,
+          right: cntRight,
+          width: minWidth },
+          speed );
+
+        var offset = $area.outerWidth() - $area.width();
+        appRight = wndWidth - cntLeft + offset;
+        appWidth = wndWidth - appLeft - appRight - offset;
+        $area.animate({
+          left: appLeft,
+          right: appRight,
+          width: appWidth },
+          speed, function() {
+            $(this).adjustAppletSize( { position: { left: appLeft}, size: { width: minWidth } } );
+          });
+      }
+    });
   });
 })(jQuery);

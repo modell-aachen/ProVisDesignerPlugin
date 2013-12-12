@@ -9,11 +9,15 @@ locale/ProVisDesignerPlugin/de.po 0644
 
 pub/System/ProVisDesignerPlugin/applet/JDiagram.jar 0644
 pub/System/ProVisDesignerPlugin/applet/ProVis.jar 0644
-pub/System/ProVisDesignerPlugin/applet/ProVis.signed.jar 0644
-pub/System/ProVisDesignerPlugin/applet/ProVis.unsigned.jar 0644
 
 pub/System/ProVisDesignerPlugin/assets/adornerDown.png 0644
+pub/System/ProVisDesignerPlugin/assets/btn-inset.png 0644
+pub/System/ProVisDesignerPlugin/assets/logo_small_color.png 0644
+pub/System/ProVisDesignerPlugin/assets/toolbar-bg.png 0644
 pub/System/ProVisDesignerPlugin/assets/adornerUp.png 0644
+pub/System/ProVisDesignerPlugin/assets/chevronLeft.png 0644
+pub/System/ProVisDesignerPlugin/assets/chevronRight.png 0644
+pub/System/ProVisDesignerPlugin/assets/chevronLeftRight.png 0644
 pub/System/ProVisDesignerPlugin/assets/cancel.png 0644
 pub/System/ProVisDesignerPlugin/assets/copy.png 0644
 pub/System/ProVisDesignerPlugin/assets/cursor-draw.png 0644
@@ -52,7 +56,8 @@ pub/System/ProVisDesignerPlugin/scripts/config.js 0644
 pub/System/ProVisDesignerPlugin/scripts/deployJava.js 0644
 pub/System/ProVisDesignerPlugin/scripts/designer.js 0644
 
-pub/System/ProVisDesignerPlugin/styles/designer.css 0644
-pub/System/ProVisDesignerPlugin/styles/pie.htc 0644
+pub/System/ProVisDesignerPlugin/css/designer.css 0644
+pub/System/ProVisDesignerPlugin/css/pie.htc 0644
+pub/System/ProVisDesignerPlugin/css/ie.fix.css 0644
 
 templates/foswiki.provis.tmpl 0644

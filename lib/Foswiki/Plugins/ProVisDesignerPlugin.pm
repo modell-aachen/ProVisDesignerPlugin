@@ -16,9 +16,9 @@ sub initPlugin {
   my ( $topic, $web, $user, $installWeb ) = @_;
 
   if ( $Foswiki::Plugins::VERSION < 2.0 ) {
-      Foswiki::Func::writeWarning( 'Version mismatch between ',
-          __PACKAGE__, ' and Plugins.pm' );
-      return 0;
+    Foswiki::Func::writeWarning( 'Version mismatch between ',
+      __PACKAGE__, ' and Plugins.pm' );
+    return 0;
   }
 
   Foswiki::Func::registerTagHandler( 'PROVISDESIGNER', \&_handleDesignerTag );
@@ -30,7 +30,7 @@ sub _handleDesignerTag {
 
   my $pluginURL = '%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin';
   my $style = <<STYLE;
-<link rel="stylesheet" type="text/css" media="all" href="$pluginURL/styles/designer.css" />
+<link rel="stylesheet" type="text/css" media="all" href="$pluginURL/css/designer.css" />
 STYLE
 
   Foswiki::Func::addToZone( 'head', 'PROVIS::DESIGNER::STYLES', $style );
@@ -43,6 +43,7 @@ SCRIPT
 
   Foswiki::Func::addToZone( 'script', 'PROVIS::DESIGNER::SCRIPTS', $script, 'JQUERYPLUGIN::FOSWIKI' );
   Foswiki::Plugins::JQueryPlugin::createPlugin( 'ui::dialog' );
+  Foswiki::Plugins::JQueryPlugin::createPlugin( 'ui::resizable' );
 
   return "";
 }

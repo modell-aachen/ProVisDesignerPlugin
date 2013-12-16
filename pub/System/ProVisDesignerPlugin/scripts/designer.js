@@ -20,20 +20,99 @@
     gridSizeY: 15,
     gridColor: '#eee',
     gridStyle: 1,
-    defaultShapeBrush: '#6494c8',
-    defaultCaptionBrush: '#777',
+    // defaultShapeBrush: '#6494c8',
+    defaultShapeBrush: '#0c61a8',
+    // defaultCaptionBrush: '#777',
+    defaultCaptionBrush: '#eee',
     defaultShapeTextColor: '#fff',
-    defaultCaptionTextColor: '#fff',
+    defaultCaptionTextColor: '#555',
+    // defaultCaptionTextColor: '#fff',
     defaultHandleStyle: 5,
     swimlaneHandles: 0,
-    swimlaneTopHandles: 32 + 128 + 256,
+    // swimlaneTopHandles: 32 + 128 + 256,
+    swimlaneTopHandles: 32 + 256,
     swimlaneBackBrush: '#fff',
     swimlaneWidth: 150,
     swimlaneHeight: 500,
     undoCommandHistory: 25,
     zoomStep: 25,
-    captionHeight: 40
+    captionHeight: 40,
   };
+
+  var $defaults = {
+    Rectangle: {
+      foreground: '#f90',
+      background: '#1b84fb',
+      fontsize: 14,
+      width: 6 * $config.gridSizeX,
+      height: 4 * $config.gridSizeY,
+      adjustmentHandles: 0,
+      handleStyle: 0,
+      useGradient: true,
+      gradientColor: '#0e3586',
+      gradientAngle: 90
+    },
+    Document: {
+      foreground: '#fff',
+      background: '#1b84fb',
+      fontsize: 14,
+      width: 6 * $config.gridSizeX,
+      height: 4 * $config.gridSizeY,
+      adjustmentHandles: 0,
+      handleStyle: 0,
+      useGradient: true,
+      gradientColor: '#0e3586',
+      gradientAngle: 90
+    },
+    Decision: {
+      foreground: '#fff',
+      background: '#1b84fb',
+      fontsize: 14,
+      width: 6 * $config.gridSizeX,
+      height: 4 * $config.gridSizeY,
+      adjustmentHandles: 0,
+      handleStyle: 0,
+      useGradient: true,
+      gradientColor: '#0e3586',
+      gradientAngle: 90
+    },
+    DirectAccessStorage: {
+      foreground: '#fff',
+      background: '#1b84fb',
+      fontsize: 14,
+      width: 6 * $config.gridSizeX,
+      height: 3 * $config.gridSizeY,
+      adjustmentHandles: 0,
+      handleStyle: 0,
+      useGradient: true,
+      gradientColor: '#0e3586',
+      gradientAngle: 90
+    },
+    Terminator: {
+      foreground: '#333',
+      background: '#1b84fb',
+      fontsize: 14,
+      width: 6 * $config.gridSizeX,
+      height: 2 * $config.gridSizeY,
+      adjustmentHandles: 0,
+      handleStyle: 0,
+      useGradient: true,
+      gradientColor: '#0e3586',
+      gradientAngle: 90
+    },
+    Ellipse: {
+      foreground: '#fff',
+      background: '#1b84fb',
+      fontsize: 14,
+      width: 2 * $config.gridSizeX,
+      height: 2 * $config.gridSizeX,
+      adjustmentHandles: 0,
+      handleStyle: 0,
+      useGradient: true,
+      gradientColor: '#0e3586',
+      gradientAngle: 90
+    }
+  }
 
   var $constants = {
     swimlaneTopTag: 'Swimlane_top',
@@ -41,14 +120,19 @@
     whitepaperTag: 'whitepaper',
     adjustSwimlaneCommand: 'adjustSwimlaneWidth',
     adjustWhitepaperCommand: 'adjustWhitepaperHeight',
-    modifyCommand: 'Modify'
+    modifyCommand: 'Modify',
+    moveSwimlaneCommand: 'MoveSwimlane'
   };
 
   var $anchorPattern = null;
 
   var $undoComposition = null;
 
+  // maus-position während drag
   var $mouseX;
+
+  // hält die ursprüngliche x-koordinate vor einem resize!
+  var $resizeX;
 
   var $stats = {
     lanes: [],
@@ -118,20 +202,28 @@
       swimlane.setBounds( laneBounds.getX(), laneBounds.getY(), nodeBounds.getWidth(), laneBounds.getHeight() );
 
       var width = 0;
-      var offsetX = $config.gridSizeX / 2;
-      var nodes = diagram.getNodes();
-      $(this).foreach( nodes, function( node ) {
-        if ( node.getTag() == $constants.swimlaneTopTag ) {
-          var bounds = node.getBounds();
-          if ( bounds.getX() != width + offsetX ) {
-            var x = offsetX + width;
-            var y = bounds.getY();
-            node.moveTo( x, y );
-          }
+      var offset = $config.gridSizeX / 2;
+      var nodes = $stats.nodes;
+      // $(this).foreach( nodes, function( node ) {
+      //   var bounds = node.getBounds();
+      //   if ( bounds.getX() != width + offsetX ) {
+      //     var x = offsetX + width;
+      //     var y = bounds.getY();
+      //     node.moveTo( x, y );
+      //   }
 
-          width += bounds.getWidth();
+      //   width += bounds.getWidth();
+      // });
+      for ( var i = 0; i < $stats.lanes.length; i++ ) {
+        var node = $stats.lanes[i];
+        var bounds = node.getBounds();
+        if ( bounds.getX() != width + offset ) {
+          var x = offset + width;
+          node.moveTo( x, offset );
         }
-      });
+
+        width += bounds.getWidth();
+      }
 
       d.resolve( diagram, width );
       return d;
@@ -154,6 +246,7 @@
         for( var i = 0; i < points.size(); i++ ) {
           var pt = points.get( i );
           pt.setMarkStyle( 3 );
+          pt.setColor( $(this).createColor( i < 2 ? '#0f0' : '#f00' ) );
         }
       }
 
@@ -188,7 +281,9 @@
             $stats.lanes.push( node );
             node.setLocked( false );
             node.setEnabledHandles( $config.swimlaneTopHandles );
-            node.setBrush( captionBrush );
+            var gb = $(this).createGradientBrush( '#fff', '#ccc', 90 );
+            node.setBrush( gb );
+            // node.setBrush( captionBrush );
 
             var text = '<b>' + node.getText() + '</b>';
             node.setEnableStyledText( true );
@@ -282,6 +377,12 @@
       return document.provis.scriptHelper.createSolidBrush( c.r, c.g, c.b );
     },
 
+    createGradientBrush: function( hexFrom, hexTo, angle ) {
+      var c1 = $(this).getRGBColor( hexFrom );
+      var c2 = $(this).getRGBColor( hexTo );
+      return document.provis.scriptHelper.createGradientBrush( c1.r, c1.g, c1.b, c2.r, c2.g, c2.b, angle );
+    },
+
     // called when the user tries to add a new swimlane
     ensureWhitepaper: function( provis ) {
       var wp = provis.diagram.findNode( $constants.whitepaperTag );
@@ -304,7 +405,8 @@
 
       // whitepaper.setEnabledHandles( 32);
       whitepaper.setEnabledHandles( 64 );
-      whitepaper.setHandlesStyle( $config.defaultHandleStyle );
+      whitepaper.setHandlesStyle( 1 );
+      // whitepaper.setHandlesStyle( $config.defaultHandleStyle );
     },
 
     foreach: function( jlist, callback ) {
@@ -351,29 +453,6 @@
     onKeyDown: function( view, keyEvent ) {
       var code = keyEvent.getKeyCode();
       // console.log( code );
-      if ( $keyboard.isAlt ) {
-        switch( code ) {
-          case 49: // 1
-            $('div.node[data-shape=Rectangle]').click();
-            break;
-          case 50: // 2
-            $('div.node[data-shape=Decision2]').click();
-            break;
-          case 51: // 3
-            $('div.node[data-shape=Document]').click();
-            break;
-          case 52: // 4
-            $('div.node[data-shape=Cylinder]').click();
-            break;
-          case 53: // 5
-            $('div.node[data-shape=Terminator]').click();
-            break;
-          case 54: // 6
-            $('div.node[data-shape=Ellipse]').click();
-            break;
-        }
-      }
-
       if ( $keyboard.isCtrl ) {
         switch( code ) {
           case 45: // -
@@ -418,11 +497,6 @@
             break;
           case 18:
             $keyboard.isAlt = true;
-            setTimeout( function() {
-              if ( $keyboard.isAlt ) {
-                $('.hint').show( 'slow' );
-              }
-            }, 250 );
             break;
         }
       }
@@ -439,9 +513,23 @@
           break;
         case 18:
           $keyboard.isAlt = false;
-          $('.hint').hide( 'slow' );
           break;
       }
+    },
+
+    getParentContainer: function( pointF ) {
+      console.log( 'foo' );
+      var parents = document.provis.diagram.getNodesAt( pointF );
+      console.log( parents.size() );
+      for ( var i = 0; i < parents.size(); i++ ) {
+        var parent = parents.get( i );
+        if ( parent.getTag() == $constants.swimlaneTag ) {
+          console.log( 'ppp' );
+          return parent;
+        }
+      }
+
+      return null;
     },
 
     onNodeClicked: function( diagram, nodeEvent ) {
@@ -451,6 +539,13 @@
     onNodeCreated: function( diagram, nodeEvent ) {
       var node = nodeEvent.getNode();
       $(this).applyAnchorPattern( node );
+
+      var bounds = node.getBounds();
+      var pt = document.provis.scriptHelper.createPointF( bounds.getX(), bounds.getY() );
+      var parent = $(this).getParentContainer( pt );
+      if ( parent ) {
+        node.attachTo( parent, 0 );
+      }
     },
 
     onNodeDeleted: function( diagram, nodeEvent ) {
@@ -465,16 +560,42 @@
 
     onNodeDeleting: function() {},
 
+    onNodeDoubleClicked: function( diagram, nodeEvent ) {
+      var node = nodeEvent.getNode();
+      if ( node.getTag() != $constants.swimlaneTag ) return;
+
+      var bounds = node.getBounds();
+      var pos = nodeEvent.getMousePosition();
+      var factory = diagram.getFactory();
+      var cfg = $defaults[$('div.node.node-selected').data( 'shape' )];
+
+      var x = bounds.getX() + bounds.getWidth()/2 - cfg.width/2;
+      var y = pos.getY() - cfg.height/2;
+      var shape = factory.createShapeNode( x, y, cfg.width, cfg.height );
+      $(this).applyAnchorPattern( shape );
+      shape.attachTo( node, 0 );
+    },
+
     onNodeModified: function( diagram, nodeEvent ) {
       var node = nodeEvent.getNode();
       var handle = nodeEvent.getAdjustmentHandle();
-      if ( handle == 8 && node.getTag() == $constants.swimlaneTopTag ) {
-        var offsetX = $config.gridSizeX / 2;
-        for( var i = 0; i < $stats.lanes.length; i++ ) {
-          var lane = $stats.lanes[i];
-          var laneB = lane.getBounds();
-          lane.moveTo( offsetX, laneB.getY() );
-          offsetX += laneB.getWidth();
+
+      // move
+      if ( handle == 8 ) {
+        if ( node.getTag() == $constants.swimlaneTopTag ) {
+          var offsetX = $config.gridSizeX / 2;
+          for( var i = 0; i < $stats.lanes.length; i++ ) {
+            var lane = $stats.lanes[i];
+            var bounds = lane.getBounds();
+            lane.moveTo( offsetX, bounds.getY() );
+            offsetX += bounds.getWidth();
+          }
+        } else {
+          // update nodes parent swimlane
+          var bounds = node.getBounds();
+          var pt = document.provis.scriptHelper.createPointF( bounds.getX(), bounds.getY() );
+          var parent = $(this).getParentContainer( pt );
+          if ( parent ) node.attachTo( parent, 0 );
         }
       }
 
@@ -482,6 +603,7 @@
       if ( node.getTag() == $constants.whitepaperTag ) {
         var undoManager = diagram.getUndoManager();
         var bounds = node.getBounds();
+
         $undoComposition = undoManager.startComposite( $constants.adjustWhitepaperCommand, true );
         var nodes = diagram.getNodes();
         $(this).foreach( nodes, function( item ) {
@@ -493,6 +615,9 @@
         });
       }
 
+      // resize
+      if ( handle == 5 ) $resizeX = null;
+
       // In case there's an unfinished (undo) composition -> execute/finish it.
       if ( $undoComposition != null ) {
         $undoComposition.execute();
@@ -501,81 +626,73 @@
     },
 
     onNodeModifying: function( diagram, nodeValidationEvent ) {
-      // for( var i = 0; i < $stats.lanes.length; i++ ) {
-      //   var c = $stats.lanes[i];
-      // }
-
       var undoManager = diagram.getUndoManager();
       var node = nodeValidationEvent.getNode();
       var bounds = node.getBounds();
 
-      if ( node.getTag() == $constants.swimlaneTopTag ) {
-        var handle = nodeValidationEvent.getAdjustmentHandle();
-
-        // move:
-        if ( handle == 8 ) {
-          var nodeX = bounds.getX();
-          var nodeW = bounds.getWidth();
-          var nodeIndex = $stats.lanes.indexOf( node );
-
-          var mouseX = nodeValidationEvent.getMousePosition().getX();
-          if ( $mouseX == null ) $mouseX = mouseX;
-          if ( $mouseX == mouseX ) {
+      if ( node.getTag() != $constants.swimlaneTopTag ) return;
+      switch( nodeValidationEvent.getAdjustmentHandle() ) {
+        // resize
+        case 5:
+          if ( $resizeX == null ) $resizeX = bounds.getX();
+          if ( $resizeX < bounds.getX() || bounds.getWidth() < $config.swimlaneWidth ) {
+            nodeValidationEvent.setCancel( true );
+            nodeValidationEvent.cancelDrag();
+            node.setBounds($resizeX, bounds.getY(), $config.swimlaneWidth, bounds.getHeight());
             return;
           }
 
+          $undoComposition = undoManager.startComposite( $constants.adjustSwimlaneCommand, true );
+          $.when( $(this).adjustSwimlaneWidth( diagram, node ) ).done( $(this).adjustWhitepaper );
+          break;
+        // move
+        case 8:
+          var nodeX = bounds.getX();
+          var nodeW = bounds.getWidth();
+          var index = $stats.lanes.indexOf( node );
+
+          var mouseX = nodeValidationEvent.getMousePosition().getX();
+          if ( $mouseX == mouseX ) return;
           var isDragLeft = $mouseX > mouseX;
           $mouseX = mouseX;
 
-          var nodeLeft = null, nodeRight = null;
-          if ( nodeIndex - 1 >= 0 ) nodeLeft = $stats.lanes[nodeIndex - 1];
-          if ( nodeIndex + 1 < $stats.lanes.length ) nodeRight = $stats.lanes[nodeIndex + 1];
+          var nodeLeft = index - 1 >= 0 ? $stats.lanes[index - 1] : null;
+          var nodeRight = index + 1 < $stats.lanes.length ? nodeRight = $stats.lanes[index + 1] : null;
 
-          if ( nodeLeft != null && isDragLeft ) {
-            console.log( '2' );
-            var leftBounds = nodeLeft.getBounds();
-            var leftTrigger = leftBounds.getX() + leftBounds.getWidth() / 2;
-            if ( nodeX < leftTrigger ) {
-              console.log( '3' );
-              $stats.lanes.move( nodeIndex, nodeIndex - 1 );
-              nodeLeft.moveTo( leftBounds.getX() + nodeW, leftBounds.getY() );
+          if ( nodeLeft && isDragLeft ) {
+            var lb = nodeLeft.getBounds();
+            var trigger = lb.getX() + lb.getWidth() / 2;
+            if ( nodeX <= trigger ) {
+              $stats.lanes.move( index, index - 1 );
+            }
+          } else if ( nodeRight && !isDragLeft ) {
+            var rb = nodeRight.getBounds();
+            var trigger = rb.getX() + rb.getWidth() / 2;
+            if ( nodeX + nodeW > trigger ) {
+              $stats.lanes.move( index, index + 1 );
             }
           }
-
-          if ( nodeRight != null && !isDragLeft ) {
-            console.log( '4' );
-            var rightBounds = nodeRight.getBounds();
-            var rightTrigger = rightBounds.getX() + rightBounds.getWidth() / 2;
-            if ( nodeX + nodeW > rightTrigger ) {
-              console.log( '5' );
-              $stats.lanes.move( nodeIndex, nodeIndex + 1 );
-              nodeRight.moveTo( rightBounds.getX() - nodeW, rightBounds.getY() );
-            }
-          }
-        } else {
-          // resize:
-          $undoComposition = undoManager.startComposite( $constants.adjustSwimlaneCommand, true );
-          $.when(
-            $(this).adjustSwimlaneWidth( diagram, node )
-          ).done(
-            $(this).adjustWhitepaper
-          );
-        }
+          break;
       }
-
-      // for( var i = 0; i < $stats.lanes.length; i++ ) {
-      //   console.log( $stats.lanes[i].getText() );
-      // }
-      $stats.modifying = false;
     },
 
     onNodeTextChanged: function( diagram, textEvent ) {
       var node = textEvent.getNode();
       var tag = node.getTag();
+      var font = null;
+
       if ( tag == $constants.swimlaneTopTag ) {
-        var text = textEvent.getNewText();
-        node.setText( '<b>' + text + '</b>' );
+        font = document.provis.scriptHelper.createFont( 'Arial Bold', 14 );
+      } else {
+        var shapeName = node.getShape().getId();
+        var cfg = $defaults[shapeName];
+
+        var color = $(this).createColor( cfg.foreground );
+        node.setTextColor( color );
+        font = document.provis.scriptHelper.createFont( 'Arial', cfg.fontsize );
       }
+
+      node.setFont( font );
     },
 
     onNodeTextChanging: function( diagram, textEvent ) {
@@ -692,8 +809,14 @@
     },
 
     setup: function( provis ) {
-      // set default shape brush
-      var defaultBrush = $(this).createSolidBrush( $config.defaultShapeBrush );
+      // set default shape brush (for Rectangle)
+      var defaultBrush = null;
+      var cfg = $defaults["Rectangle"];
+      if ( cfg.useGradient ) {
+        defaultBrush = $(this).createGradientBrush( cfg.background, cfg.gradientColor, cfg.gradientAngle );
+      } else {
+        defaultBrush = $(this).createSolidBrush( cfg.background );
+      }
 
       var d = provis.diagram;
       d.setShapeBrush( defaultBrush );
@@ -725,8 +848,8 @@
       // allow inplace editing of captions and shape titles
       provis.view.setAllowInplaceEdit( true );
 
-      // default behavior (cursor): modify
-      provis.view.setBehavior( 0 );
+      // default behavior (cursor): connect
+      provis.view.setBehavior( 3 );
 
       // default handles.
       d.setShapeHandlesStyle( $config.defaultHandleStyle );
@@ -774,8 +897,6 @@
       var history = provis.undoManager.getHistory();
       history.setCapacity( $config.undoCommandHistory );
       history.clear();
-
-
 
       // Testing..
       var opts = d.getRoutingOptions();
@@ -917,13 +1038,23 @@
 
     // shapes menu
     $('div.node').on( 'click', function() {
-      $('div.node.selected').removeClass('selected');
-      $(this).addClass('selected');
+      $('div.node.node-selected').removeClass('node-selected');
+      $(this).addClass('node-selected');
 
       var shapeName = $(this).data('shape');
       var shape = document.provis.scriptHelper.shapeFromId( shapeName );
       document.provis.diagram.setDefaultShape( shape );
-      document.provis.diagram.setShapeOrientation( shapeName == 'Cylinder' ? 90 : 0 );
+      document.provis.diagram.setShapeOrientation( shapeName == 'DirectAccessStorage' ? 180 : 0 );
+
+      var brush = null;
+      var cfg = $defaults[shapeName];
+      if ( cfg.useGradient ) {
+        brush = $(this).createGradientBrush( cfg.background, cfg.gradientColor, cfg.gradientAngle );
+      } else {
+        brush = $(this).createSolidBrush( cfg.background );
+      }
+
+      document.provis.diagram.setShapeBrush( brush );
     });
 
     // bind to (zoom) selection changed event

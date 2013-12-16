@@ -14,20 +14,43 @@ div {
       cursor: hand;
     }
 
+    &.node-selected {
+      background-image: url(/pub/System/ProVisDesignerPlugin/assets/node-inset.png);
+      background-repeat: no-repeat;
+    }
+
+    > .node-bg {
+      .gradient( #1b84fb, #0e3586, 10%, 90% );
+
+      &#node-rectangle {
+        // background: #1ba1e2;
+      }
+
+      &#node-decision {
+        // background: #d80073;
+      }
+
+      &#node-document {
+        // background: #339933;
+      }
+
+      &#node-directaccessstorage {
+        // background: #f09609;
+      }
+
+      &#node-terminator {
+        // background: #d80073;
+      }
+
+      &#node-ellipse {
+        // background: #f09609;
+      }
+    }
+
     > span {
       display: block;
       text-align: center;
       .size( 0.8em );
-    }
-
-    &.hint {
-      position: relative;
-      width: 22px;
-      height: 22px;
-      text-align: center;
-      background: #ffc771;
-      margin: -15px 0; // -36
-      .hide;
     }
 
     &.layout {

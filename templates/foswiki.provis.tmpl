@@ -38,35 +38,41 @@
     <div class="topic-preview"></div>
     <div class="provis-left-container">
       <div>
-        <div class='node selected' data-shape='Rectangle'>
+        <div class='node node-selected' data-shape='Rectangle'>
           <span>%MAKETEXT{"Process"}%</span>
-          <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_process.png' />
-          <div class='hint'>1</div>
+          <div id='node-rectangle' class='node-bg'>
+            <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_process.png' />
+          </div>
         </div>
-        <div class='node' data-shape='Decision2'>
+        <div class='node' data-shape='Decision'>
           <span>%MAKETEXT{"Decision"}%</span>
-          <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_decision.png' />
-          <div class='hint'>2</div>
+          <div id='node-decision' class='node-bg'>
+            <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_decision.png' />
+          </div>
         </div>
         <div class='node' data-shape='Document'>
           <span>%MAKETEXT{"Document"}%</span>
-          <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_document.png' />
-          <div class='hint'>3</div>
+          <div id='node-document' class='node-bg'>
+            <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_document.png' />
+          </div>
         </div>
-        <div class='node' data-shape='Cylinder'>
+        <div class='node' data-shape='DirectAccessStorage'>
           <span>%MAKETEXT{"Database"}%</span>
-          <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_database.png' />
-          <div class='hint'>4</div>
+          <div id='node-directaccessstorage' class='node-bg'>
+            <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_database.png' />
+          </div>
         </div>
         <div class='node' data-shape='Terminator'>
           <span>%MAKETEXT{"Start/End"}%</span>
-          <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_start.png' />
-          <div class='hint'>5</div>
+          <div id='node-terminator' class='node-bg'>
+            <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_start.png' />
+          </div>
         </div>
         <div class='node' data-shape='Ellipse'>
           <span>%MAKETEXT{"Junction"}%</span>
-          <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_junction.png' />
-          <div class='hint'>6</div>
+          <div id='node-ellipse' class='node-bg'>
+            <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_junction.png' />
+          </div>
         </div>
       </div>
     </div>
@@ -82,9 +88,9 @@
           <a class='btn' href='#' title='%MAKETEXT{"Redo"}%' data-action='redo'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/redo.png' /></a>
         </div>
         <div class="toolbar-group">
-          <a class='btn btn-selected' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='0' title='%MAKETEXT{"Select"}%'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-modify.png' /></a><!--
+          <a class='btn' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='0' title='%MAKETEXT{"Select"}%'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-modify.png' /></a><!--
           --><a class='btn' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='1' title='%MAKETEXT{"Draw"}%'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-draw.png' /></a><!--
-          --><a class='btn' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='3' title='%MAKETEXT{"Connect"}%'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-link.png' /></a><!--
+          --><a class='btn btn-selected' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='3' title='%MAKETEXT{"Connect"}%'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-link.png' /></a><!--
           --><a class='btn' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='12' title='%MAKETEXT{"Pan"}%'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-pan.png' /></a>
         </div>
         <div class="toolbar-group">
@@ -111,7 +117,7 @@
       <div id="topic-content"></div>
     </div>
   </div>
-  <div id="label-dialog" title="TBD. FooBar" style="display:none;">
+  <div id="label-dialog" style="display:none;">
   <label for="label">Label</label>
       <input type="text" name="label" id="label" />
   </div>

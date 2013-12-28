@@ -30,15 +30,18 @@ sub _handleDesignerTag {
 
   my $pluginURL = '%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin';
   my $style = <<STYLE;
-<link rel="stylesheet" type="text/css" media="all" href="$pluginURL/css/designer.css" />
+<link rel="stylesheet" type="text/css" media="all" href="$pluginURL/css/provis.ui.css" />
 STYLE
 
   Foswiki::Func::addToZone( 'head', 'PROVIS::DESIGNER::STYLES', $style );
 
   my $script = <<SCRIPT;
 <script type="text/javascript" src="$pluginURL/scripts/deployJava.js"></script>
-<script type="text/javascript" src="$pluginURL/scripts/config.js"></script>
-<script type="text/javascript" src="$pluginURL/scripts/designer.js"></script>
+<script type="text/javascript" src="$pluginURL/scripts/provis.js"></script>
+<script type="text/javascript" src="$pluginURL/scripts/provis.config.js"></script>
+<script type="text/javascript" src="$pluginURL/scripts/provis.defaults.js"></script>
+<script type="text/javascript" src="$pluginURL/scripts/provis.func.js"></script>
+<script type="text/javascript" src="$pluginURL/scripts/provis.ui.js"></script>
 SCRIPT
 
   Foswiki::Func::addToZone( 'script', 'PROVIS::DESIGNER::SCRIPTS', $script, 'JQUERYPLUGIN::FOSWIKI' );

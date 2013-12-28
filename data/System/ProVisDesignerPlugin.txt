@@ -10,7 +10,6 @@ deployJava.runApplet({
   // Attributes
   id: 'jDiagApplet',
   codebase: '*',
-  permissions: 'all-permissions',
   archive: 'ProVis.jar',
   height: '600px',
   width: '1000px',

@@ -45,6 +45,8 @@ ProVis.config = {
   swimlaneBackBrush: '#fff',
   swimlaneHandles: 0,
   swimlaneHeight: 500,
+  swimlaneMinHeight: 100,
+  swimlaneMinWidth: 100,
   swimlaneTopHandles: 32 + 256,
   swimlaneWidth: 150,
   undoCommandHistory: 25,

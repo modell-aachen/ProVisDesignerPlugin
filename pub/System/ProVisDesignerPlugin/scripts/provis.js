@@ -28,20 +28,6 @@ $('img#ma-logo-small').on( 'click', function() {
   provis.createSwimlane();
 });
 $( "#tabs" ).tabs({ heightStyle: "fill" });
-$('div.provis-right-container').resizable({
-  handles: "w",
-  ghost: false, // disable eye-candy. seems broken (corrupts the absolute layout)
-  animate: false,
-  maxWidth: $(window).width() / 2,
-  minWidth: 300,
-  resize: function( e, ui ) {
-    // var diff = $(this).width() - 300;
-    // var $appArea = $('div.provis-apparea');
-    // var appWidth = $appArea.width();
-    // $appArea.width( appWidth - diff );
-    // $(window).trigger('resize');
-  }
-});
 //
 
   // Initially sets the applet bounds to its parent container element.
@@ -52,34 +38,47 @@ $('div.provis-right-container').resizable({
   applet.height = parent.height();
 
 
-  /******************************
+  /*****************************************************************************
    * private members
-   ******************************/
+   ****************************************************************************/
 
   var swimlanes = [];
   var cfg = ProVis.config;
   var constants = ProVis.strings;
+  var nodeTheme = ProVis.nodeDefaults;
 
 
-  /******************************
+  /*****************************************************************************
    * private methods
-   ******************************/
+   ****************************************************************************/
 
   /**
    * Aligns all swimlanes in a row.
-   * Called after a swimlane has been moved or deleted.
+   * Called after a swimlane has been moved, resized or deleted.
    *
    * @return A jQuery promise.
    */
   var alignSwimlanes = function() {
+    return alignSwimlanesEx( null );
+  };
+
+  /**
+   * Aligns all swimlanes in a row while excluding the given node.
+   * Directly called when a swimlane is dragged.
+   *
+   * @param exclude The node to exclude.
+   * @return A jQuery promise.
+   */
+  var alignSwimlanesEx = function( exclude ) {
     var deferred = $.Deferred();
 
-    if ( swimlanes.length == 0 ) deferred.reject();
-    else {
+    if ( swimlanes.length == 0 ) {
+      deferred.reject();
+    } else {
       var x = cfg.gridSizeX / 2;
       var y = cfg.gridSizeY / 2;
       foreachArrayItem( swimlanes, function( lane ) {
-        lane.moveTo( x, y );
+        if ( lane != exclude ) lane.moveTo( x, y );
         x += lane.getBounds().getWidth();
       }).done( deferred.resolve ).fail( deferred.reject );
     }
@@ -166,6 +165,26 @@ $('div.provis-right-container').resizable({
     return deferred.promise();
   };
 
+  /**
+   * Gets the sum of widths of all swimlanes.
+   *
+   * @return The sum of width within a jQuery promise.
+   */
+  var getSwimlanesWidth = function() {
+    var deferred = $.Deferred();
+
+    var width = 0;
+    foreachArrayItem( swimlanes, function( caption ) {
+      width += caption.getBounds().getWidth();
+    }).done( function() {
+      deferred.resolve( width );
+    }).fail( function() {
+      deferred.reject();
+    });
+
+    return deferred.promise();
+  };
+
   /*
    * Sets the width of each swimlane.
    * Called after the whitepaper's width has changed.
@@ -189,9 +208,9 @@ $('div.provis-right-container').resizable({
   };
 
 
-  /******************************
+  /*****************************************************************************
    * public properties
-   ******************************/
+   ****************************************************************************/
 
   this.applet = applet;
   this.diagram = applet.getDiagram();
@@ -201,12 +220,13 @@ $('div.provis-right-container').resizable({
   this.anchorPattern = null;
 
 
-  /******************************
+  /*****************************************************************************
    * public methods
-   ******************************/
+   ****************************************************************************/
 
   /**
-   * Adjusts the applet's width and height according to its parent container element.
+   * Adjusts the applet's width and height according to
+   * its parent container element.
    * Called after 'window.resize' has been triggered.
    */
   ProVis.prototype.adjustAppletBounds = function() {
@@ -253,7 +273,7 @@ $('div.provis-right-container').resizable({
       for( var i = 0; i < points.size(); i++ ) {
         var pt = points.get( i );
         pt.setMarkStyle( 3 );
-        pt.setColor( provis.createColor( i < 2 ? ProVis.config.anchorInColor : ProVis.config.anchorOutColor ) );
+        pt.setColor( provis.createColor( i < 2 ? cfg.anchorInColor : cfg.anchorOutColor ) );
       }
     }
 
@@ -348,8 +368,6 @@ $('div.provis-right-container').resizable({
 
     // var composition = provis.undoManager.startComposite( 'newSwimlane', true );
 
-    var cfg = ProVis.config;
-
     var wp = provis.diagram.findNode( constants.whitepaperTag );
     var wpBounds = wp.getBounds();
 
@@ -385,9 +403,11 @@ $('div.provis-right-container').resizable({
     titleNode.setAllowOutgoingLinks( false );
     titleNode.setEnabledHandles( cfg.swimlaneTopHandles );
     titleNode.setHandlesStyle( cfg.defaultHandleStyle );
+    titleNode.setZIndex( 1 );
 
     var titleConstraints = titleNode.getConstraints();
     titleConstraints.setMoveDirection( 1 );
+    titleConstraints.setMinWidth( cfg.swimlaneMinWidth );
 
     // // Content
     var laneNode = factory.createShapeNode(
@@ -397,22 +417,20 @@ $('div.provis-right-container').resizable({
       wpBounds.getHeight() - cfg.captionHeight );
 
     laneNode.setZIndex(1);
-
     laneNode.setLocked( true );
     laneNode.setEnabledHandles( cfg.swimlaneHandles );
     laneNode.setHandlesStyle( cfg.defaultHandleStyle );
-
-    var laneConstraints = laneNode.getConstraints();
-    laneConstraints.setMoveDirection( 1 );
     laneNode.setBrush( provis.createSolidBrush( cfg.swimlaneBackBrush ) );
     laneNode.setObstacle( false );
     laneNode.setTag( constants.swimlaneTag );
-    laneNode.attachTo( titleNode, 0 );
     laneNode.setAllowIncomingLinks( false );
     laneNode.setAllowOutgoingLinks( false );
 
+    laneNode.attachTo( titleNode, 0 );
     titleNode.getSubordinateGroup().setAutodeleteItems( true );
-    titleNode.setZIndex( 2 );
+
+    var laneConstraints = laneNode.getConstraints();
+    laneConstraints.setMoveDirection( 1 );
 
     var newWidth = wpBounds.getWidth() + cfg.swimlaneWidth;
     provis.adjustWhitepaperWidth( newWidth );
@@ -434,14 +452,14 @@ $('div.provis-right-container').resizable({
 
     // Reachable only if there's no whitepaper present
     var factory = provis.diagram.getFactory();
-    var offsetX = ProVis.config.gridSizeX / 2;
-    var offsetY = ProVis.config.gridSizeY / 2;
+    var offsetX = cfg.gridSizeX / 2;
+    var offsetY = cfg.gridSizeY / 2;
 
     whitepaper = factory.createShapeNode(
       offsetX,
       offsetY,
       0,
-      ProVis.config.captionHeight + ProVis.config.swimlaneHeight );
+      cfg.captionHeight + cfg.swimlaneHeight );
 
     whitepaper.setTag( constants.whitepaperTag );
     whitepaper.setLocked( false );
@@ -506,7 +524,7 @@ $('div.provis-right-container').resizable({
   ProVis.prototype.nodeCreating = function( d, e ) {
     var node = e.getNode();
     var id = node.getShape().getId();
-    var cfg = ProVis.nodeDefaults[id];
+    var cfg = nodeTheme[id];
     if ( !cfg ) return;
 
     provis.applyNodeDefaults( node, cfg );
@@ -529,7 +547,7 @@ $('div.provis-right-container').resizable({
 
       swimlanes.splice( swimlanes.indexOf( node ), 1 );
       alignSwimlanes().done( function() {
-        // provis.view.repaint( true );
+        provis.view.recreateCacheImage();
       });
     }
   };
@@ -549,7 +567,7 @@ $('div.provis-right-container').resizable({
     var pos = e.getMousePosition();
     var factory = d.getFactory();
     var shapeId = $('div.node.node-selected').data( 'shape' );
-    var cfg = ProVis.nodeDefaults[shapeId];
+    var cfg = nodeTheme[shapeId];
 
     var x = bounds.getX() + bounds.getWidth()/2 - cfg.width/2;
     var y = pos.getY() - cfg.height/2;
@@ -562,6 +580,7 @@ $('div.provis-right-container').resizable({
     provis.applyNodeDefaults( node, cfg );
 
     node.attachTo( swimlane, 0 );
+    swimlane.getSubordinateGroup().setAutodeleteItems( true );
   };
 
   /**
@@ -572,65 +591,6 @@ $('div.provis-right-container').resizable({
    * @param e 'com.mindfusion.diagramming.NodeEvent'
    */
   ProVis.prototype.nodeModified = function( d, e ) {
-    provis.view.resumeRepaint();
-
-    var node = e.getNode();
-    var handle = e.getAdjustmentHandle();
-    var tag = node.getTag();
-
-    /*
-     *   HandleStyles:
-     *
-     *   0***4***1
-     *   *       *
-     *   7   8   5
-     *   *       *
-     *   3***6***2
-     */
-
-    switch ( handle ) {
-      // case 6:
-      //   if ( tag != constants.whitepaperTag ) return;
-      //   var newHeight = node.getBounds().getHeight() - ProVis.config.captionHeight;
-      //   var nodes = d.getNodes();
-      //   for( var i = 0; i < nodes.size(); i++ ) {
-      //     var current = nodes.get( i );
-      //     if ( current.getTag() == constants.swimlaneTag ) {
-      //       var laneWidth = current.getBounds().getWidth();
-      //       current.resize( laneWidth, newHeight );
-      //     }
-      //   }
-
-      //   break;
-      case 8:
-        if ( tag == constants.swimlaneTopTag ) {
-          var offsetX = ProVis.config.gridSizeX / 2;
-          // for( var i = 0; i < $stats.lanes.length; i++ ) {
-          //   var lane = $stats.lanes[i];
-          //   var bounds = lane.getBounds();
-          //   lane.moveTo( offsetX, bounds.getY() );
-          //   offsetX += bounds.getWidth();
-          // }
-        } else {
-          // update parent container (swimlane)
-          var bounds = node.getBounds();
-          var pt = provis.scriptHelper.createPointF( bounds.getX(), bounds.getY() );
-          var parent = provis.getParentNodeAt( pt );
-          if ( parent ) node.attachTo( parent, 0 );
-        }
-
-        break;
-    }
-  };
-
-  /**
-   * Event handler which is called while a node is changing.
-   * Handles swimlane and whitepaper modifications.
-   *
-   * @param d 'com.mindfusion.diagramming.Diagram'
-   * @param e 'com.mindfusion.diagramming.NodeEvent'
-   */
-  ProVis.prototype.nodeModifying = function( d, e ) {
     var node = e.getNode();
     var handle = e.getAdjustmentHandle();
     var tag = node.getTag();
@@ -647,13 +607,55 @@ $('div.provis-right-container').resizable({
 
     switch ( handle ) {
       case 5:
-        if ( tag != constants.swimlaneTopTag ) return;
-        var bounds = node.getBounds();
+        getSwimlanesWidth().done( function( width ) {
+          provis.adjustWhitepaperWidth( width );
+        });
 
-// var curTr = bounds.getX() + bounds.getWidth();
-// if ( tr != curTr ) tr = curTr;
-// else return;
-// console.log( curTr );
+        break;
+      case 8:
+        if ( tag == constants.swimlaneTopTag ) {
+          alignSwimlanes();
+        } else {
+          // update parent container (swimlane)
+          var b = node.getBounds();
+          var pt = provis.scriptHelper.createPointF( b.getX(), b.getY() );
+          var parent = provis.getParentNodeAt( pt );
+          if ( parent ) {
+            node.attachTo( parent, 0 );
+            parent.getSubordinateGroup().setAutodeleteItems( true );
+          }
+        }
+
+        break;
+    }
+  };
+
+  /**
+   * Event handler which is called while a node is changing.
+   * Handles swimlane and whitepaper modifications.
+   *
+   * @param d 'com.mindfusion.diagramming.Diagram'
+   * @param e 'com.mindfusion.diagramming.NodeEvent'
+   */
+  ProVis.prototype.nodeModifying = function( d, e ) {
+    var node = e.getNode();
+    var bounds = node.getBounds();
+    var handle = e.getAdjustmentHandle();
+    var tag = node.getTag();
+
+    /*
+     *   HandleStyles:
+     *
+     *   0***4***1
+     *   *       *
+     *   7   8   5
+     *   *       *
+     *   3***6***2
+     */
+
+    switch ( handle ) {
+      case 5: // adjust swimlane width
+        if ( tag != constants.swimlaneTopTag ) return;
 
         var group = node.getSubordinateGroup();
         var body = group.getAttachedNodes().get( 0 );
@@ -667,31 +669,58 @@ $('div.provis-right-container').resizable({
             lane.moveTo( x, y );
             x += lane.getBounds().getWidth();
           }).done( function() {
-            // provis.view.repaint( true );
+            provis.view.recreateCacheImage();
           });
         });
+
         break;
-      case 6:
+      case 6: // adjust whitepaper height
         if ( tag != constants.whitepaperTag ) return;
-        var newHeight = node.getBounds().getHeight() - ProVis.config.captionHeight;
+        var newHeight = bounds.getHeight() - cfg.captionHeight;
         setSwimlanesHeight( newHeight ).done( function() {
-          // provis.view.repaint( true );
+          provis.view.recreateCacheImage();
         });
+
+        break;
+      case 8: // move swimlane
+        if ( tag != constants.swimlaneTopTag ) return;
+
+        var curTrigger = bounds.getX();
+        var curIndex = swimlanes.indexOf( node );
+        var hasLeft = curIndex - 1 >= 0;
+        var hasRight = curIndex + 1 <= swimlanes.length - 1;
+        var hasChanged = false;
+
+        if ( hasLeft ) {
+          var left = swimlanes[curIndex - 1];
+          var leftBounds = left.getBounds();
+          var trigger = leftBounds.getX() + leftBounds.getWidth() / 2;
+          if ( curTrigger < trigger ) {
+            swimlanes.move( curIndex, curIndex - 1 );
+            hasChanged = true;
+          }
+        }
+
+        if ( hasRight && !hasChanged ) {
+          var right = swimlanes[curIndex + 1];
+          var rightBounds = right.getBounds();
+          var trigger = rightBounds.getX() + rightBounds.getWidth() / 2;
+          curTrigger += bounds.getWidth();
+          if ( curTrigger > trigger ) {
+            swimlanes.move( curIndex + 1, curIndex );
+            hasChanged = true;
+          }
+        }
+
+        if ( hasChanged ) {
+          alignSwimlanesEx( node ).done( function() {
+            provis.view.recreateCacheImage();
+          });
+        }
 
         break;
     }
   };
-
-  /**
-   * Event handler which is called before a node is changed.
-   * Disables the diagram's internal repaint event (to prevent flickering).
-   *
-   * @param d 'com.mindfusion.diagramming.Diagram'
-   * @param e 'com.mindfusion.diagramming.NodeEvent'
-   */
-  ProVis.prototype.nodeStartModifying = function( d, e ) {
-    provis.view.suspendRepaint();
-  }
 
   /**
    * Event handler which is called after a node's text has changed.
@@ -701,8 +730,6 @@ $('div.provis-right-container').resizable({
    * @param e 'com.mindfusion.diagramming.NodeEvent'
    */
   ProVis.prototype.nodeTextChanged = function( d, e ) {
-    provis.view.resumeRepaint();
-
     var node = e.getNode();
     var tag = node.getTag();
     var font = null;
@@ -711,7 +738,7 @@ $('div.provis-right-container').resizable({
       font = provis.scriptHelper.createFont( 'Arial Bold', cfg.captionFontSize );
     } else {
       var shapeName = node.getShape().getId();
-      var cfg = ProVis.nodeDefaults[shapeName];
+      var cfg = nodeTheme[shapeName];
 
       var color = provis.createColor( cfg.foreground );
       node.setTextColor( color );
@@ -719,13 +746,12 @@ $('div.provis-right-container').resizable({
     }
 
     node.setFont( font );
-    // node.resizeToFitText( provis.scriptHelper.getConstant( 'FitSize', 'KeepRatio' ) );
   };
 
 
-  /******************************
+  /*****************************************************************************
    * initialization
-   ******************************/
+   ****************************************************************************/
 
   // enable grid
   this.diagram.setGridSizeX( cfg.gridSizeX );
@@ -750,16 +776,19 @@ $('div.provis-right-container').resizable({
   // Sets whether link segments can be added and removed interactively.
   this.diagram.setAllowSplitLinks( cfg.allowSplitLinks );
 
-  // Sets a value indicating whether users are allowed to attach links to nodes that do not have any anchor points.
+  // Sets a value indicating whether users are allowed to
+  // attach links to nodes that do not have any anchor points.
   this.diagram.setAllowUnanchoredLinks( cfg.allowUnanchoredLinks );
 
-  // Sets a value indicating users are allowed to move the end points of a link after the link is created.
+  // Sets a value indicating users are allowed to move the end points of
+  // a link after the link is created.
   this.diagram.setLinkEndsMovable( cfg.linkEndsMovable );
 
   // Sets whether disabled manipulation handles should be displayed.
   this.diagram.setShowDisabledHandles( !cfg.hideDisabledHandles );
 
-  // Sets a value indicating whether newly created links are set to align their end points to the borders of the nodes they connect.
+  // Sets a value indicating whether newly created links are set to
+  // align their end points to the borders of the nodes they connect.
   this.diagram.setLinksSnapToBorders( cfg.linksSnapToBorders );
 
   // Sets a value indicating whether anchor points will be shown on screen.
@@ -798,8 +827,8 @@ $('div.provis-right-container').resizable({
 
   // adjust applet size each time the containing window changed its bounds
   $(window).resize( function() {
-    if ( ProVis.currentInstance ) {
-      ProVis.currentInstance.adjustAppletBounds();
+    if ( provis ) {
+      provis.adjustAppletBounds();
     }
   });
 
@@ -811,10 +840,5 @@ $('div.provis-right-container').resizable({
   window.nodeModifying = this.nodeModifying;
   window.nodeStartModifying = this.nodeStartModifying;
   window.nodeTextChanged = this.nodeTextChanged;
-
-  ProVis.currentInstance = this;
 };
-
-// ToDo: usage of static field might be unsafe!
-ProVis.currentInstance = undefined;
 

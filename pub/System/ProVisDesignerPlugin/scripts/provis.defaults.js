@@ -26,7 +26,11 @@ ProVis.nodeDefaults = {
     gradientColor: '#0e3586',
     gradientAngle: 90,
     borderBrush: '#fff',
-    borderWidth: 1
+    borderWidth: 1,
+    dropShadow: false,
+    shadowColor: '#000',
+    shadowOffsetX: 1,
+    shadowOffsetY: 1
   },
   Document: {
     foreground: '#fff',
@@ -40,7 +44,11 @@ ProVis.nodeDefaults = {
     gradientColor: '#0e3586',
     gradientAngle: 90,
     borderBrush: '#fff',
-    borderWidth: 1
+    borderWidth: 1,
+    dropShadow: false,
+    shadowColor: '#000',
+    shadowOffsetX: 1,
+    shadowOffsetY: 1
   },
   Decision: {
     foreground: '#fff',
@@ -54,7 +62,11 @@ ProVis.nodeDefaults = {
     gradientColor: '#0e3586',
     gradientAngle: 90,
     borderBrush: '#fff',
-    borderWidth: 1
+    borderWidth: 1,
+    dropShadow: false,
+    shadowColor: '#000',
+    shadowOffsetX: 1,
+    shadowOffsetY: 1
   },
   DirectAccessStorage: {
     foreground: '#fff',
@@ -68,7 +80,11 @@ ProVis.nodeDefaults = {
     gradientColor: '#0e3586',
     gradientAngle: 90,
     borderBrush: '#fff',
-    borderWidth: 1
+    borderWidth: 1,
+    dropShadow: false,
+    shadowColor: '#000',
+    shadowOffsetX: 1,
+    shadowOffsetY: 1
   },
   Terminator: {
     foreground: '#333',
@@ -82,7 +98,11 @@ ProVis.nodeDefaults = {
     gradientColor: '#0e3586',
     gradientAngle: 90,
     borderBrush: '#fff',
-    borderWidth: 1
+    borderWidth: 1,
+    dropShadow: false,
+    shadowColor: '#000',
+    shadowOffsetX: 1,
+    shadowOffsetY: 1
   },
   Ellipse: {
     foreground: '#fff',
@@ -96,6 +116,10 @@ ProVis.nodeDefaults = {
     gradientColor: '#0e3586',
     gradientAngle: 90,
     borderBrush: '#fff',
-    borderWidth: 1
+    borderWidth: 1,
+    dropShadow: false,
+    shadowColor: '#000',
+    shadowOffsetX: 1,
+    shadowOffsetY: 1
   }
 };

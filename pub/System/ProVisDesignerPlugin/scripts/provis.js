@@ -14,17 +14,16 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 var ProVis = function( appletId ) {
-  if ( !appletId ) appletId = 'jDiagApplet';
 
+  // Extends an array to move elements around.
   if ( !Array.prototype.move ) {
     Array.prototype.move = function ( from, to ) {
       this.splice( to, 0, this.splice( from, 1 )[0] );
     };
   }
+
+
 // delete me
-
-
-
 $('img#ma-logo-small').on( 'click', function() {
   provis.createSwimlane();
 });
@@ -45,6 +44,8 @@ $('div.provis-right-container').resizable({
 });
 //
 
+  // Initially sets the applet bounds to its parent container element.
+  if ( !appletId ) appletId = 'jDiagApplet';
   var applet = document.getElementById( appletId );
   var parent = $(applet).parent();
   applet.width = parent.width();
@@ -61,7 +62,7 @@ $('div.provis-right-container').resizable({
   this.undoManager = applet.getDiagram().getUndoManager();
   this.view = applet.getDiagramView();
   this.anchorPattern = null;
-  this.swimlanes = [];
+
 
   /******************************
    * public methods
@@ -577,10 +578,16 @@ $('div.provis-right-container').resizable({
 
 
   /******************************
-   * configuration options
+   * private members
    ******************************/
 
+  var swimlanes = [];
   var cfg = ProVis.config;
+
+
+  /******************************
+   * setup
+   ******************************/
 
   // enable grid
   this.diagram.setGridSizeX( cfg.gridSizeX );
@@ -658,7 +665,7 @@ $('div.provis-right-container').resizable({
     }
   });
 
-  // wire up applet events
+  // event wire up
   window.nodeCreating = this.nodeCreating;
   window.nodeDeleted = this.nodeDeleted;
   window.nodeDoubleClicked = this.nodeDoubleClicked;
@@ -670,8 +677,10 @@ $('div.provis-right-container').resizable({
   ProVis.currentInstance = this;
 };
 
+// ToDo: usage of static field might be unsafe!
 ProVis.currentInstance = undefined;
 
+// ToDo: move to file
 ProVis.strings = {
   swimlaneTopTag: 'Swimlane_top',
   swimlaneTag: 'Swimlane',

@@ -47,6 +47,7 @@ SCRIPT
   Foswiki::Func::addToZone( 'script', 'PROVIS::DESIGNER::SCRIPTS', $script, 'JQUERYPLUGIN::FOSWIKI' );
   Foswiki::Plugins::JQueryPlugin::createPlugin( 'ui::dialog' );
   Foswiki::Plugins::JQueryPlugin::createPlugin( 'ui::resizable' );
+  Foswiki::Plugins::JQueryPlugin::createPlugin( 'ui::tabs' );
 
   return "";
 }

@@ -1,7 +1,48 @@
+// Copyright (C) 2013 Modell Aachen GmbH
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 var ProVis = function( appletId ) {
   if ( !appletId ) appletId = 'jDiagApplet';
 
+  if ( !Array.prototype.move ) {
+    Array.prototype.move = function ( from, to ) {
+      this.splice( to, 0, this.splice( from, 1 )[0] );
+    };
+  }
 // delete me
+
+
+
+$('img#ma-logo-small').on( 'click', function() {
+  provis.createSwimlane();
+});
+$( "#tabs" ).tabs({ heightStyle: "fill" });
+$('div.provis-right-container').resizable({
+  handles: "w",
+  ghost: false, // disable eye-candy. seems broken (corrupts the absolute layout)
+  animate: false,
+  maxWidth: $(window).width() / 2,
+  minWidth: 300,
+  resize: function( e, ui ) {
+    // var diff = $(this).width() - 300;
+    // var $appArea = $('div.provis-apparea');
+    // var appWidth = $appArea.width();
+    // $appArea.width( appWidth - diff );
+    // $(window).trigger('resize');
+  }
+});
 //
 
   var applet = document.getElementById( appletId );
@@ -9,31 +50,64 @@ var ProVis = function( appletId ) {
   applet.width = parent.width();
   applet.height = parent.height();
 
+
+  /******************************
+   * public properties
+   ******************************/
+
   this.applet = applet;
   this.diagram = applet.getDiagram();
   this.scriptHelper = applet.getScriptHelper();
   this.undoManager = applet.getDiagram().getUndoManager();
   this.view = applet.getDiagramView();
   this.anchorPattern = null;
+  this.swimlanes = [];
 
+  /******************************
+   * public methods
+   ******************************/
+
+  /**
+   * Adjusts the applet's width and height according to its parent container element.
+   * Called after 'window.resize' was triggered.
+   */
   ProVis.prototype.adjustAppletBounds = function() {
     var parent = this.applet.parentElement;
     provis.applet.width = $(parent).width();
     provis.applet.height = $(parent).height();
   };
 
+  /**
+   * Adjusts the height of the diagrams whitepaper.
+   * Called when a vertical swimlane has changed.
+   *
+   * @param newHeight The new height of the whitepaper node.
+   */
   ProVis.prototype.adjustWhitepaperHeight = function( newHeight ) {
     var whitepaper = provis.diagram.findNode( ProVis.strings.whitepaperTag );
     var b = whitepaper.getBounds();
     whitepaper.setBounds( b.getX(), b.getY(), b.getWidth(), newHeight );
   };
 
+  /**
+   * Adjusts the width of the diagrams whitepaper.
+   * Called when a horizontal swimlane has changed.
+   *
+   * @param newWidth The new width of the whitepaper.
+   */
   ProVis.prototype.adjustWhitepaperWidth = function( newWidth ) {
     var whitepaper = provis.diagram.findNode( ProVis.strings.whitepaperTag );
     var b = whitepaper.getBounds();
     whitepaper.setBounds( b.getX(), b.getY(), newWidth, b.getHeight() );
   };
 
+  /**
+   * Applies configuration values to a newly created node.
+   * Called each time a node (either ShapeNode or DiagramNode) was created.
+   *
+   * @param node The node to be configured.
+   * @param cfg The configuration values.
+   */
   ProVis.prototype.applyNodeDefaults = function( node, cfg ) {
     if ( this.anchorPattern == null ) {
       this.anchorPattern = this.scriptHelper.anchorPatternFromId( 'Decision2In2Out' );
@@ -62,21 +136,52 @@ var ProVis = function( appletId ) {
     node.setPen( borderPen );
   };
 
+  /**
+   * Wrapper/Helper method.
+   * Creates a new 'java.awt.Color' instance.
+   *
+   * @param hexColor The color value.
+   * @return An 'java.awt.Color' instance.
+   */
   ProVis.prototype.createColor = function( hexColor ) {
     var c = this.getRGBColor( hexColor );
     return this.scriptHelper.createColor( c.r, c.g, c.b );
   };
 
+  /**
+   * Wrapper/Helper method.
+   * Creates a new 'com.mindfusion.diagramming.Pen' instance.
+   *
+   * @param width The width (in px) this pen should draw.
+   * @param hexColor The color of this pen.
+   * @return An 'com.mindfusion.diagramming.Pen' instance.
+   */
   ProVis.prototype.createPen = function( width, hexColor ) {
     var c = this.getRGBColor( hexColor );
     return this.scriptHelper.createPen( width, c.r, c.g, c.b );
   };
 
+  /**
+   * Wrapper/Helper method.
+   * Creates a new 'com.mindfusion.diagramming.SolidBrush' instance.
+   *
+   * @param hecColor The color of this brush.
+   * @return An 'com.mindfusion.diagramming.SolidBrush' instance.
+   */
   ProVis.prototype.createSolidBrush = function( hexColor ) {
     var c = this.getRGBColor( hexColor );
     return this.scriptHelper.createSolidBrush( c.r, c.g, c.b );
   };
 
+  /**
+   * Wrapper/Helper method.
+   * Creates a new 'com.mindfusion.diagramming.GradientBrush' instance.
+   *
+   * @param hexFrom The starting color.
+   * @param hexTo The ending color.
+   * @param angle The gradient angle.
+   * @return An 'com.mindfusion.diagramming.GradientBrush' instance.
+   */
   ProVis.prototype.createGradientBrush = function( hexFrom, hexTo, angle ) {
     var c1 = this.getRGBColor( hexFrom );
     var c2 = this.getRGBColor( hexTo );
@@ -84,6 +189,11 @@ var ProVis = function( appletId ) {
     return sc.createGradientBrush( c1.r, c1.g, c1.b, c2.r, c2.g, c2.b, angle );
   };
 
+  /**
+   * Creates a new swimlane and adds it to the diagram's whitepaper.
+   *
+   * @param rotation A value determining whether a vertical or horizontal swimlane shall be crated.
+   */
   ProVis.prototype.createSwimlane = function( rotation ) {
     provis.ensureWhitepaper();
 
@@ -131,7 +241,7 @@ var ProVis = function( appletId ) {
     titleNode.setBrush( brush );
     titleNode.setLocked( false );
     titleNode.setObstacle( true );
-    titleNode.setText( "Label" );
+    titleNode.setText( "Label" + (1+provis.swimlanes.length));
     titleNode.setTag( ProVis.strings.swimlaneTopTag );
     titleNode.setAllowIncomingLinks( false );
     titleNode.setAllowOutgoingLinks( false );
@@ -172,8 +282,14 @@ var ProVis = function( appletId ) {
     // composition.execute();
 
     provis.diagram.setDefaultShape( oldShape );
+
+    provis.swimlanes.push( titleNode );
   };
 
+  /**
+   * A method checking for the presence of a whitepaper within the current diagram.
+   * Called each time before a new swimlane is added to the diagram.
+   */
   ProVis.prototype.ensureWhitepaper = function() {
     var wp = provis.diagram.findNode( ProVis.strings.whitepaperTag );
     if ( wp != null ) return;
@@ -202,6 +318,12 @@ var ProVis = function( appletId ) {
     whitepaper.setHandlesStyle( 1 );
   };
 
+  /**
+   * Gets the swimlane at the provided 'java.awt.geom.Point2D.Float'.
+   *
+   * @param pt The location to search for a swimlane.
+   * @return The swimlane at the provided location or 'null' if no swimlane was found.
+   */
   ProVis.prototype.getParentNodeAt = function( pt ) {
     var parents = provis.diagram.getNodesAt( pt );
     for ( var i = 0; i < parents.size(); i++ ) {
@@ -214,7 +336,13 @@ var ProVis = function( appletId ) {
     return null;
   };
 
-  // http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+  /**
+   * Helper method to convert a hex color string to a RGB color object.
+   * Taken from: 'http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb'.
+   *
+   * @param hex The hex color.
+   * @return An object representing the color in RGB notation.
+   */
   ProVis.prototype.getRGBColor = function( hex ) {
     // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
     var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -230,13 +358,29 @@ var ProVis = function( appletId ) {
     } : null;
   };
 
+  /**
+   * Event handler which is called each time before a new node is created.
+   * Invokes 'ProVis.prototype.applyNodeDefaults'.
+   *
+   * @param d 'com.mindfusion.diagramming.Diagram'
+   * @param e 'com.mindfusion.diagramming.NodeValidationEvent'
+   */
   ProVis.prototype.nodeCreating = function( d, e ) {
     var node = e.getNode();
     var id = node.getShape().getId();
     var cfg = ProVis.nodeDefaults[id];
+    if ( !cfg ) return;
+
     provis.applyNodeDefaults( node, cfg );
   };
 
+  /**
+   * Event handler which is called each time after a node was deleted.
+   * Keeps track of swimlanes and adjusts (if needed) the whitepaper bounds.
+   *
+   * @param d 'com.mindfusion.diagramming.Diagram'
+   * @param e 'com.mindfusion.diagramming.NodeEvent'
+   */
   ProVis.prototype.nodeDeleted = function( d, e ) {
     var node = e.getNode();
     if ( node.getTag() == ProVis.strings.swimlaneTopTag ) {
@@ -244,9 +388,25 @@ var ProVis = function( appletId ) {
       var wpWidth = wp.getBounds().getWidth();
       var newWidth = wpWidth - node.getBounds().getWidth();
       provis.adjustWhitepaperWidth( newWidth );
+
+      for ( var i = 0; i < provis.swimlanes.length; i++ ) {
+        var lane = provis.swimlanes[i];
+        if ( lane === node ) {
+          console.log( lane.getText() );
+          provis.swimlanes.splice( i, 1 );
+          return;
+        }
+      }
     }
   };
 
+  /**
+   * Event handler which is called each time a swimlane was double clicked.
+   * Creates a new node based on the current user selection.
+   *
+   * @param d 'com.mindfusion.diagramming.Diagram'
+   * @param e 'com.mindfusion.diagramming.NodeEvent'
+   */
   ProVis.prototype.nodeDoubleClicked = function( d, e ) {
     var swimlane = e.getNode();
     if ( swimlane.getTag() != ProVis.strings.swimlaneTag ) return;
@@ -270,6 +430,13 @@ var ProVis = function( appletId ) {
     node.attachTo( swimlane, 0 );
   };
 
+  /**
+   * Event handler which is called after a node has changed.
+   * Handles swimlane modifications.
+   *
+   * @param d 'com.mindfusion.diagramming.Diagram'
+   * @param e 'com.mindfusion.diagramming.NodeEvent'
+   */
   ProVis.prototype.nodeModified = function( d, e ) {
     provis.view.resumeRepaint();
 
@@ -322,6 +489,13 @@ var ProVis = function( appletId ) {
     }
   };
 
+  /**
+   * Event handler which is called while a node is changing.
+   * Handles swimlane and whitepaper modifications.
+   *
+   * @param d 'com.mindfusion.diagramming.Diagram'
+   * @param e 'com.mindfusion.diagramming.NodeEvent'
+   */
   ProVis.prototype.nodeModifying = function( d, e ) {
     var node = e.getNode();
     var handle = e.getAdjustmentHandle();
@@ -361,10 +535,24 @@ var ProVis = function( appletId ) {
     }
   };
 
+  /**
+   * Event handler which is called before a node is changed.
+   * Disables the diagram's internal repaint event (to prevent flickering).
+   *
+   * @param d 'com.mindfusion.diagramming.Diagram'
+   * @param e 'com.mindfusion.diagramming.NodeEvent'
+   */
   ProVis.prototype.nodeStartModifying = function( d, e ) {
     provis.view.suspendRepaint();
   }
 
+  /**
+   * Event handler which is called after a node's text has changed.
+   * Sets a node's font (size and color) according to its configuration.
+   *
+   * @param d 'com.mindfusion.diagramming.Diagram'
+   * @param e 'com.mindfusion.diagramming.NodeEvent'
+   */
   ProVis.prototype.nodeTextChanged = function( d, e ) {
     provis.view.resumeRepaint();
 
@@ -388,9 +576,9 @@ var ProVis = function( appletId ) {
   };
 
 
-  /*
-   * ProVis configuration:
-   */
+  /******************************
+   * configuration options
+   ******************************/
 
   var cfg = ProVis.config;
 

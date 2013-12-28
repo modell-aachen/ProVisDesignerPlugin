@@ -38,6 +38,7 @@ STYLE
   my $script = <<SCRIPT;
 <script type="text/javascript" src="$pluginURL/scripts/deployJava.js"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.js"></script>
+<script type="text/javascript" src="$pluginURL/scripts/provis.strings.js"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.config.js"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.defaults.js"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.func.js"></script>

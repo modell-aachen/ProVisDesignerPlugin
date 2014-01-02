@@ -607,7 +607,7 @@ function createSwimlane( provis ) {
         url: url,
         data: request,
         // dataType: 'json',
-        contentType: 'multipart/form-data; boundary='+ sep,
+        contentType: 'multipart/form-data; boundary=' + sep,
         error: function( xhr, status, error ) {
           console.log( 'error' );
           // ToDo
@@ -790,8 +790,7 @@ function createSwimlane( provis ) {
     zoomTo: function( provis, value ) {
       if ( value < 25 || value > 200 ) return;
       provis.view.setZoomFactor( value );
-      $('#select-zoom option:selected').removeAttr( 'selected' );
-      $('#select-zoom option[value=' + value + ']').attr( 'selected', 'selected' );
+      return value;
     },
 
     zoomReset: function( provis ) {

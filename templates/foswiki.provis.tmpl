@@ -35,69 +35,28 @@
 }%%TMPL:P{"htmldoctype"}%%TMPL:P{"head"}%
 <body>
   <div class="provis-container">
-    <div class="topic-preview"></div>
-    <div class="provis-left-container">
-      <div>
-        <div class='node node-selected' data-shape='Rectangle'>
-          <span>%MAKETEXT{"Process"}%</span>
-          <div id='node-rectangle' class='node-bg'>
-            <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_process.png' />
-          </div>
-        </div>
-        <div class='node' data-shape='Decision'>
-          <span>%MAKETEXT{"Decision"}%</span>
-          <div id='node-decision' class='node-bg'>
-            <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_decision.png' />
-          </div>
-        </div>
-        <div class='node' data-shape='Document'>
-          <span>%MAKETEXT{"Document"}%</span>
-          <div id='node-document' class='node-bg'>
-            <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_document.png' />
-          </div>
-        </div>
-        <div class='node' data-shape='DirectAccessStorage'>
-          <span>%MAKETEXT{"Database"}%</span>
-          <div id='node-directaccessstorage' class='node-bg'>
-            <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_database.png' />
-          </div>
-        </div>
-        <div class='node' data-shape='Terminator'>
-          <span>%MAKETEXT{"Start/End"}%</span>
-          <div id='node-terminator' class='node-bg'>
-            <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_start.png' />
-          </div>
-        </div>
-        <div class='node' data-shape='Ellipse'>
-          <span>%MAKETEXT{"Junction"}%</span>
-          <div id='node-ellipse' class='node-bg'>
-            <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_junction.png' />
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="provis-topbar">
       <img id='ma-logo-small' border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/ma-logo-small.png' />
       <div class="provis-menu">
         <div class="toolbar-group">
-          <a id="btn-save" href='#' class='btn' title='%MAKETEXT{"Save"}%'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/save.png' /></a>
-          <a id="btn-cancel" href='#' class='btn' title='%MAKETEXT{"Cancel"}%'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cancel.png' /></a>
+          <a href='#' class='btn ui-tooltip' title='%MAKETEXT{"Save"}%' data-action='save' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/save.png' /></a>
+          <a id='btn-close' href='#' class='btn ui-tooltip' title='%MAKETEXT{"Close"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cancel.png' /></a>
         </div>
         <div class="toolbar-group">
-          <a class='btn' href='#' title='%MAKETEXT{"Undo"}%' data-action='undo'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/undo.png' /></a>
-          <a class='btn' href='#' title='%MAKETEXT{"Redo"}%' data-action='redo'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/redo.png' /></a>
+          <a class='btn ui-tooltip' href='#' title='%MAKETEXT{"Undo"}%' data-action='undo' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/undo.png' /></a>
+          <a id='btn-redo' class='btn ui-tooltip' href='#' title='%MAKETEXT{"Redo"}%' data-action='redo' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/redo.png' /></a>
         </div>
         <div class="toolbar-group">
-          <a class='btn' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='0' title='%MAKETEXT{"Select"}%'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-modify.png' /></a><!--
-          --><a class='btn' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='1' title='%MAKETEXT{"Draw"}%'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-draw.png' /></a><!--
-          --><a class='btn btn-selected' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='3' title='%MAKETEXT{"Connect"}%'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-link.png' /></a><!--
-          --><a class='btn' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='12' title='%MAKETEXT{"Pan"}%'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-pan.png' /></a>
+          <a class='btn ui-tooltip' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='0' title='%MAKETEXT{"Select"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-modify.png' /></a><!--
+          --><a class='btn ui-tooltip' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='1' title='%MAKETEXT{"Draw"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-draw.png' /></a><!--
+          --><a class='btn btn-selected ui-tooltip' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='3' title='%MAKETEXT{"Connect"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-link.png' /></a><!--
+          --><a class='btn ui-tooltip' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='12' title='%MAKETEXT{"Pan"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-pan.png' /></a>
         </div>
         <div class="toolbar-group">
-          <a class='btn' href='#' data-action='zoomIn' title='%MAKETEXT{"Zoom in"}%'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/zoomIn.png' /></a><!--
-          --><a class='btn' href='#' data-action='zoomOut' title='%MAKETEXT{"Zoom out"}%'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/zoomOut.png' /></a><!--
-          --><a class='btn btn-toggled' href='#' data-action='toggleGridVisibility' data-toggable='1' title='%MAKETEXT{"Show grid"}%'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/showGrid.png' /></a><!--
-          --><a class='btn btn-toggled' href='#' data-action='toggleSnapToGrid' data-toggable='1' title='%MAKETEXT{"Snap to grid"}%'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/snapToGrid.png' /></a>
+          <a class='btn ui-tooltip' href='#' data-action='zoomIn' title='%MAKETEXT{"Zoom in"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/zoomIn.png' /></a><!--
+          --><a class='btn ui-tooltip' href='#' data-action='zoomOut' title='%MAKETEXT{"Zoom out"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/zoomOut.png' /></a><!--
+          --><a class='btn btn-toggled ui-tooltip' href='#' data-action='toggleGridVisibility' data-toggable='1' title='%MAKETEXT{"Show grid"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/showGrid.png' /></a><!--
+          --><a class='btn btn-toggled ui-tooltip' href='#' data-action='toggleSnapToGrid' data-toggable='1' title='%MAKETEXT{"Snap to grid"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/snapToGrid.png' /></a>
         </div>
         <select id='select-zoom'>
           <option value="200">200%</option>
@@ -111,31 +70,83 @@
         </select>
       </div>
     </div>
-    <div class="provis-apparea">%TEXT%</div>
-    <div class="provis-right-container">
-      <div id="adorner" class="chevron-left ui-resizable-handle ui-resizable-w"></div>
-      <div id="topic-content">
-        <div id="tabs">
-          <ul>
-            <li><a href="#tabs-1">Tab 1</a></li>
-            <li><a href="#tabs-2">Tab 2</a></li>
-            <li><a href="#tabs-3">Tab 3</a></li>
-          </ul>
-          <div id="tabs-1">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus, molestiae, maiores natus debitis qui in commodi eligendi magnam officia sunt amet aspernatur id recusandae quis dignissimos est quasi. At, esse, fugiat, ullam earum commodi expedita debitis facere quam ut quidem neque voluptas dolores quibusdam! Libero, exercitationem suscipit aut deserunt adipisci ipsam. Eius, delectus dolore quidem sint aut quam ut ipsum perferendis dignissimos animi quo aspernatur exercitationem mollitia? Totam, itaque, ducimus, aut, perspiciatis eius animi veritatis iusto cum architecto dolorem voluptatibus sequi a ipsam illo eaque quasi officia aspernatur. Natus esse explicabo beatae laboriosam id quas sed reiciendis non quasi laudantium.</p>
+    <table>
+      <tr>
+        <td id="provis-col-1">
+          <div class="provis-left-container">
+            <div>
+              <div class='node node-selected' data-shape='Rectangle'>
+                <span>%MAKETEXT{"Process"}%</span>
+                <div id='node-rectangle' class='node-bg'>
+                  <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_process.png' />
+                </div>
+              </div>
+              <div class='node' data-shape='Decision'>
+                <span>%MAKETEXT{"Decision"}%</span>
+                <div id='node-decision' class='node-bg'>
+                  <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_decision.png' />
+                </div>
+              </div>
+              <div class='node' data-shape='Document'>
+                <span>%MAKETEXT{"Document"}%</span>
+                <div id='node-document' class='node-bg'>
+                  <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_document.png' />
+                </div>
+              </div>
+              <div class='node' data-shape='DirectAccessStorage'>
+                <span>%MAKETEXT{"Database"}%</span>
+                <div id='node-directaccessstorage' class='node-bg'>
+                  <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_database.png' />
+                </div>
+              </div>
+              <div class='node' data-shape='Terminator'>
+                <span>%MAKETEXT{"Start/End"}%</span>
+                <div id='node-terminator' class='node-bg'>
+                  <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_start.png' />
+                </div>
+              </div>
+              <div class='node' data-shape='Ellipse'>
+                <span>%MAKETEXT{"Junction"}%</span>
+                <div id='node-ellipse' class='node-bg'>
+                  <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_junction.png' />
+                </div>
+              </div>
+            </div>
           </div>
-          <div id="tabs-2">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique, eos asperiores voluptate officiis vel ipsam blanditiis tempore eius delectus quas. Officia, natus accusantium dolorem tenetur dolor quae perferendis explicabo recusandae! Nemo, repellendus, obcaecati voluptatem aperiam aliquam dolor incidunt magnam excepturi expedita optio soluta possimus laboriosam eum architecto molestias nobis asperiores eaque quis doloremque itaque quod officia odit similique laudantium tenetur quos inventore ad assumenda quia facilis impedit veniam eos distinctio quas consequatur dolorem ipsa! Ex, magni, quas, magnam corporis illo omnis illum blanditiis eos id ut veritatis aliquid nemo a recusandae autem totam dicta sequi repellat molestiae quod porro. Aliquam!</p>
+        </td>
+        <td id="provis-col-2"><div class="provis-apparea">%TEXT%</div></td>
+        <td id="provis-col-3">
+          <div class="provis-right-container">
+            <div id="adorner" class="chevron-left ui-resizable-handle ui-resizable-w"></div>
+            <div id="topic-content">
+              <ul class="nav nav-pills">
+                <li class="active"><a href="#">%MAKETEXT{"Topic"}%</a></li>
+                <li><a href="#">%MAKETEXT{"Properties"}%</a></li>
+                <li><a href="#">%MAKETEXT{"Themes"}%</a></li>
+              </ul>
+            </div>
           </div>
-          <div id="tabs-3">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum, ad, libero, quis velit repellat nesciunt consectetur consequuntur asperiores dolor a laboriosam reiciendis eligendi ipsum facere nam commodi repellendus magnam sequi. Iusto nobis cupiditate ipsam. Dolor, itaque, veniam, maiores veritatis autem quidem reiciendis voluptates obcaecati alias quod eos placeat id perferendis eius blanditiis nisi iusto. Distinctio, officia veritatis libero fugiat ipsum accusamus quidem adipisci pariatur omnis esse eos fugit voluptate provident enim necessitatibus eaque quas odio tempora quam nulla aspernatur. Voluptate, ducimus, consequatur, est, quod officia asperiores dolore ab error repudiandae animi sint aut aliquid possimus inventore excepturi odit vel soluta!</p>
-          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="modal-close" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">%MAKETEXT{"Attention"}%</h4>
+        </div>
+        <div class="modal-body">
+          <p><strong>%MAKETEXT{"This diagram contains unsaved changes."}%</strong><br />
+          %MAKETEXT{"If you quit ProVis now, these changes will be lost."}%</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger">%MAKETEXT{"Discard changes"}%</button>
+          <button type="button" class="btn btn-success">%MAKETEXT{"Save"}%</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">%MAKETEXT{"Cancel"}%</button>
         </div>
       </div>
     </div>
-  </div>
-  <div id="label-dialog" style="display:none;">
-  <label for="label">Label</label>
-      <input type="text" name="label" id="label" />
   </div>
 </body></html>

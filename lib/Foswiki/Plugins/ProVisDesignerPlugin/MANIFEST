@@ -51,13 +51,18 @@ pub/System/ProVisDesignerPlugin/assets/undo.png 0644
 pub/System/ProVisDesignerPlugin/assets/zoomIn.png 0644
 pub/System/ProVisDesignerPlugin/assets/zoomOut.png 0644
 
+pub/System/ProVisDesignerPlugin/bootstrap/bootstrap.min.css 0644
+pub/System/ProVisDesignerPlugin/bootstrap/bootstrap.min.js 0644
+
+pub/System/ProVisDesignerPlugin/css/designer.css 0644
+pub/System/ProVisDesignerPlugin/css/pie.htc 0644
+pub/System/ProVisDesignerPlugin/css/ie.fix.css 0644
+
 pub/System/ProVisDesignerPlugin/scripts/Process.js 0644
 pub/System/ProVisDesignerPlugin/scripts/config.js 0644
 pub/System/ProVisDesignerPlugin/scripts/deployJava.js 0644
 pub/System/ProVisDesignerPlugin/scripts/designer.js 0644
 
-pub/System/ProVisDesignerPlugin/css/designer.css 0644
-pub/System/ProVisDesignerPlugin/css/pie.htc 0644
-pub/System/ProVisDesignerPlugin/css/ie.fix.css 0644
+
 
 templates/foswiki.provis.tmpl 0644

@@ -13,17 +13,48 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-(function($) {
-  $.fn.extend( {
-    // top menu
-    menuButtonClicked: function() {
+if ( ProVis && !ProVis.prototype.ui ) {
+  var ProVisUIController = function() {
+
+    /***************************************************************************
+     * private methods
+     **************************************************************************/
+
+    /**
+     * Event handler. Invoked after the user has clicked the close button.
+     */
+    var closeButtonClicked = function() {
+      var isDirty = provis.diagram.getDirty();
+      if ( isDirty ) {
+        showBeforeCloseHint();
+      }
+
+      return false;
+    }
+
+    /**
+     * Initializes element tooltips as provided by Bootstrap.
+     */
+    var initTooltips = function() {
+      $.each( $('.ui-tooltip'), function( i, e ) {
+        $(e).tooltip({
+          delay: 250,
+          trigger: 'hover',
+          placement: $(e).data('tooltip-placement')
+        });
+      });
+    };
+
+    /**
+     * Event handler. Invoked after the user has clicked any menu button.
+     */
+    var menuButtonClicked = function() {
       var selectable = $(this).data( 'selectable' );
       if ( selectable == '1' ) {
         $('a.btn-selected').removeClass( 'btn-selected' );
         $(this).addClass( 'btn-selected' );
       }
 
-      // toggable, e.g. 'Snap to grid' or 'Show grid'
       var toggable = $(this).data( 'toggable' );
       if ( toggable == '1' ) {
         if ( $(this).hasClass( 'btn-toggled' ) ) {
@@ -33,58 +64,101 @@
         }
       }
 
-      // invoke
-      // var action = $(this).data( 'action' );
-      // var args = $(this).data( 'actionargs' );
-      // if ( action ) {
-      //   if ( args != null ) {
-      //     $(this)[action]( document.provis, args );
-      //   } else {
-      //     $(this)[action]( document.provis );
-      //   }
-      // }
+      var action = $(this).data( 'action' );
+      var args = $(this).data( 'actionargs' );
+      var retval = null;
+      if ( action ) {
+        retval = provis[action]( args );
+        var actionName = action.toString();
+        if ( /zoom/.test( actionName ) ) {
+          $('#select-zoom option:selected').removeAttr( 'selected' );
+          $('#select-zoom option[value=' + retval + ']').attr( 'selected', 'selected' );
+        }
+      }
 
-      return event.preventDefault();
-    },
+      return false;
+    };
 
-    saveButtonClicked: function() {
-      // var str = document.provis.applet.saveToImage();
-      // console.log( str );
-      // return false;
-      return event.preventDefault();
-    },
+    /**
+     * Event handler. Invoked after the user has selected a shape.
+     */
+    var shapeButtonClicked = function() {
+      $('div.node.node-selected').removeClass( 'node-selected' );
+      $(this).addClass( 'node-selected' );
+      return false;
+    };
 
-    cancelButtonClicked: function() {
-      // $(this).onCancel( document.provis );
-      return event.preventDefault();
-    },
+    /**
+     * Shows a modal dialog to the user to let him choose whether he wants to
+     * discard unsaved changes.
+     */
+    var showBeforeCloseHint = function() {
+      $(provis.applet).css( 'visibility', 'hidden' );
+      $('#modal-close').modal().on('hidden.bs.modal', function() {
+        $(provis.applet).css( 'visibility', 'visible' );
+      });
+    };
 
-    shapeItemClicked: function() {
-      $('div.node.node-selected').removeClass('node-selected');
-      $(this).addClass('node-selected');
+    /**
+     * Event handler. Invoked after the user has changed the zoom level dropdown.
+     */
+    var zoomSelectionChanged = function() {
+      provis.zoomTo( $(this).val() );
+      return false;
+    };
 
-      // var shapeName = $(this).data('shape');
-      // var shape = document.provis.scriptHelper.shapeFromId( shapeName );
-      // document.provis.diagram.setDefaultShape( shape );
-      // document.provis.diagram.setShapeOrientation( shapeName == 'DirectAccessStorage' ? 180 : 0 );
 
-      // var brush = null;
-      // var cfg = $defaults[shapeName];
-      // if ( cfg.useGradient ) {
-      //   brush = $(this).createGradientBrush( cfg.background, cfg.gradientColor, cfg.gradientAngle );
-      // } else {
-      //   brush = $(this).createSolidBrush( cfg.background );
-      // }
+    /***************************************************************************
+     * public methods
+     **************************************************************************/
 
-      // document.provis.diagram.setShapeBrush( brush );
-      return event.preventDefault();
-    }
-  });
+    /**
+     * Initializes this instance.
+     */
+    ProVisUIController.prototype.init = function() {
+      initTooltips();
 
-  $(document).ready( function() {
-    $('a.btn').on( 'click', $(this).menuButtonClicked );
-    $('#btn-save').on( 'click', $(this).saveButtonClicked );
-    $('#btn-cancel').on( 'click', $(this).cancelButtonClicked );
-    $('div.node').on( 'click', $(this).shapeItemClicked );
-  });
-})(jQuery);
+      $('#btn-close').on( 'click', closeButtonClicked );
+      // $(window).bind("beforeunload", closeButtonClicked );
+
+      $('a.btn').on( 'click', menuButtonClicked );
+      $('div.node').on( 'click', shapeButtonClicked );
+      $('#select-zoom').on( 'change', zoomSelectionChanged );
+
+// delete me
+$('img#ma-logo-small').on( 'click', function() {
+  provis.createSwimlane();
+});
+
+
+$('div.provis-right-container').resizable({
+  handles: "w",
+  ghost: false, // disable eye-candy. seems broken (corrupts the absolute layout)
+  animate: false,
+  maxWidth: $(window).width() / 2, // ToDo!! hier sollte nicht die aktuelle window-breite verwendet werden
+  minWidth: 300,
+  resize: function( e, ui ) {
+    var r = $('div.provis-right-container');
+    var pos = r.position();
+    console.log( ui.size.width + pos.left );
+  }
+});
+//
+
+      // observer callback. Called by CKE.
+      window.notify = function( d ) {
+        $('div#topic-content').html( d );
+      }
+
+      // set initial topic content within preview area
+      if ( window.opener.topic != null ) {
+        $('div#topic-content').html( window.opener.topic );
+      }
+    };
+  };
+
+  // populate
+  ProVis.prototype.ui = function() {
+    return new ProVisUIController();
+  }();
+}

@@ -20,6 +20,19 @@ ProVis.strings = {
   whitepaperTag: 'whitepaper',
   adjustSwimlaneCommand: 'adjustSwimlaneWidth',
   adjustWhitepaperCommand: 'adjustWhitepaperHeight',
+  createSwimlaneCommand: 'createSwimlane',
   modifyCommand: 'Modify',
-  moveSwimlaneCommand: 'MoveSwimlane'
+  moveSwimlaneCommand: 'MoveSwimlane',
+  commands: {
+    adjustSwimlane: 'provis-adjust-swimlane',
+    adjustWhitepaper: 'provis-adjust-whitepaper',
+    createNode: 'provis-create-node',
+    createSwimlane: 'provis-create-swimlane',
+    createWhitepaper: 'provis-create-whitepaper',
+    modify: 'provis-modify',
+    modifySwimlane: 'provis-modify-swimlane',
+    move: 'provis-move',
+    moveSwimlane: 'provis-move-swimlane',
+    newNode: 'provis-new'
+  }
 };

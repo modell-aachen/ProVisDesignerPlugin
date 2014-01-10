@@ -2,54 +2,39 @@ div {
   &.node {
     display: block;
     float: left;
-    // width: 64px;
-    // height: 48px;
     margin: 10px 0 0 10px;
     padding: 2px;
-    border: 1px solid #f3f3f3;
 
     &:hover {
-      border: 1px solid #ccc;
       cursor: pointer;
       cursor: hand;
     }
 
-    &.node-selected {
-      background-image: url(/pub/System/ProVisDesignerPlugin/assets/node-inset.png);
-      background-repeat: no-repeat;
+    > .node-bg {
+      background: darken( @body-bg, 15% );
+
+      &:hover {
+        background: lighten( @coty, 10% );
+      }
     }
 
-    > .node-bg {
-      .gradient( #1b84fb, #0e3586, 10%, 90% );
-
-      &#node-rectangle {
-        // background: #1ba1e2;
+    &.node-selected {
+      > .node-bg {
+        background: @coty;
       }
 
-      &#node-decision {
-        // background: #d80073;
-      }
-
-      &#node-document {
-        // background: #339933;
-      }
-
-      &#node-directaccessstorage {
-        // background: #f09609;
-      }
-
-      &#node-terminator {
-        // background: #d80073;
-      }
-
-      &#node-ellipse {
-        // background: #f09609;
+      > span {
+        display: block;
+        text-align: center;
+        color: #fff;
+        .size( 0.8em );
       }
     }
 
     > span {
       display: block;
       text-align: center;
+      color: darken( @body-bg, 15% );
       .size( 0.8em );
     }
 

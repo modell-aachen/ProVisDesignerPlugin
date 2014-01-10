@@ -52,7 +52,8 @@ var ProVis = function( appletId ) {
   var swimlaneHashes = [];
   var cfg = ProVis.config;
   var constants = ProVis.strings;
-  var nodeTheme = ProVis.nodeDefaults;
+  var defaultTheme = "Theme2"
+  var curTheme = ProVis.nodeDefaults[defaultTheme];
   var undoComposite = null;
 
 
@@ -146,8 +147,11 @@ var ProVis = function( appletId ) {
     if ( swimlanes.length == 0 ) {
       deferred.reject();
     } else {
-      var x = cfg.gridSizeX / 2;
-      var y = cfg.gridSizeY / 2;
+      // var x = cfg.gridSizeX / 2;
+      // var y = cfg.gridSizeY / 2;
+
+      var x = 0;
+      var y = 0;
 
       // get current composite
       var composite = createOrGetUndoComposite();
@@ -175,8 +179,11 @@ var ProVis = function( appletId ) {
       var wp = provis.diagram.findNode( constants.whitepaperTag );
       var wpBounds = wp.getBounds();
 
-      var offsetX = cfg.gridSizeX / 2;
-      var offsetY = cfg.gridSizeY / 2;
+      // var offsetX = cfg.gridSizeX / 2;
+      // var offsetY = cfg.gridSizeY / 2;
+
+      var offsetX = 0;
+      var offsetY = 0;
 
       var sh = provis.scriptHelper;
       var cc = constants.commands;
@@ -192,13 +199,13 @@ var ProVis = function( appletId ) {
       provis.diagram.add( lane );
 
       var titleBounds = sh.createRectangleF(
-        offsetX + wpBounds.getWidth(),
+        offsetX + (wpBounds.getWidth() == 1 ? 0 : wpBounds.getWidth()),
         offsetY,
         cfg.swimlaneWidth,
         cfg.captionHeight );
 
       var laneBounds = sh.createRectangleF(
-        offsetX + wpBounds.getWidth(),
+        offsetX + (wpBounds.getWidth() == 1 ? 0 : wpBounds.getWidth()),
         offsetY + cfg.captionHeight,
         cfg.swimlaneWidth,
         wpBounds.getHeight() - cfg.captionHeight );
@@ -214,22 +221,24 @@ var ProVis = function( appletId ) {
       caption.setBounds( titleBounds );
       lane.setBounds( laneBounds );
 
-      var font = sh.createFont( 'Arial Bold', cfg.captionFontSize );
+      var fg = provis.createColor( curTheme.captionForeground );
+      var font = sh.createFont( 'Arial Bold', curTheme.captionFontSize );
       var brush = null;
-      if ( cfg.captionUseGradient ) {
+      if ( curTheme.captionUseGradient ) {
         brush = provis.createGradientBrush(
-          cfg.captionBackground,
-          cfg.captionGradientColor,
-          cfg.captionGradientAngle );
+          curTheme.captionBackground,
+          curTheme.captionGradientColor,
+          curTheme.captionGradientAngle );
       } else {
-        brush = provis.createSolidBrush( cfg.captionBackground );
+        brush = provis.createSolidBrush( curTheme.captionBackground );
       }
 
+      caption.setTextColor( fg );
       caption.setFont( font );
       caption.setBrush( brush );
       caption.setLocked( false );
       caption.setObstacle( true );
-      caption.setText( 'ToDo: i18n' );
+      caption.setText( 'Label' + (1 + swimlanes.length) );
       caption.setTag( constants.swimlaneTopTag );
       caption.setAllowIncomingLinks( false );
       caption.setAllowOutgoingLinks( false );
@@ -263,7 +272,8 @@ var ProVis = function( appletId ) {
       lane.setVisible( true );
 
       // resize whitepaper
-      var newWidth = wpBounds.getWidth() + cfg.swimlaneWidth;
+      var wpw = wpBounds.getWidth();
+      var newWidth = cfg.swimlaneWidth + (wpw == 1 ? 0 : wpw);
       adjustWhitepaperWidth( newWidth ).done( function() {
         // add all (programmatically) made changes to the composite
         captionChangeCmd.execute();
@@ -308,8 +318,10 @@ var ProVis = function( appletId ) {
 
     // Reachable only if there's no whitepaper present
     var factory = provis.diagram.getFactory();
-    var offsetX = cfg.gridSizeX / 2;
-    var offsetY = cfg.gridSizeY / 2;
+    // var offsetX = cfg.gridSizeX / 2;
+    // var offsetY = cfg.gridSizeY / 2;
+    var offsetX = 0;
+    var offsetY = 0;
 
     whitepaper = factory.createShapeNode(
       offsetX,
@@ -440,6 +452,121 @@ var ProVis = function( appletId ) {
     return deferred.promise();
   };
 
+  var initialize = function( p ) {
+    if ( p && !provis ) provis = p;
+
+    // enable grid
+    provis.diagram.setGridSizeX( cfg.gridSizeX );
+    provis.diagram.setGridSizeY( cfg.gridSizeY );
+    provis.diagram.setGridStyle( cfg.gridStyle );
+    provis.diagram.setShowGrid( cfg.showGrid );
+    var gridColor = provis.createColor( cfg.gridColor );
+    provis.diagram.setGridColor( gridColor );
+
+    // eye candy. 3px white frame around grid
+    var whitePen = provis.createPen( 3, '#fff' );
+    provis.diagram.setBoundsPen( whitePen );
+
+    // allow inplace editing of captions and shape titles
+    provis.view.setAllowInplaceEdit( cfg.allowInplaceEdit );
+
+    // default behavior (cursor): connect
+    provis.view.setBehavior( cfg.defaultBehavior );
+
+    // default handles.
+    provis.diagram.setShapeHandlesStyle( cfg.defaultHandleStyle );
+    provis.diagram.setAdjustmentHandlesSize( cfg.defaultHandleSize );
+
+    // Sets whether link segments can be added and removed interactively.
+    provis.diagram.setAllowSplitLinks( cfg.allowSplitLinks );
+
+    // Sets a value indicating whether users are allowed to
+    // attach links to nodes that do not have any anchor points.
+    provis.diagram.setAllowUnanchoredLinks( cfg.allowUnanchoredLinks );
+
+    // Sets a value indicating users are allowed to move the end points of
+    // a link after the link is created.
+    // provis.diagram.setLinkEndsMovable( cfg.linkEndsMovable );
+
+    // Sets whether disabled manipulation handles should be displayed.
+    provis.diagram.setShowDisabledHandles( !cfg.hideDisabledHandles );
+
+    // Sets a value indicating whether newly created links are set to
+    // align their end points to the borders of the nodes they connect.
+    // provis.diagram.setLinksSnapToBorders( cfg.linksSnapToBorders );
+
+    // Sets a value indicating whether anchor points will be shown on screen.
+    // 2: auto
+    provis.diagram.setShowAnchors( cfg.showAnchors );
+
+    // Sets a value indicating when links snap to anchor points.
+    // 1: OnCreateOrModify
+    provis.diagram.setSnapToAnchor( cfg.snapToAnchor );
+
+    // Sets the style that should be assigned to new links.
+    // 2: Cascading
+    provis.diagram.setLinkStyle( cfg.linkStyle );
+
+    // Sets the default orientation of the first segments of cascading links.
+    // 2: vertical
+    provis.diagram.setLinkCascadeOrientation( cfg.linkCascadeOrientation );
+
+    // Sets the default pen that should be assigned to new links.
+    // var linkPen = provis.createPen( cfg.linkPenSize, cfg.linkPenColor );
+    // provis.diagram.setLinkPen( linkPen );
+
+    // Set inplace edit font
+    var inplaceFont = provis.scriptHelper.createFont( 'Arial', 12 );
+    provis.view.setInplaceEditFont( inplaceFont );
+
+    // Enable undo/redo functionality.
+    provis.undoManager.setUndoEnabled( true );
+    var history = provis.undoManager.getHistory();
+    history.setCapacity( cfg.undoCommandHistory );
+    history.clear();
+
+    // set initial diagram bounds
+    // DIN A4@300ppi: 2480x3508 [px]
+    var db = provis.diagram.getBounds();
+    var rect = provis.scriptHelper.createRectangleF(
+      db.getX(),
+      db.getY(),
+      cfg.diagramWidth,
+      cfg.diagramHeight );
+    provis.diagram.setBounds( rect );
+  };
+
+  var linkClicked = function( d, e ) {
+    var link = e.getLink();
+    link.setSelected( true );
+    console.log( link.toString() );
+    console.log( 'selected: ' + link.getSelected() );
+    console.log( 'snapsToBorder: ' + link.getSnapToNodeBorder() );
+    console.log( 'ignoreLayout: ' + link.getIgnoreLayout() );
+    console.log( 'locked: ' + link.getLocked() );
+  }
+
+  var linkCreated = function( d, e ) {
+    var link = e.getLink();
+
+    var brush = provis.createSolidBrush( curTheme.linkColor );
+    link.setBrush( brush );
+
+    var pen = provis.createPen( curTheme.linkWidth, curTheme.linkColor );
+    link.setPen( pen );
+  };
+
+  var nodeClicked = function( d, e ) {
+    var node = e.getNode();
+    var link = provis.diagram.getLinkAt( e.getMousePosition(), 10, false );
+    if ( link ) {
+      var selection = provis.diagram.getSelection();
+      if ( selection ) selection.clear();
+      link.setLocked( false );
+      link.setSelected( true );
+    }
+  }
+
   /**
    * Event handler which is called each time before a new node is created.
    * Invokes 'ProVis.prototype.applyNodeDefaults'.
@@ -449,8 +576,14 @@ var ProVis = function( appletId ) {
    */
   var nodeCreating = function( d, e ) {
     var node = e.getNode();
-    var id = node.getShape().getId();
-    var theme = nodeTheme[id];
+    var id = $('div.node.node-selected').data( 'shape' );
+    var shape = provis.scriptHelper.shapeFromId( id );
+    node.setShape( shape );
+    if ( id == 'DirectAccessStorage' ) {
+      node.setRotationAngle( 90 );
+    }
+
+    var theme = curTheme[id];
     if ( !theme ) return;
 
     provis.applyNodeDefaults( node, theme );
@@ -465,11 +598,12 @@ var ProVis = function( appletId ) {
    */
   var nodeDeleted = function( d, e ) {
     var node = e.getNode();
+
     if ( node.getTag() == constants.swimlaneTopTag ) {
       var wp = d.findNode( constants.whitepaperTag );
       var wpWidth = wp.getBounds().getWidth();
       var newWidth = wpWidth - node.getBounds().getWidth();
-      adjustWhitepaperWidth( newWidth );
+      adjustWhitepaperWidth( newWidth == 0 ? 1 : newWidth );
 
       var index = swimlanes.indexOf( node );
       swimlanes.splice( index, 1 );
@@ -479,6 +613,17 @@ var ProVis = function( appletId ) {
       });
     }
   };
+
+  var nodeDeleting = function( d, e ) {
+    var node = e.getNode();
+
+    switch ( node.getTag() ) {
+      case constants.whitepaperTag:
+      case constants.themeConfig:
+        e.setCancel( true );
+        break;
+    }
+  }
 
   /**
    * Event handler which is called each time a swimlane was double clicked.
@@ -495,7 +640,7 @@ var ProVis = function( appletId ) {
     var pos = e.getMousePosition();
     var factory = d.getFactory();
     var shapeId = $('div.node.node-selected').data( 'shape' );
-    var theme = nodeTheme[shapeId];
+    var theme = curTheme[shapeId];
 
     var x = bounds.getX() + bounds.getWidth()/2 - theme.width/2;
     var y = pos.getY() - theme.height/2;
@@ -503,7 +648,7 @@ var ProVis = function( appletId ) {
     // create and attach are implicitly added to a composite.
     var composite = createOrGetUndoComposite( constants.commands.newNode );
     var shape = provis.scriptHelper.shapeFromId( shapeId );
-    d.setShapeOrientation( shapeId == 'DirectAccessStorage' ? 180 : 0 );
+    d.setShapeOrientation( shapeId == 'DirectAccessStorage' ? 90 : 0 );
     d.setDefaultShape( shape );
 
     var node = factory.createShapeNode( x, y, theme.width, theme.height );
@@ -802,12 +947,14 @@ var ProVis = function( appletId ) {
     var tag = node.getTag();
     var font = null;
 
-    if ( tag == constants.swimlaneTopTag ) {
-      font = provis.scriptHelper.createFont( 'Arial Bold', cfg.captionFontSize );
-    } else {
-      var shapeName = node.getShape().getId();
-      var theme = nodeTheme[shapeName];
+    var shapeName = node.getShape().getId();
+    var theme = curTheme[shapeName];
 
+    if ( tag == constants.swimlaneTopTag ) {
+      font = provis.scriptHelper.createFont( 'Arial Bold', curTheme.captionFontSize );
+      var fg = provis.createColor( curTheme.captionForeground );
+      node.setTextColor( fg );
+    } else {
       var color = provis.createColor( theme.foreground );
       node.setTextColor( color );
       font = provis.scriptHelper.createFont( 'Arial', theme.fontsize );
@@ -828,13 +975,18 @@ var ProVis = function( appletId ) {
 
     var composite = createOrGetUndoComposite();
     foreachArrayItem( swimlanes, function( caption ) {
-      var lane = caption.getSubordinateGroup().getAttachedNodes().get( 0 );
-      var cmd = provis.scriptHelper.createChangeItemCmd(
-        lane,
-        constants.commands.modifySwimlane );
-      lane.resize( lane.getBounds().getWidth(), newHeight );
-      cmd.execute();
-      composite.addSubCmd( cmd );
+      var group = caption.getSubordinateGroup();
+      if ( group ) {
+        var lane = group.getAttachedNodes().get( 0 );
+        var cmd = provis.scriptHelper.createChangeItemCmd(
+          lane,
+          constants.commands.modifySwimlane
+        );
+
+        lane.resize( lane.getBounds().getWidth(), newHeight );
+        cmd.execute();
+        composite.addSubCmd( cmd );
+      }
     }).done( function() {
       deferred.resolve();
     }).fail( function() {
@@ -921,9 +1073,112 @@ var ProVis = function( appletId ) {
     node.setBrush( brush );
     node.setAnchorPattern( this.anchorPattern );
 
+    var textColor = provis.createColor( theme.foreground );
+    node.setTextColor( textColor );
+
+    var font = provis.scriptHelper.createFont( 'Arial', theme.fontsize );
+    node.setFont( font );
+
     var borderPen = this.createPen( theme.borderWidth, theme.borderBrush );
     node.setPen( borderPen );
+
+    if ( theme.dropShadow ) {
+      var shadowBrush = this.createSolidBrush( theme.shadowColor );
+      node.setShadowBrush( shadowBrush );
+      node.setShadowOffsetX( theme.shadowOffsetX );
+      node.setShadowOffsetY( theme.shadowOffsetY );
+    }
   };
+
+  ProVis.prototype.applyTheme = function( theme ) {
+    var deferred = $.Deferred();
+
+    if ( theme ) {
+      curTheme = ProVis.nodeDefaults[theme];
+    }
+
+    var nodes = provis.diagram.getNodes();
+    var links = provis.diagram.getLinks();
+
+    for( var i = 0; i < nodes.size(); ++i ) {
+      var node = nodes.get( i );
+      var tag = node.getTag();
+      switch( tag ) {
+        case constants.swimlaneTopTag:
+          var font = provis.scriptHelper.createFont( 'Arial Bold', curTheme.captionFontSize );
+          var fg = provis.createColor( curTheme.captionForeground );
+          node.setFont( font );
+          node.setTextColor( fg );
+
+          var brush = null;
+          if ( curTheme.captionUseGradient ) {
+            brush = provis.createGradientBrush(
+              curTheme.captionBackground,
+              curTheme.captionGradientColor,
+              curTheme.captionGradientAngle );
+          } else {
+            brush = provis.createSolidBrush( curTheme.captionBackground );
+          }
+
+          node.setBrush( brush );
+          node.setZIndex( 1 );
+          break;
+        case constants.swimlaneTag:
+          node.setZIndex( 1 );
+          break;
+        case constants.whitepaperTag:
+          node.zBottom();
+          break;
+        default:
+          var shape = node.getShape().getId();
+          switch ( shape ) {
+            case 'Start2':
+              shape = 'Terminator';
+              node.setShape( provis.scriptHelper.shapeFromId( shape ) );
+              break;
+            case 'Decision2':
+              shape = 'Decision';
+              node.setShape( provis.scriptHelper.shapeFromId( shape ) );
+              break;
+          }
+
+          provis.applyNodeDefaults( node, curTheme[shape] );
+          break;
+      }
+    }
+
+    this.diagram.setAllowSplitLinks( true );
+    for( var i = 0; i < links.size(); ++i ) {
+      var link = links.get( i );
+      var brush = provis.createSolidBrush( curTheme.linkColor );
+      link.setBrush( brush );
+
+      var pen = provis.createPen( curTheme.linkWidth, curTheme.linkColor );
+      link.setPen( pen );
+      link.setHeadPen( pen );
+
+      link.zTop();
+      link.setRetainForm( true );
+      link.setAllowMoveStart( true );
+      link.setAllowMoveEnd( true );
+    }
+
+    var wp = this.diagram.findNode( constants.whitepaperTag );
+    var wpb = wp.getBounds();
+    var themeNode = this.diagram.findNode( constants.themeConfig );
+    if ( themeNode == null ) {
+      var factory = this.diagram.getFactory();
+      themeNode = factory.createShapeNode( wpb.getX(), wpb.getY(), 1, 1 );
+      themeNode.setLocked( true );
+      themeNode.setVisible( false );
+      themeNode.setTag( constants.themeConfig );
+      themeNode.setText( theme || defaultTheme );
+      themeNode.attachTo( wp, 0 );
+    }
+
+    deferred.resolve();
+    return deferred.promise();
+  }
 
   /**
    * Wrapper/Helper method.
@@ -1049,75 +1304,105 @@ var ProVis = function( appletId ) {
    * Saves all changes and uploads the resulting documents to the server.
    */
   ProVis.prototype.save = function() {
-    // if ( $stats.saving ) return;
-    // $stats.saving = true;
-    // var provis = document.provis;
+    $('applet').setHidden().done( function() { $.blockUI(); });
 
-    // // Resize grid to minimum required size (margin: 5px)
-    // var bounds = provis.diagram.getBounds();
-    // provis.diagram.resizeToFitItems( 5 );
+    // Resize grid to minimum required size (margin: 5px)
+    var bounds = this.diagram.getBounds();
+    this.diagram.resizeToFitItems( 5 );
 
-    // // Disable grid
-    // $(this).toggleGridVisibility( provis, true );
+    this.diagram.getSelection().clear();
 
-    // var imagemap = provis.applet.saveToMap('%MAPNAME%');
-    // var imageaqm = provis.applet.saveToString(true);
-    // var imagepng = provis.applet.saveToImage();
+    // Disable grid
+    this.toggleGridVisibility();
 
-    // // var url = drawingSaveUrl;
+    var imagemap = provis.applet.saveToMap('%MAPNAME%');
+    var imageaqm = provis.applet.saveToString(true);
+    var imagepng = provis.applet.saveToImage();
 
-    // var url = '/bin/rest/ProVisPlugin/upload';
-    // var drawingSaveUrl = '/bin/rest/ProVisPlugin/upload';
-    // var drawingTopic = 'Main.WebHome';
-    // var drawingName = 'xcvxcv12';
-    // // var drawingName = 'yxc2';
-    // var drawingType = 'swimlane';
+    var opener = window.opener.provis;
+    var url = '/bin/rest/ProVisDesignerPlugin/upload';
+    var drawingSaveUrl = '/bin/rest/ProVisDesignerPlugin/upload';
+    var drawingTopic = opener.web + '.' + opener.topic;
+    var drawingType = 'swimlane';
 
-    // $stats.saving = false;
+    var drawingName;
+    if ( opener.name ) {
+      drawingName = opener.name;
+    } else {
+      drawingName = getRandomString( 32 );
+    }
 
-    // var form = [];
-    // form.push( 'Content-Disposition: form-data; name="topic"\r\n\r\n'
-    //   + drawingTopic );
-    // form.push( 'Content-Disposition: form-data; name="drawing"\r\n\r\n'
-    //   + drawingName );
-    // form.push( 'Content-Disposition: form-data; name="aqm"\r\n\r\n'
-    //   + imageaqm );
-    // form.push( 'Content-Disposition: form-data; name="png"\r\n\r\n'
-    //   + imagepng );
-    // form.push( 'Content-Disposition: form-data; name="map"\r\n\r\n'
-    //   + imagemap );
+    var form = [];
+    form.push( 'Content-Disposition: form-data; name="topic"\r\n\r\n'
+      + drawingTopic );
+    form.push( 'Content-Disposition: form-data; name="drawing"\r\n\r\n'
+      + drawingName );
+    form.push( 'Content-Disposition: form-data; name="aqm"\r\n\r\n'
+      + imageaqm );
+    form.push( 'Content-Disposition: form-data; name="png"\r\n\r\n'
+      + imagepng );
+    form.push( 'Content-Disposition: form-data; name="map"\r\n\r\n'
+      + imagemap );
 
-    // // Generate boundaries
-    // var sep;
-    // var request = form.join('\n');
-    // do {
-    //   sep = Math.floor( Math.random() * 1000000000 );
-    // } while ( request.indexOf( sep ) != -1 );
+    // Generate boundaries
+    var sep;
+    var request = form.join('\n');
+    do {
+      sep = Math.floor( Math.random() * 1000000000 );
+    } while ( request.indexOf( sep ) != -1 );
 
-    // request = "--" + sep + "\r\n" +
-    //   form.join( '\r\n--' + sep + "\r\n" ) +
-    //   "\r\n--" + sep + "--\r\n";
+    request = "--" + sep + "\r\n" +
+      form.join( '\r\n--' + sep + "\r\n" ) +
+      "\r\n--" + sep + "--\r\n";
 
-    // $.ajax({
-    //   type: 'post',
-    //   url: url,
-    //   data: request,
-    //   // dataType: 'json',
-    //   contentType: 'multipart/form-data; boundary=' + sep,
-    //   error: function( xhr, status, error ) {
-    //     console.log( 'error' );
-    //     // ToDo
-    //   },
-    //   success: function( data, status, xhr ) {
-    //     console.log( 'success' );
-    //     // ToDo
-    //   },
-    //   complete: function() {
-    //     provis.diagram.setBounds( bounds );
-    //     $(this).toggleGridVisibility( provis );
-    //     $stats.saving = false;
-    //   }
-    // });
+    $.ajax({
+      type: 'post',
+      url: url,
+      data: request,
+      contentType: 'multipart/form-data; boundary=' + sep,
+      error: function( xhr, status, error ) {
+        // ToDo!!
+      },
+      success: function( data, status, xhr ) {
+        var r = jQuery.parseJSON( data );
+
+        $.ajax({
+          type: 'post',
+          url: '/bin/rest/ProVisDesignerPlugin/update',
+          data: {
+            name: r.name,
+            w: r.web,
+            t: r.topic,
+            aqmrev: r.aqmrev,
+            pngrev: r.pngrev,
+            maprev: r.maprev
+          },
+          success: function( data, status, xhr ) {
+            provis.diagram.setDirty( false );
+            var cke = opener.getEditor();
+            var data = cke.getData();
+
+            var pattern = '%PROCESS{.*name="' + r.name + '".*}%';
+            var macro = '%PROCESS{name="' + r.name + '" type="swimlane" aqmrev="' + r.aqmrev + '" maprev="' + r.maprev + '" pngrev="' + r.pngrev + '"}%';
+
+            var regexp = new RegExp( pattern, 'g' );
+            data = data.replace( regexp, macro );
+            cke.setData( data );
+          },
+          error: function( xhr, status, error ) {
+            console.log( 'update error' );
+            console.log( xhr );
+            console.log( status );
+            console.log( error );
+          }
+        });
+      },
+      complete: function() {
+        provis.diagram.setBounds( bounds );
+        provis.toggleGridVisibility();
+        $('applet').setVisible().done( function() { $.unblockUI(); });
+      }
+    });
   };
 
   /**
@@ -1195,90 +1480,78 @@ var ProVis = function( appletId ) {
    * initialization
    ****************************************************************************/
 
-  // enable grid
-  this.diagram.setGridSizeX( cfg.gridSizeX );
-  this.diagram.setGridSizeY( cfg.gridSizeY );
-  this.diagram.setGridStyle( cfg.gridStyle );
-  this.diagram.setShowGrid( cfg.showGrid );
+  // load diagram
+  var opener = window.opener;
+  var file = opener.provis.name;
+  if ( file ) {
+    var pub = opener.foswiki.getPreference( 'PUBURL' );
+    var web = opener.provis.web;
+    var topic = opener.provis.topic;
+    var rev = opener.provis.aqmrev;
+    var url = pub + '/' + web + '/' + topic + '/' + file + '.aqm?rev=' + rev;
 
-  // eye candy. 3px white frame around grid
-  var whitePen = this.createPen( 3, '#fff' );
-  this.diagram.setBoundsPen( whitePen );
+    $('applet').setHidden().done( function() {
+      $.ajax({
+        type: 'get',
+        url: url,
+        success: function( data ) {
+          provis.applet.loadFromString( data );
 
-  // allow inplace editing of captions and shape titles
-  this.view.setAllowInplaceEdit( cfg.allowInplaceEdit );
+          var themeNode = provis.diagram.findNode( constants.themeConfig );
+          if ( !themeNode || !themeNode.getText ) {
+            provis.applyTheme( defaultTheme ).done( function() {
+              $('applet').setVisible();
+            });
+          } else {
+            $('applet').setVisible();
+          }
 
-  // default behavior (cursor): connect
-  this.view.setBehavior( cfg.defaultBehavior );
+          // re-create swimlane and swimlane hashes references.
+          swimlanes = [];
+          swimlaneHashes = [];
+          var wp = provis.diagram.findNode( constants.whitepaperTag );
+          var wpb = wp.getBounds();
+          var x = 1 + wpb.getX();
+          var y = 1 + wpb.getY();
 
-  // default handles.
-  this.diagram.setShapeHandlesStyle( cfg.defaultHandleStyle );
-  this.diagram.setAdjustmentHandlesSize( cfg.defaultHandleSize );
+          var sh = provis.scriptHelper;
+          var lastHash = null;
+          while( true ) {
+            var node = provis.diagram.getNodeAt( sh.createPoint( x, y ) );
+            if ( node ) {
+              var hash = node.hashCode();
+              if ( hash != lastHash ) {
+                swimlanes.push( node );
+                swimlaneHashes.push( node.hashCode() );
+                lastHash = hash;
+              }
 
-  // Sets whether link segments can be added and removed interactively.
-  this.diagram.setAllowSplitLinks( cfg.allowSplitLinks );
+              x += cfg.swimlaneMinWidth;
+            } else break;
+          }
 
-  // Sets a value indicating whether users are allowed to
-  // attach links to nodes that do not have any anchor points.
-  this.diagram.setAllowUnanchoredLinks( cfg.allowUnanchoredLinks );
-
-  // Sets a value indicating users are allowed to move the end points of
-  // a link after the link is created.
-  this.diagram.setLinkEndsMovable( cfg.linkEndsMovable );
-
-  // Sets whether disabled manipulation handles should be displayed.
-  this.diagram.setShowDisabledHandles( !cfg.hideDisabledHandles );
-
-  // Sets a value indicating whether newly created links are set to
-  // align their end points to the borders of the nodes they connect.
-  this.diagram.setLinksSnapToBorders( cfg.linksSnapToBorders );
-
-  // Sets a value indicating whether anchor points will be shown on screen.
-  // 2: auto
-  this.diagram.setShowAnchors( cfg.showAnchors );
-
-  // Sets a value indicating when links snap to anchor points.
-  // 1: OnCreateOrModify
-  this.diagram.setSnapToAnchor( cfg.snapToAnchor );
-
-  // Sets the style that should be assigned to new links.
-  // 2: Cascading
-  this.diagram.setLinkStyle( cfg.linkStyle );
-
-  // Sets the default orientation of the first segments of cascading links.
-  // 2: vertical
-  this.diagram.setLinkCascadeOrientation( cfg.linkCascadeOrientation );
-
-  // Sets the default pen that should be assigned to new links.
-  var linkPen = this.createPen( cfg.linkPenSize, cfg.linkPenColor );
-  this.diagram.setLinkPen( linkPen );
-
-  // Set inplace edit font
-  var inplaceFont = this.scriptHelper.createFont( 'Arial', 12 );
-  this.view.setInplaceEditFont( inplaceFont );
-
-  // Enable undo/redo functionality.
-  this.undoManager.setUndoEnabled( true );
-  var history = this.undoManager.getHistory();
-  history.setCapacity( cfg.undoCommandHistory );
-  history.clear();
-
-  // set initial diagram bounds
-  // ToDo: check whether whitepaper is even bigger than applet.size
-  var db = this.diagram.getBounds();
-  var rect = this.scriptHelper.createRectangleF(
-    db.getX(),
-    db.getY(),
-    this.applet.width - cfg.gridSizeX/2,
-    this.applet.height - cfg.gridSizeY/2 );
-  this.diagram.setBounds( rect );
+          initialize();
+        },
+        error: function() {
+          $.unblockUI();
+          initialize();
+        }
+      });
+    });
+  } else {
+    initialize( this );
+  }
 
   // adjust applet size each time the containing window changed its bounds
   $(window).resize( this.adjustAppletBounds );
 
   // event wire up
+  window.linkClicked = linkClicked;
+  window.linkCreated = linkCreated;
+  window.nodeClicked = nodeClicked;
   window.nodeCreating = nodeCreating;
   window.nodeDeleted = nodeDeleted;
+  window.nodeDeleting = nodeDeleting;
   window.nodeDoubleClicked = nodeDoubleClicked;
   window.nodeModified = nodeModified;
   window.nodeModifying = nodeModifying;

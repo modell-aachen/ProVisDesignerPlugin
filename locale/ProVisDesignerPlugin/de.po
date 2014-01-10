@@ -78,3 +78,9 @@ msgstr "Dieses Diagramm beinhaltet nicht gespeicherte Änderungen."
 
 msgid "If you quit ProVis now, these changes will be lost."
 msgstr "Wenn Sie ProVis nun beenden, gehen diese Änderungen verloren."
+
+msgid "Topic preview"
+msgstr "Artikel-Vorschau"
+
+msgid "Themes"
+msgid "Motive"

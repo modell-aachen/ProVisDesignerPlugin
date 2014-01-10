@@ -17,8 +17,41 @@ if ( ProVis && !ProVis.prototype.ui ) {
   var ProVisUIController = function() {
 
     /***************************************************************************
+     * private members
+     **************************************************************************/
+
+    var isMouseDown = false;
+    var mouseX = -1;
+
+
+    /***************************************************************************
+     * public properties
+     **************************************************************************/
+
+    this.appletMinWidth = 0;
+    this.appletMaxWidth = 0;
+
+    /***************************************************************************
      * private methods
      **************************************************************************/
+
+    var adjustAppletSize = function() {
+      return;
+      var applet = $('.col-applet applet');
+      var col = applet.parent();
+
+      var left = $('.provis-options').position().left;
+      var first = $('#table-container table td:first-child').innerWidth()
+      var prev = $('#table-container table td:last-child').prev().innerWidth()
+      var last = $('#table-container table td:last-child').innerWidth()
+      var width = left - (first + last + prev + 25);
+
+      applet.width( width)
+      applet.height( $('.provis-options').height() );
+
+      col.width( width );
+      col.height( $('.provis-options').height() );
+    }
 
     /**
      * Event handler. Invoked after the user has clicked the close button.
@@ -80,6 +113,67 @@ if ( ProVis && !ProVis.prototype.ui ) {
     };
 
     /**
+     * Event handler.
+     */
+    var onMouseDown = function() {
+      isMouseDown = true;
+      $(window).disableSelection();
+    };
+
+    /**
+     * Event handler. Resizes the applet and options container.
+     */
+    var onMouseMove = function( e ) {
+      if ( !isMouseDown ) return;
+
+      if ( mouseX < 0 ) {
+        mouseX = e.pageX;
+        return;
+      }
+
+      var applet = $('#provis-applet');
+      var adorner = $('#opts-adorner');
+      var options = $('#provis-options');
+      var appletWidth = applet.width() - (mouseX - e.pageX);
+      var optionsWidth = options.width() + (mouseX - e.pageX);
+
+      if ( appletWidth <= provis.ui.appletMinWidth ) {
+        adorner.removeClass('chevron-left-right');
+        adorner.addClass('chevron-right');
+        return;
+      }
+
+      if ( appletWidth >= provis.ui.appletMaxWidth ) {
+        adorner.removeClass('chevron-left-right');
+        adorner.addClass('chevron-left');
+        return;
+      }
+
+      adorner.removeClass('chevron-left');
+      adorner.removeClass('chevron-right');
+      adorner.addClass('chevron-left-right');
+
+      applet.width( appletWidth );
+      $('applet').toParentBounds().done( function() {
+        options.width( optionsWidth );
+        adorner.css( 'right', 21 + optionsWidth );
+      });
+
+      mouseX = e.pageX;
+    };
+
+    /**
+     * Event handler.
+     */
+    var onMouseUp = function() {
+      if ( !isMouseDown ) return;
+
+      isMouseDown = false;
+      $(window).enableSelection();
+      mouseX = -1;
+    };
+
+    /**
      * Event handler. Invoked after the user has selected a shape.
      */
     var shapeButtonClicked = function() {
@@ -125,35 +219,23 @@ if ( ProVis && !ProVis.prototype.ui ) {
       $('div.node').on( 'click', shapeButtonClicked );
       $('#select-zoom').on( 'change', zoomSelectionChanged );
 
-// delete me
-$('img#ma-logo-small').on( 'click', function() {
-  provis.createSwimlane();
+// Testing
+$('#select-theme').on( 'change', function() {
+  provis.applyTheme( $(this).val() );
+  return false;
 });
 
+      // wire up mouse events. used to resize content
+      $('#opts-adorner').on( 'mousedown', onMouseDown );
+      $(window).on( 'mouseup', onMouseUp );
+      $(window).on( 'mousemove', onMouseMove );
 
-$('div.provis-right-container').resizable({
-  handles: "w",
-  ghost: false, // disable eye-candy. seems broken (corrupts the absolute layout)
-  animate: false,
-  maxWidth: $(window).width() / 2, // ToDo!! hier sollte nicht die aktuelle window-breite verwendet werden
-  minWidth: 300,
-  resize: function( e, ui ) {
-    var r = $('div.provis-right-container');
-    var pos = r.position();
-    console.log( ui.size.width + pos.left );
-  }
-});
-//
+      // initially set the applet's max. allowed witdh.
+      // ToDo: settings!!!
+      this.appletMaxWidth = $('#provis-applet').width();
+      this.appletMinWidth = 600; // testing.
 
-      // observer callback. Called by CKE.
-      window.notify = function( d ) {
-        $('div#topic-content').html( d );
-      }
-
-      // set initial topic content within preview area
-      if ( window.opener.topic != null ) {
-        $('div#topic-content').html( window.opener.topic );
-      }
+      $('applet').toParentBounds();
     };
   };
 
@@ -162,3 +244,80 @@ $('div.provis-right-container').resizable({
     return new ProVisUIController();
   }();
 }
+
+(function($) {
+  $.fn.extend( {
+    setVisible: function() {
+      var deferred = $.Deferred();
+      deferred.resolve( this.css('visibility', 'visible') );
+      return deferred.promise();
+    },
+
+    setHidden: function() {
+      var deferred = $.Deferred();
+      deferred.resolve( this.css('visibility', 'hidden') );
+      return deferred.promise();
+    },
+
+    toParentBounds: function() {
+      var deferred = $.Deferred();
+
+      var parent = this.parent();
+      if ( !parent ) {
+        deferred.reject( 'No parent node found!' );
+        return deferred.promise();
+      }
+
+      this.width( parent.width() );
+      this.height( parent.height() );
+
+      deferred.resolve();
+      return deferred.promise();
+    }
+  });
+
+  $(document).ready( function() {
+    $(window).resize( function() {
+      var options = $('#provis-options');
+      var rightbar = $('#provis-rightbar');
+      var container = $('#provis-applet');
+      var adorner = $('#opts-adorner');
+      var width = $(this).width();
+      var left = container.position().left;
+
+      if ( width > 1024 ) {
+        $('applet').toParentBounds();
+
+        rightbar.hide( 'slow' );
+        adorner.setVisible();
+        options.show( 'slow', function() {
+          $('#opts-topic').setVisible();
+          container.width( width - (70 + options.width() + left) );
+          $('applet').toParentBounds();
+        });
+      } else {
+        options.hide();
+        adorner.setHidden();
+        $('#opts-topic').setHidden().done( function() {
+          rightbar.show( 'slow' );
+          container.width( width - (90 + left) );
+          $('applet').toParentBounds();
+        });
+      }
+    });
+
+    // todo
+    $( window ).unload(function() {});
+
+    // observer callback. Called by CKE.
+    window.notify = function( d ) {
+      $('#opts-topic').html( d );
+    }
+
+    // set initial topic content within preview area
+    if ( window.opener.provis ) {
+      $('#opts-topic').html( window.opener.provis.topicContent );
+    }
+  });
+})(jQuery);
+

@@ -47,3 +47,7 @@
   background: linear-gradient( to bottom, @colorTop @from, @colorBottom @to ); // W3C
   filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='@{colorTop}', endColorstr='@{colorBottom}',GradientType=0 )"; // IE6-9
 }
+
+.gradient4shape( @colorTop, @colorBottom ) {
+  .gradient( @colorTop, @colorBottom, 10%, 90% );
+}

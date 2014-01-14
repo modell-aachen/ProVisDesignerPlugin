@@ -1,68 +1,53 @@
 !noci
 
 data/System/ProVisDesignerPlugin.txt 0644
-data/System/ProcessDesigner.txt 0644
+data/System/ProcessDesigner.txt 0440
 
-lib/Foswiki/Plugins/ProVisDesignerPlugin.pm 0644
+lib/Foswiki/Plugins/ProVisDesignerPlugin.pm 0440
 
-locale/ProVisDesignerPlugin/de.po 0644
+locale/ProVisDesignerPlugin/de.po 0440
 
-pub/System/ProVisDesignerPlugin/applet/JDiagram.jar 0644
-pub/System/ProVisDesignerPlugin/applet/ProVis.jar 0644
+pub/System/ProVisDesignerPlugin/applet/ProVis.jar 0440
 
-pub/System/ProVisDesignerPlugin/assets/adornerDown.png 0644
-pub/System/ProVisDesignerPlugin/assets/btn-inset.png 0644
-pub/System/ProVisDesignerPlugin/assets/logo_small_color.png 0644
-pub/System/ProVisDesignerPlugin/assets/toolbar-bg.png 0644
-pub/System/ProVisDesignerPlugin/assets/adornerUp.png 0644
-pub/System/ProVisDesignerPlugin/assets/chevronLeft.png 0644
-pub/System/ProVisDesignerPlugin/assets/chevronRight.png 0644
-pub/System/ProVisDesignerPlugin/assets/chevronLeftRight.png 0644
-pub/System/ProVisDesignerPlugin/assets/cancel.png 0644
-pub/System/ProVisDesignerPlugin/assets/copy.png 0644
-pub/System/ProVisDesignerPlugin/assets/cursor-draw.png 0644
-pub/System/ProVisDesignerPlugin/assets/cursor-link.png 0644
-pub/System/ProVisDesignerPlugin/assets/cursor-modify.png 0644
-pub/System/ProVisDesignerPlugin/assets/cursor-pan.png 0644
-pub/System/ProVisDesignerPlugin/assets/cut.png 0644
-pub/System/ProVisDesignerPlugin/assets/help.png 0644
-pub/System/ProVisDesignerPlugin/assets/layout_h.png 0644
-pub/System/ProVisDesignerPlugin/assets/layout_v.png 0644
-pub/System/ProVisDesignerPlugin/assets/ma-logo-small-white.png 0644
-pub/System/ProVisDesignerPlugin/assets/ma-logo-small.png 0644
-pub/System/ProVisDesignerPlugin/assets/ma-logo.png 0644
-pub/System/ProVisDesignerPlugin/assets/new.png 0644
-pub/System/ProVisDesignerPlugin/assets/newLane.png 0644
-pub/System/ProVisDesignerPlugin/assets/node_database.png 0644
-pub/System/ProVisDesignerPlugin/assets/node_decision.png 0644
-pub/System/ProVisDesignerPlugin/assets/node_document.png 0644
-pub/System/ProVisDesignerPlugin/assets/node_junction.png 0644
-pub/System/ProVisDesignerPlugin/assets/node_process.png 0644
-pub/System/ProVisDesignerPlugin/assets/node_start.png 0644
-pub/System/ProVisDesignerPlugin/assets/paste.png 0644
-pub/System/ProVisDesignerPlugin/assets/redo.png 0644
-pub/System/ProVisDesignerPlugin/assets/save-white.png 0644
-pub/System/ProVisDesignerPlugin/assets/save.png 0644
-pub/System/ProVisDesignerPlugin/assets/showGrid.png 0644
-pub/System/ProVisDesignerPlugin/assets/showGrid_light.png 0644
-pub/System/ProVisDesignerPlugin/assets/snapToGrid.png 0644
-pub/System/ProVisDesignerPlugin/assets/snapToGrid_light.png 0644
-pub/System/ProVisDesignerPlugin/assets/undo.png 0644
-pub/System/ProVisDesignerPlugin/assets/zoomIn.png 0644
-pub/System/ProVisDesignerPlugin/assets/zoomOut.png 0644
+pub/System/ProVisDesignerPlugin/assets/btn-inset.png 0440
+pub/System/ProVisDesignerPlugin/assets/toolbar-bg.png 0440
+pub/System/ProVisDesignerPlugin/assets/chevronLeft.png 0440
+pub/System/ProVisDesignerPlugin/assets/chevronRight.png 0440
+pub/System/ProVisDesignerPlugin/assets/chevronLeftRight.png 0440
+pub/System/ProVisDesignerPlugin/assets/cancel.png 0440
+pub/System/ProVisDesignerPlugin/assets/cursor-draw.png 0440
+pub/System/ProVisDesignerPlugin/assets/cursor-link.png 0440
+pub/System/ProVisDesignerPlugin/assets/cursor-modify.png 0440
+pub/System/ProVisDesignerPlugin/assets/cursor-pan.png 0440
+pub/System/ProVisDesignerPlugin/assets/ma-logo-small-white.png 0440
+pub/System/ProVisDesignerPlugin/assets/ma-logo.png 0440
+pub/System/ProVisDesignerPlugin/assets/new.png 0440
+pub/System/ProVisDesignerPlugin/assets/node_database.png 0440
+pub/System/ProVisDesignerPlugin/assets/node_decision.png 0440
+pub/System/ProVisDesignerPlugin/assets/node_document.png 0440
+pub/System/ProVisDesignerPlugin/assets/node_junction.png 0440
+pub/System/ProVisDesignerPlugin/assets/node_process.png 0440
+pub/System/ProVisDesignerPlugin/assets/node_start.png 0440
+pub/System/ProVisDesignerPlugin/assets/redo.png 0440
+pub/System/ProVisDesignerPlugin/assets/save.png 0440
+pub/System/ProVisDesignerPlugin/assets/showGrid.png 0440
+pub/System/ProVisDesignerPlugin/assets/snapToGrid.png 0440
+pub/System/ProVisDesignerPlugin/assets/undo.png 0440
+pub/System/ProVisDesignerPlugin/assets/zoomIn.png 0440
+pub/System/ProVisDesignerPlugin/assets/zoomOut.png 0440
 
-pub/System/ProVisDesignerPlugin/bootstrap/bootstrap.min.css 0644
-pub/System/ProVisDesignerPlugin/bootstrap/bootstrap.min.js 0644
+pub/System/ProVisDesignerPlugin/bootstrap/bootstrap.min.css 0440
+pub/System/ProVisDesignerPlugin/bootstrap/bootstrap.min.js 0440
 
-pub/System/ProVisDesignerPlugin/css/designer.css 0644
-pub/System/ProVisDesignerPlugin/css/pie.htc 0644
-pub/System/ProVisDesignerPlugin/css/ie.fix.css 0644
+pub/System/ProVisDesignerPlugin/css/provis.ui.css 0440
+pub/System/ProVisDesignerPlugin/css/pie.htc 0440
+pub/System/ProVisDesignerPlugin/css/ie.fix.css 0440
 
-pub/System/ProVisDesignerPlugin/scripts/Process.js 0644
-pub/System/ProVisDesignerPlugin/scripts/config.js 0644
-pub/System/ProVisDesignerPlugin/scripts/deployJava.js 0644
-pub/System/ProVisDesignerPlugin/scripts/designer.js 0644
+pub/System/ProVisDesignerPlugin/scripts/provis.js 0440
+pub/System/ProVisDesignerPlugin/scripts/provis.ui.js 0440
+pub/System/ProVisDesignerPlugin/scripts/provis.config.js 0440
+pub/System/ProVisDesignerPlugin/scripts/provis.defaults.js 0440
+pub/System/ProVisDesignerPlugin/scripts/provis.strings.js 0440
+pub/System/ProVisDesignerPlugin/scripts/deployJava.js 0444
 
-
-
-templates/foswiki.provis.tmpl 0644
+templates/foswiki.provis.tmpl 0440

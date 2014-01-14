@@ -510,7 +510,90 @@ ProVis.nodeDefaults = {
       borderWidth: 1,
       dropShadow: false
     }
-  }
+  },
+  ModAc: {
+    captionForeground: '#222',
+    captionUseGradient: true,
+    captionBackground: '#eee',
+    captionGradientColor: '#fff',
+    captionFontSize: 14,
+    captionGradientAngle: 90,
+    captionHeight: 40,
+    linkColor: '#444',
+    linkWidth: 1.5,
+    Rectangle: {
+      foreground: '#fff',
+      background: '#4f88bb',
+      useGradient: false,
+      fontsize: 14,
+      width: 6 * ProVis.config.gridSizeX,
+      height: 4 * ProVis.config.gridSizeY,
+      adjustmentHandles: 0,
+      handleStyle: 0,
+      borderBrush: '#555',
+      borderWidth: 1
+    },
+    Document: {
+      foreground: '#fff',
+      background: '#4f88bb',
+      fontsize: 14,
+      width: 6 * ProVis.config.gridSizeX,
+      height: 4 * ProVis.config.gridSizeY,
+      adjustmentHandles: 0,
+      handleStyle: 0,
+      useGradient: false,
+      borderBrush: '#555',
+      borderWidth: 1
+    },
+    Decision: {
+      foreground: '#fff',
+      background: '#4f88bb',
+      fontsize: 14,
+      width: 6 * ProVis.config.gridSizeX,
+      height: 4 * ProVis.config.gridSizeY,
+      adjustmentHandles: 0,
+      handleStyle: 0,
+      useGradient: false,
+      borderBrush: '#4f88bb',
+      borderWidth: 1
+    },
+    Cylinder: {
+      foreground: '#fff',
+      background: '#4f88bb',
+      useGradient: false,
+      fontsize: 14,
+      width: 6 * ProVis.config.gridSizeX,
+      height: 3 * ProVis.config.gridSizeY,
+      adjustmentHandles: 0,
+      handleStyle: 0,
+      borderBrush: '#fff',
+      borderWidth: 1
+    },
+    Terminator: {
+      foreground: '#fff',
+      background: '#4f88bb',
+      fontsize: 14,
+      width: 6 * ProVis.config.gridSizeX,
+      height: 2 * ProVis.config.gridSizeY,
+      adjustmentHandles: 0,
+      handleStyle: 0,
+      useGradient: false,
+      borderBrush: '#4f88bb',
+      borderWidth: 1,
+    },
+    Ellipse: {
+      foreground: '#fff',
+      background: '#4f88bb',
+      fontsize: 14,
+      width: 2 * ProVis.config.gridSizeX,
+      height: 2 * ProVis.config.gridSizeX,
+      adjustmentHandles: 0,
+      handleStyle: 0,
+      useGradient: false,
+      borderBrush: '#4f88bb',
+      borderWidth: 1
+    }
+  },
 };
 
 

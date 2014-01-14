@@ -52,7 +52,7 @@ var ProVis = function( appletId ) {
   var swimlaneHashes = [];
   var cfg = ProVis.config;
   var constants = ProVis.strings;
-  var defaultTheme = "Theme2"
+  var defaultTheme = "ModAc"
   var curTheme = ProVis.nodeDefaults[defaultTheme];
   var undoComposite = null;
 
@@ -178,9 +178,6 @@ var ProVis = function( appletId ) {
     ensureWhitepaper().done( function() {
       var wp = provis.diagram.findNode( constants.whitepaperTag );
       var wpBounds = wp.getBounds();
-
-      // var offsetX = cfg.gridSizeX / 2;
-      // var offsetY = cfg.gridSizeY / 2;
 
       var offsetX = 0;
       var offsetY = 0;
@@ -318,8 +315,6 @@ var ProVis = function( appletId ) {
 
     // Reachable only if there's no whitepaper present
     var factory = provis.diagram.getFactory();
-    // var offsetX = cfg.gridSizeX / 2;
-    // var offsetY = cfg.gridSizeY / 2;
     var offsetX = 0;
     var offsetY = 0;
 
@@ -453,7 +448,7 @@ var ProVis = function( appletId ) {
   };
 
   var initialize = function( p ) {
-    if ( p && !provis ) provis = p;
+    if ( p ) provis = p;
 
     // enable grid
     provis.diagram.setGridSizeX( cfg.gridSizeX );
@@ -603,7 +598,9 @@ var ProVis = function( appletId ) {
       var wp = d.findNode( constants.whitepaperTag );
       var wpWidth = wp.getBounds().getWidth();
       var newWidth = wpWidth - node.getBounds().getWidth();
-      adjustWhitepaperWidth( newWidth == 0 ? 1 : newWidth );
+      if ( newWidth >= 0 ) {
+        adjustWhitepaperWidth( newWidth == 0 ? 1 : newWidth );
+      }
 
       var index = swimlanes.indexOf( node );
       swimlanes.splice( index, 1 );
@@ -1171,9 +1168,11 @@ var ProVis = function( appletId ) {
       themeNode = factory.createShapeNode( wpb.getX(), wpb.getY(), 1, 1 );
       themeNode.setLocked( true );
       themeNode.setVisible( false );
+      themeNode.setTransparent( true ); // the more the merrier ;)
       themeNode.setTag( constants.themeConfig );
       themeNode.setText( theme || defaultTheme );
       themeNode.attachTo( wp, 0 );
+      themeNode.zBottom();
     }
 
     deferred.resolve();
@@ -1483,11 +1482,13 @@ var ProVis = function( appletId ) {
   // load diagram
   var opener = window.opener;
   var file = opener.provis.name;
-  if ( file ) {
+  var rev = opener.provis.aqmrev;
+
+  // rev = 0 := new diagram
+  if ( file && rev > 0 ) {
     var pub = opener.foswiki.getPreference( 'PUBURL' );
     var web = opener.provis.web;
     var topic = opener.provis.topic;
-    var rev = opener.provis.aqmrev;
     var url = pub + '/' + web + '/' + topic + '/' + file + '.aqm?rev=' + rev;
 
     $('applet').setHidden().done( function() {

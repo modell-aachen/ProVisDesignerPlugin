@@ -124,7 +124,6 @@ STYLE
 <script type="text/javascript" src="$pluginURL/scripts/provis.strings.js"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.config.js"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.defaults.js"></script>
-<script type="text/javascript" src="$pluginURL/scripts/provis.func.js"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.ui.js"></script>
 SCRIPT
 

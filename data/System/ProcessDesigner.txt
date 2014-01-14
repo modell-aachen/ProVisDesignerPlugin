@@ -3,13 +3,13 @@
 <script type="text/javascript"><!--
   deployJava.runApplet( {
     id: 'jDiagApplet',
-    codebase: '/pub/System/ProVisDesignerPlugin/applet/',
+    codebase: '%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/applet/',
     code: 'com.mindfusion.diagramming.DiagramApplet',
     archive: 'ProVis.jar',
     width: '800px',
     height: '600px'
   }, {
-    image: '/pub/System/ProVisDesignerPlugin/assets/ma-logo.png',
+    image: '%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/ma-logo.png',
     boxbgcolor: '#ffffff',
     boxborder: 'false',
     centerimage: 'false',

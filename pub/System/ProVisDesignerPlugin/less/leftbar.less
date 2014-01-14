@@ -2,32 +2,40 @@ div {
   &.node {
     display: block;
     float: left;
-    width: 64px;
-    height: 48px;
     margin: 10px 0 0 10px;
     padding: 2px;
-    border: 1px solid #f3f3f3;
 
     &:hover {
-      border: 1px solid #ccc;
       cursor: pointer;
       cursor: hand;
+    }
+
+    > .node-bg {
+      background: darken( @body-bg, 15% );
+
+      &:hover {
+        background: lighten( @coty, 10% );
+      }
+    }
+
+    &.node-selected {
+      > .node-bg {
+        background: @coty;
+      }
+
+      > span {
+        display: block;
+        text-align: center;
+        color: #fff;
+        .size( 0.8em );
+      }
     }
 
     > span {
       display: block;
       text-align: center;
+      color: darken( @body-bg, 15% );
       .size( 0.8em );
-    }
-
-    &.hint {
-      position: relative;
-      width: 22px;
-      height: 22px;
-      text-align: center;
-      background: #ffc771;
-      margin: -15px 0; // -36
-      .hide;
     }
 
     &.layout {

@@ -1,17 +1,34 @@
-img {
-  &#ma-logo-small {
-    float: left;
-    margin: 10px 0 0 25px;
-  }
-}
-
 a.btn {
+  // bootstrap overrides
+  padding: 0 !important;
+  border: none !important;
   > img {
     padding: 5px;
 
     &:hover {
-      background: #eee;
       background-image: url(/pub/System/ProVisDesignerPlugin/assets/btn-inset.png);
+    }
+  }
+
+  > div {
+    padding: 5px;
+
+    :link:hover,
+    &:hover {
+      background-image: url(/pub/System/ProVisDesignerPlugin/assets/btn-inset.png);
+
+      > img {
+        background: @coty;
+      }
+    }
+
+    > img {
+      background: @coty;
+
+      :link:hover,
+      &:hover {
+        background-color: @coty;
+      }
     }
   }
 
@@ -41,7 +58,7 @@ div {
 
   &.provis-menu {
     width: auto;
-    margin-left: 125px;
+    margin-left: 110px;
     margin-top: 6px;
 
     > div {

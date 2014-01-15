@@ -4,6 +4,7 @@ data/System/ProVisDesignerPlugin.txt 0644
 data/System/ProcessDesigner.txt 0440
 
 lib/Foswiki/Plugins/ProVisDesignerPlugin.pm 0440
+lib/Foswiki/Configure/Checkers/Plugins/ProVisDesignerPlugin/Enabled.pm 0440
 
 locale/ProVisDesignerPlugin/de.po 0440
 

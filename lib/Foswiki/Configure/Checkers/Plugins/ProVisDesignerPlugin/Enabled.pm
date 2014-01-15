@@ -12,9 +12,15 @@ sub check {
 
   if ( $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{Enabled} ) {
     if ( !$Foswiki::cfg{Plugins}{JQueryPlugin}{Enabled} ) {
-      $warnings .= $this->ERROR(<<'TEXT');
-ProVisDesigner depends on JQueryPlugin, which is not enabled.
-TEXT
+      $warnings .= $this->ERROR( 'ProVisDesigner depends on JQueryPlugin, which is not enabled.' );
+    } else {
+      if ( !$Foswiki::cfg{JQueryPlugin}{Plugins}{BlockUI}{Enabled} ) {
+        $warnings .= $this->ERROR( 'JQuery::BlockUI is required by ProVisDesigner!' );
+      }
+
+      if ( !$Foswiki::cfg{JQueryPlugin}{Plugins}{UI}{Enabled} ) {
+        $warnings .= $this->ERROR( 'JQuery::UI is required by ProVisDesigner' );
+      }
     }
   }
 

@@ -1319,8 +1319,11 @@ var ProVis = function( appletId ) {
     var imagepng = provis.applet.saveToImage();
 
     var opener = window.opener.provis;
-    var url = '/bin/rest/ProVisDesignerPlugin/upload';
-    var drawingSaveUrl = '/bin/rest/ProVisDesignerPlugin/upload';
+    var scriptPath = foswiki.getPreference( 'SCRIPTURLPATH' );
+    var scriptSuffix = foswiki.getPreference( 'SCRIPTSUFFIX' );
+    var restUrl = scriptPath + '/rest' + scriptSuffix;
+
+    var url = restUrl + '/ProVisDesignerPlugin/upload';
     var drawingTopic = opener.web + '.' + opener.topic;
     var drawingType = 'swimlane';
 
@@ -1367,7 +1370,7 @@ var ProVis = function( appletId ) {
 
         $.ajax({
           type: 'post',
-          url: '/bin/rest/ProVisDesignerPlugin/update',
+          url: restUrl + '/ProVisDesignerPlugin/update',
           data: {
             name: r.name,
             w: r.web,

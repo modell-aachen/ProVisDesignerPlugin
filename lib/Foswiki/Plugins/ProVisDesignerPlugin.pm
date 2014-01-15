@@ -132,7 +132,7 @@ SCRIPT
   # jQuery.disableSelection/jQuery.enableSelection
   Foswiki::Plugins::JQueryPlugin::createPlugin( 'ui' );
 
-  my $deployJava = <<SCRIPT
+  my $deployJava = <<SCRIPT;
 <script type="text/javascript"><!--
   deployJava.runApplet( {
     id: 'jDiagApplet',

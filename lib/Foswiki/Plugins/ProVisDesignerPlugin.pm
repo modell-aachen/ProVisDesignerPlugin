@@ -132,17 +132,20 @@ SCRIPT
   # jQuery.disableSelection/jQuery.enableSelection
   Foswiki::Plugins::JQueryPlugin::createPlugin( 'ui' );
 
+  my $pubPath = Foswiki::Func::getPubUrlPath();
+  my $systemWeb = $Foswiki::cfg{SystemWebName} || 'System';
+
   my $deployJava = <<SCRIPT;
 <script type="text/javascript"><!--
   deployJava.runApplet( {
     id: 'jDiagApplet',
-    codebase: '%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/applet/',
+    codebase: '$pubPath/$systemWeb/ProVisDesignerPlugin/applet/',
     code: 'com.mindfusion.diagramming.DiagramApplet',
     archive: 'ProVis.jar',
     width: '800px',
     height: '600px'
   }, {
-    image: '%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/ma-logo.png',
+    image: '$pubPath/$systemWeb/ProVisDesignerPlugin/assets/ma-logo.png',
     boxbgcolor: '#ffffff',
     boxborder: 'false',
     centerimage: 'false',

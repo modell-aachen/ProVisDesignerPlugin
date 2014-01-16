@@ -135,23 +135,7 @@
       <a href="#">%MAKETEXT{"Themes"}%</a>
     </div>
   </div>
-  <div id="modal-close" class="modal fade">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">%MAKETEXT{"Attention"}%</h4>
-        </div>
-        <div class="modal-body">
-          <p><strong>%MAKETEXT{"This diagram contains unsaved changes."}%</strong><br />
-          %MAKETEXT{"If you quit ProVis now, these changes will be lost."}%</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger">%MAKETEXT{"Discard changes"}%</button>
-          <button type="button" class="btn btn-success">%MAKETEXT{"Save"}%</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">%MAKETEXT{"Cancel"}%</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div id="close-text" style="display: none;"><!--
+    -->%MAKETEXT{"This diagram contains unsaved changes."}%&nbsp;%MAKETEXT{"If you quit ProVis now, these changes will be lost."}%<!--
+  --></div>
 </body></html>

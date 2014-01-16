@@ -57,11 +57,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
      * Event handler. Invoked after the user has clicked the close button.
      */
     var closeButtonClicked = function() {
-      var isDirty = provis.diagram.getDirty();
-      if ( isDirty ) {
-        showBeforeCloseHint();
-      }
-
+      window.close();
       return false;
     }
 
@@ -219,22 +215,28 @@ if ( ProVis && !ProVis.prototype.ui ) {
       $('div.node').on( 'click', shapeButtonClicked );
       $('#select-zoom').on( 'change', zoomSelectionChanged );
 
-// Testing
-$('#select-theme').on( 'change', function() {
-  provis.applyTheme( $(this).val() );
-  return false;
-});
-
       // wire up mouse events. used to resize content
       $('#opts-adorner').on( 'mousedown', onMouseDown );
       $(window).on( 'mouseup', onMouseUp );
       $(window).on( 'mousemove', onMouseMove );
+
+      // beforeunload
+      $(window).on( 'beforeunload', null, null, function( e ) {
+        var isDirty = provis.diagram.getDirty();
+        if ( !isDirty ) return;
+
+        var warning = $('#close-text').text();
+        var oe = e.originalEvent || window.event;
+        if (oe) oe.returnValue = warning;
+        return warning;
+      });
 
       // initially set the applet's max. allowed witdh.
       // ToDo: settings!!!
       this.appletMaxWidth = $('#provis-applet').width();
       this.appletMinWidth = 600; // testing.
 
+      // ToDo. buggy in webkit
       $('applet').toParentBounds();
     };
   };

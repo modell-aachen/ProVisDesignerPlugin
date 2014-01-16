@@ -1502,7 +1502,7 @@ var ProVis = function( appletId ) {
           provis.applet.loadFromString( data );
 
           var themeNode = provis.diagram.findNode( constants.themeConfig );
-          if ( !themeNode || !themeNode.getText ) {
+          if ( !themeNode || !themeNode.getText() ) {
             provis.applyTheme( defaultTheme ).done( function() {
               $('applet').setVisible();
             });

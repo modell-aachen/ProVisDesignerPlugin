@@ -120,11 +120,11 @@ STYLE
   my $script = <<SCRIPT;
 <script type="text/javascript" src="$pluginURL/bootstrap/bootstrap.min.js"></script>
 <script type="text/javascript" src="$pluginURL/scripts/deployJava.js"></script>
-<script type="text/javascript" src="$pluginURL/scripts/provis.js"></script>
-<script type="text/javascript" src="$pluginURL/scripts/provis.strings.js"></script>
-<script type="text/javascript" src="$pluginURL/scripts/provis.config.js"></script>
-<script type="text/javascript" src="$pluginURL/scripts/provis.defaults.js"></script>
-<script type="text/javascript" src="$pluginURL/scripts/provis.ui.js"></script>
+<script type="text/javascript" src="$pluginURL/scripts/provis.js?version=$RELEASE"></script>
+<script type="text/javascript" src="$pluginURL/scripts/provis.strings.js?version=$RELEASE"></script>
+<script type="text/javascript" src="$pluginURL/scripts/provis.config.js?version=$RELEASE"></script>
+<script type="text/javascript" src="$pluginURL/scripts/provis.defaults.js?version=$RELEASE"></script>
+<script type="text/javascript" src="$pluginURL/scripts/provis.ui.js?version=$RELEASE"></script>
 SCRIPT
 
   Foswiki::Func::addToZone( 'script', 'PROVIS::DESIGNER::SCRIPTS', $script, 'JQUERYPLUGIN::FOSWIKI' );

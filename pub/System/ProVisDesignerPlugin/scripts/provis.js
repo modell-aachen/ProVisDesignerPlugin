@@ -1747,6 +1747,8 @@ var ProVis = function( appletId ) {
               $('applet').setVisible();
             });
           } else {
+            curTheme = ProVis.themes[themeNode.getText()];
+            if ( curTheme == null ) curTheme = ProVis.themes[defaultTheme];
             $('applet').setVisible();
           }
 

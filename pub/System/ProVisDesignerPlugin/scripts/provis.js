@@ -62,22 +62,6 @@ var ProVis = function( appletId ) {
    * private methods
    ****************************************************************************/
 
-   /**
-   * Adjusts the applet's width and height according to
-   * its parent container element.
-   * Called after 'window.resize' has been triggered.
-   */
-  var adjustAppletBounds = function() {
-    var parent = provis.applet.parentElement;
-    provis.applet.width = $(parent).width();
-    provis.applet.height = $(parent).height();
-
-    if ( isDebug ) {
-      var dim = provis.applet.width + 'x' + provis.applet.height;
-      console.log( '@adjustAppletBounds: ' + dim );
-    }
-  };
-
   /**
    * Adjusts the height of the diagrams whitepaper.
    * Called when a vertical swimlane has changed.
@@ -1802,9 +1786,6 @@ var ProVis = function( appletId ) {
     initialize( this );
   }
 
-  // adjust applet size each time the containing window changed its bounds
-  $(window).resize( this.adjustAppletBounds );
-
   // event wire up
   window.linkCreated = linkCreated;
   window.nodeClicked = nodeClicked;
@@ -1818,5 +1799,8 @@ var ProVis = function( appletId ) {
   window.nodeTextChanged = nodeTextChanged;
 
   // initialize ProVis UI Controller
-  this.ui.init();
+  this.ui.init().done( function() {
+    setTimeout( function() { $(applet).height( 1 + $(applet).height() ); }, 500 );
+    setTimeout( function() { $(applet).width( 1 + $(applet).width() ); }, 500 );
+  });
 };

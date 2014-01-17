@@ -206,6 +206,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
      * Initializes this instance.
      */
     ProVisUIController.prototype.init = function() {
+      var deferred = $.Deferred();
       initTooltips();
 
       $('#btn-close').on( 'click', closeButtonClicked );
@@ -222,8 +223,10 @@ if ( ProVis && !ProVis.prototype.ui ) {
 
       // beforeunload
       $(window).on( 'beforeunload', null, null, function( e ) {
-        var isDirty = provis.diagram.getDirty();
-        if ( !isDirty ) return;
+        if ( provis && provis.diagram ) {
+          var isDirty = provis.diagram.getDirty();
+          if ( !isDirty ) return;
+        }
 
         var warning = $('#close-text').text();
         var oe = e.originalEvent || window.event;
@@ -238,7 +241,12 @@ if ( ProVis && !ProVis.prototype.ui ) {
       this.appletMinWidth = 600; // testing.
 
       // ToDo. buggy in webkit
-      $('applet').toParentBounds();
+      $('applet').toParentBounds().done( function() {
+        $(window).trigger('resize');
+        deferred.resolve();
+      });
+
+      return deferred.promise();
     };
   };
 
@@ -289,7 +297,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
       var left = container.position().left;
 
       if ( width > 1024 ) {
-        $('applet').toParentBounds();
+        // $('applet').toParentBounds();
 
         rightbar.hide( 'slow' );
         adorner.setVisible();
@@ -308,9 +316,6 @@ if ( ProVis && !ProVis.prototype.ui ) {
         });
       }
     });
-
-    // todo
-    $( window ).unload(function() {});
 
     // observer callback. Called by CKE.
     window.notify = function( d ) {

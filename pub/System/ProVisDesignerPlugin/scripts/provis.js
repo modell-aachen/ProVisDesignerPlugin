@@ -266,7 +266,9 @@ var ProVis = function( appletId ) {
       caption.setAllowOutgoingLinks( false );
       caption.setEnabledHandles( cfg.swimlaneTopHandles );
       caption.setHandlesStyle( cfg.defaultHandleStyle );
-      caption.setZIndex( 1 );
+      caption.zTop();
+      // caption.setZIndex( 1 );
+
 
       var titleConstraints = caption.getConstraints();
       titleConstraints.setMoveDirection( 1 );
@@ -284,6 +286,16 @@ var ProVis = function( appletId ) {
 
       var laneConstraints = lane.getConstraints();
       laneConstraints.setMoveDirection( 1 );
+
+      var captionPen = provis.createPen(
+        curTheme.captionBorderWidth,
+        curTheme.captionBorderColor );
+      var lanePen = provis.createPen(
+        curTheme.laneBorderWidth,
+        curTheme.laneBorderColor );
+
+      caption.setPen( captionPen );
+      lane.setPen( lanePen );
 
       // keep a reference to this swimlane
       swimlanes.push( caption );
@@ -345,6 +357,7 @@ var ProVis = function( appletId ) {
 
     var wp = provis.diagram.findNode( constants.whitepaperTag );
     if ( wp != null ) {
+      wp.zBottom(); // hotfix for imported (provis v1) diagrams.
       if ( isDebug ) {
         console.log( '@ensureWhitepaper: whitepaper present. returning.' );
       }
@@ -1270,6 +1283,7 @@ var ProVis = function( appletId ) {
     }
   };
 
+  // ToDo: refactor. die hälfte hier von ist identisch zu createSwimlaneEx, ensureWhitepaper, linkCreated...
   ProVis.prototype.applyTheme = function( theme ) {
     var deferred = $.Deferred();
 
@@ -1300,13 +1314,51 @@ var ProVis = function( appletId ) {
             brush = provis.createSolidBrush( curTheme.captionBackground );
           }
 
+          node.setLocked( false );
+          node.setObstacle( true );
+          node.setAllowIncomingLinks( false );
+          node.setAllowOutgoingLinks( false );
+          node.setEnabledHandles( cfg.swimlaneTopHandles );
+          node.setHandlesStyle( cfg.defaultHandleStyle );
           node.setBrush( brush );
           node.setZIndex( 1 );
+
+          var topConstraints = node.getConstraints();
+          topConstraints.setMoveDirection( 1 );
+          topConstraints.setMinWidth( cfg.swimlaneMinWidth );
+
+          var captionPen = provis.createPen(
+            curTheme.captionBorderWidth,
+            curTheme.captionBorderColor );
+          node.setPen( captionPen );
           break;
         case constants.swimlaneTag:
           node.setZIndex( 1 );
+          node.setLocked( true );
+          node.setEnabledHandles( cfg.swimlaneHandles );
+          node.setHandlesStyle( cfg.defaultHandleStyle );
+          node.setBrush( provis.createSolidBrush( cfg.swimlaneBackBrush ) );
+          node.setObstacle( false );
+          node.setAllowIncomingLinks( false );
+          node.setAllowOutgoingLinks( false );
+
+          var laneConstraints = node.getConstraints();
+          laneConstraints.setMoveDirection( 1 );
+
+          var lanePen = provis.createPen(
+            curTheme.laneBorderWidth,
+            curTheme.laneBorderColor );
+          node.setPen( lanePen );
           break;
         case constants.whitepaperTag:
+          node.setLocked( false );
+          node.setAllowIncomingLinks( false );
+          node.setAllowOutgoingLinks( false );
+          node.setObstacle( false );
+          node.setTransparent( true );
+          node.setVisible( true );
+          node.setEnabledHandles( 64 );
+          node.setHandlesStyle( 1 );
           node.zBottom();
           break;
         default:
@@ -1336,6 +1388,22 @@ var ProVis = function( appletId ) {
       var pen = provis.createPen( curTheme.linkWidth, curTheme.linkColor );
       link.setPen( pen );
       link.setHeadPen( pen );
+
+      try {
+        link.setStyle( curTheme.linkStyle );
+        link.setTextStyle( curTheme.linkTextStyle );
+      } catch ( e ) {
+        if ( isDebug ) {
+          console.log( e.message );
+          console.log( e.stack );
+        }
+      }
+
+      var font = provis.scriptHelper.createFont( 'Arial', curTheme.captionFontSize );
+      link.setFont( font );
+
+      var textColor = provis.createColor( curTheme.linkTextColor );
+      link.setTextColor( textColor );
 
       link.zTop();
       link.setRetainForm( true );

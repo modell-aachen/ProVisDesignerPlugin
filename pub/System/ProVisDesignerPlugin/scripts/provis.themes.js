@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-ProVis.nodeDefaults = {
+ProVis.themes = {
   Theme1: {
     captionForeground: '#555',
     captionBackground: '#eee',
@@ -521,6 +521,10 @@ ProVis.nodeDefaults = {
     captionHeight: 40,
     linkColor: '#444',
     linkWidth: 1.5,
+    linkStyle: 2,
+    linkTextStyle: 0,
+    linkFontSize: 14,
+    linkTextColor: '#444',
     Rectangle: {
       foreground: '#fff',
       background: '#4f88bb',
@@ -528,9 +532,9 @@ ProVis.nodeDefaults = {
       fontsize: 14,
       width: 6 * ProVis.config.gridSizeX,
       height: 4 * ProVis.config.gridSizeY,
-      adjustmentHandles: 0,
-      handleStyle: 0,
-      borderBrush: '#555',
+      adjustmentHandles: 511,
+      handleStyle: 9,
+      borderBrush: '#fff',
       borderWidth: 1
     },
     Document: {
@@ -539,10 +543,10 @@ ProVis.nodeDefaults = {
       fontsize: 14,
       width: 6 * ProVis.config.gridSizeX,
       height: 4 * ProVis.config.gridSizeY,
-      adjustmentHandles: 0,
-      handleStyle: 0,
+      adjustmentHandles: 511,
+      handleStyle: 9,
       useGradient: false,
-      borderBrush: '#555',
+      borderBrush: '#fff',
       borderWidth: 1
     },
     Decision: {
@@ -551,10 +555,10 @@ ProVis.nodeDefaults = {
       fontsize: 14,
       width: 6 * ProVis.config.gridSizeX,
       height: 4 * ProVis.config.gridSizeY,
-      adjustmentHandles: 0,
-      handleStyle: 0,
+      adjustmentHandles: 511,
+      handleStyle: 9,
       useGradient: false,
-      borderBrush: '#4f88bb',
+      borderBrush: '#fff',
       borderWidth: 1
     },
     Cylinder: {
@@ -564,8 +568,8 @@ ProVis.nodeDefaults = {
       fontsize: 14,
       width: 6 * ProVis.config.gridSizeX,
       height: 3 * ProVis.config.gridSizeY,
-      adjustmentHandles: 0,
-      handleStyle: 0,
+      adjustmentHandles: 511,
+      handleStyle: 9,
       borderBrush: '#fff',
       borderWidth: 1
     },
@@ -575,10 +579,10 @@ ProVis.nodeDefaults = {
       fontsize: 14,
       width: 6 * ProVis.config.gridSizeX,
       height: 2 * ProVis.config.gridSizeY,
-      adjustmentHandles: 0,
-      handleStyle: 0,
+      adjustmentHandles: 256,
+      handleStyle: 1,
       useGradient: false,
-      borderBrush: '#4f88bb',
+      borderBrush: '#fff',
       borderWidth: 1,
     },
     Ellipse: {
@@ -587,10 +591,10 @@ ProVis.nodeDefaults = {
       fontsize: 14,
       width: 2 * ProVis.config.gridSizeX,
       height: 2 * ProVis.config.gridSizeX,
-      adjustmentHandles: 0,
-      handleStyle: 0,
+      adjustmentHandles: 256,
+      handleStyle: 1,
       useGradient: false,
-      borderBrush: '#4f88bb',
+      borderBrush: '#fff',
       borderWidth: 1
     }
   },

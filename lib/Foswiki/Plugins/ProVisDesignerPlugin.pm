@@ -112,7 +112,7 @@ sub _handleDesignerTag {
   my $pluginURL = '%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin';
   my $style = <<STYLE;
 <link rel="stylesheet" type="text/css" media="all" href="$pluginURL/bootstrap/bootstrap.min.css" />
-<link rel="stylesheet" type="text/css" media="all" href="$pluginURL/css/provis.ui.css" />
+<link rel="stylesheet" type="text/css" media="all" href="$pluginURL/css/provis.ui.css?version=$RELEASE" />
 STYLE
 
   Foswiki::Func::addToZone( 'head', 'PROVIS::DESIGNER::STYLES', $style );
@@ -123,7 +123,7 @@ STYLE
 <script type="text/javascript" src="$pluginURL/scripts/provis.js?version=$RELEASE"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.strings.js?version=$RELEASE"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.config.js?version=$RELEASE"></script>
-<script type="text/javascript" src="$pluginURL/scripts/provis.defaults.js?version=$RELEASE"></script>
+<script type="text/javascript" src="$pluginURL/scripts/provis.themes.js?version=$RELEASE"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.ui.js?version=$RELEASE"></script>
 SCRIPT
 
@@ -151,7 +151,6 @@ deployJava.runApplet( {
     boxborder: 'false',
     centerimage: 'false',
     separate_jvm: 'true',
-    LinkClicked: 'linkClicked',
     LinkCreating: 'linkCreated',
     NodeClicked: 'nodeClicked',
     NodeCreating: 'nodeCreating',

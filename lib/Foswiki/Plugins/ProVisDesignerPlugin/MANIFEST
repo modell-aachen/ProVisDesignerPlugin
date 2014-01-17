@@ -51,7 +51,7 @@ pub/System/ProVisDesignerPlugin/css/ie.fix.css 0440
 pub/System/ProVisDesignerPlugin/scripts/provis.js 0440
 pub/System/ProVisDesignerPlugin/scripts/provis.ui.js 0440
 pub/System/ProVisDesignerPlugin/scripts/provis.config.js 0440
-pub/System/ProVisDesignerPlugin/scripts/provis.defaults.js 0440
+pub/System/ProVisDesignerPlugin/scripts/provis.themes.js 0440
 pub/System/ProVisDesignerPlugin/scripts/provis.strings.js 0440
 pub/System/ProVisDesignerPlugin/scripts/deployJava.js 0444
 

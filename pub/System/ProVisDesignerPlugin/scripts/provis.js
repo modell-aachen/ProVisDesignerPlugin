@@ -53,8 +53,9 @@ var ProVis = function( appletId ) {
   var cfg = ProVis.config;
   var constants = ProVis.strings;
   var defaultTheme = "ModAc"
-  var curTheme = ProVis.nodeDefaults[defaultTheme];
+  var curTheme = ProVis.themes[defaultTheme];
   var undoComposite = null;
+  var isDebug = false;
 
 
   /*****************************************************************************
@@ -70,6 +71,11 @@ var ProVis = function( appletId ) {
     var parent = provis.applet.parentElement;
     provis.applet.width = $(parent).width();
     provis.applet.height = $(parent).height();
+
+    if ( isDebug ) {
+      var dim = provis.applet.width + 'x' + provis.applet.height;
+      console.log( '@adjustAppletBounds: ' + dim );
+    }
   };
 
   /**
@@ -93,6 +99,10 @@ var ProVis = function( appletId ) {
     wp.setBounds( b.getX(), b.getY(), b.getWidth(), newHeight );
     cmd.execute();
     composite.addSubCmd( cmd );
+
+    if ( isDebug ) {
+      console.log( '@adjustWhitepaperHeight: new height: ' + newHeight );
+    }
 
     deferred.resolve();
     return deferred.promise();
@@ -119,6 +129,10 @@ var ProVis = function( appletId ) {
     wp.setBounds( b.getX(), b.getY(), newWidth, b.getHeight() );
     cmd.execute();
     composite.addSubCmd( cmd );
+
+    if ( isDebug ) {
+      console.log( '@adjustWhitepaperWidth: new width: ' + newWidth );
+    }
 
     deferred.resolve();
     return deferred.promise();
@@ -147,14 +161,16 @@ var ProVis = function( appletId ) {
     if ( swimlanes.length == 0 ) {
       deferred.reject();
     } else {
-      // var x = cfg.gridSizeX / 2;
-      // var y = cfg.gridSizeY / 2;
-
       var x = 0;
       var y = 0;
 
       // get current composite
       var composite = createOrGetUndoComposite();
+
+      if ( isDebug ) {
+        console.log( '@alignSwimlanesEx: current composite: ' + composite.getTitle() );
+      }
+
       foreachArrayItem( swimlanes, function( lane ) {
         if ( lane != exclude ) {
           var cmd = provis.scriptHelper.createChangeItemCmd(
@@ -163,6 +179,11 @@ var ProVis = function( appletId ) {
           lane.moveTo( x, y );
           cmd.execute();
           composite.addSubCmd( cmd );
+
+          if ( isDebug ) {
+            var txt = lane.getText();
+            console.log( '@alignSwimlanesEx: moved lane "' + txt + '" to: (' + x + ';' + y + ')' );
+          }
         }
 
         x += lane.getBounds().getWidth();
@@ -174,6 +195,10 @@ var ProVis = function( appletId ) {
 
   var createSwimlaneEx = function( rotation ) {
     var deferred = $.Deferred();
+
+    if ( isDebug ) {
+      console.log( '@createSwimlaneEx: creating lane with rotation: ' + rotation );
+    }
 
     ensureWhitepaper().done( function() {
       var wp = provis.diagram.findNode( constants.whitepaperTag );
@@ -268,6 +293,12 @@ var ProVis = function( appletId ) {
       caption.setVisible( true );
       lane.setVisible( true );
 
+      if ( isDebug ) {
+        console.log( '@createSwimlaneEx: created lane at: (' + titleBounds.getX() + ';' + titleBounds.getY() + ')' );
+        console.log( '@createSwimlaneEx: total lanes: ' + swimlanes.length );
+        console.log( '@createSwimlaneEx: total lane hashes: ' + swimlaneHashes.length );
+      }
+
       // resize whitepaper
       var wpw = wpBounds.getWidth();
       var newWidth = cfg.swimlaneWidth + (wpw == 1 ? 0 : wpw);
@@ -279,6 +310,11 @@ var ProVis = function( appletId ) {
         var composite = createOrGetUndoComposite();
         composite.addSubCmd( captionChangeCmd );
         composite.addSubCmd( laneChangeCmd );
+
+        if ( isDebug ) {
+          var txt = composite.getTitle();
+          console.log( '@createSwimlaneEx: merged changes into composite: ' + txt );
+        }
 
         deferred.resolve();
       });
@@ -309,8 +345,16 @@ var ProVis = function( appletId ) {
 
     var wp = provis.diagram.findNode( constants.whitepaperTag );
     if ( wp != null ) {
+      if ( isDebug ) {
+        console.log( '@ensureWhitepaper: whitepaper present. returning.' );
+      }
+
       deferred.resolve();
       return deferred.promise();
+    }
+
+    if ( isDebug ) {
+      console.log( '@ensureWhitepaper: creating whitepaper.' );
     }
 
     // Reachable only if there's no whitepaper present
@@ -346,6 +390,14 @@ var ProVis = function( appletId ) {
 
     var composite = createOrGetUndoComposite();
     composite.addSubCmd( changeCmd );
+
+    if ( isDebug ) {
+      var b = whitepaper.getBounds();
+      var size = b.getWidth() + 'x' + b.getHeight();
+      var pos = '(' + b.getX() + ';' + b.getY() + ')';
+      console.log( '@ensureWhitepaper: created whitepaper of size ' + size + ' at ' + pos );
+      console.log( '@ensureWhitepaper: merged changes into composite: ' + composite.getTitle() );
+    }
 
     deferred.resolve();
     return deferred.promise();
@@ -399,6 +451,10 @@ var ProVis = function( appletId ) {
       string += chars[Math.round( Math.random() * (chars.length - 1) )];
     }
 
+    if ( isDebug ) {
+      console.log( '@getRandomString: created: ' + string );
+    }
+
     return string;
   };
 
@@ -414,8 +470,16 @@ var ProVis = function( appletId ) {
     foreachArrayItem( swimlanes, function( caption ) {
       width += caption.getBounds().getWidth();
     }).done( function() {
+      if ( isDebug ) {
+        console.log( '@getSwimlanesWidth: width: ' + width );
+      }
+
       deferred.resolve( width );
     }).fail( function() {
+      if ( isDebug ) {
+        console.log( '@getSwimlanesWidth: iteration failed. rejecting!' );
+      }
+
       deferred.reject();
     });
 
@@ -439,8 +503,19 @@ var ProVis = function( appletId ) {
         else if ( swimlanes[i] === ancestor ) isSuccessor = true;
       }
 
+      if ( isDebug ) {
+        var s = '';
+        for ( var i = 0; i < successors.length; ++i )
+          s += successors[i].getText() + ' ';
+        console.log( '@getSuccessiveLanes: successors: ' + s.trim() );
+      }
+
       deferred.resolve( successors );
     } else {
+      if ( isDebug ) {
+        console.log( '@getSuccessiveLanes: rejecting! invalid ancestor: ' + ancestor );
+      }
+
       deferred.reject( 'Invalid ancestor node.' );
     }
 
@@ -529,17 +604,11 @@ var ProVis = function( appletId ) {
       cfg.diagramWidth,
       cfg.diagramHeight );
     provis.diagram.setBounds( rect );
-  };
 
-  var linkClicked = function( d, e ) {
-    var link = e.getLink();
-    link.setSelected( true );
-    console.log( link.toString() );
-    console.log( 'selected: ' + link.getSelected() );
-    console.log( 'snapsToBorder: ' + link.getSnapToNodeBorder() );
-    console.log( 'ignoreLayout: ' + link.getIgnoreLayout() );
-    console.log( 'locked: ' + link.getLocked() );
-  }
+    if ( isDebug ) {
+      console.log( '@initialize: applet initialized!' );
+    }
+  };
 
   var linkCreated = function( d, e ) {
     var link = e.getLink();
@@ -549,6 +618,26 @@ var ProVis = function( appletId ) {
 
     var pen = provis.createPen( curTheme.linkWidth, curTheme.linkColor );
     link.setPen( pen );
+
+    try {
+      link.setStyle( curTheme.linkStyle );
+      link.setTextStyle( curTheme.linkTextStyle );
+    } catch ( e ) {
+      if ( isDebug ) {
+        console.log( e.message );
+        console.log( e.stack );
+      }
+    }
+
+    var font = provis.scriptHelper.createFont( 'Arial', curTheme.captionFontSize );
+    link.setFont( font );
+
+    var textColor = provis.createColor( curTheme.linkTextColor );
+    link.setTextColor( textColor );
+
+    if ( isDebug ) {
+      console.log( '@linkCreated: link created' );
+    }
   };
 
   var nodeClicked = function( d, e ) {
@@ -560,7 +649,11 @@ var ProVis = function( appletId ) {
       link.setLocked( false );
       link.setSelected( true );
     }
-  }
+
+    if ( isDebug ) {
+      console.log( '@nodeClicked: node selected. tag: ' + node.getTag() + ', type: ' +node.getShape().getId() );
+    }
+  };
 
   /**
    * Event handler which is called each time before a new node is created.
@@ -579,9 +672,18 @@ var ProVis = function( appletId ) {
     }
 
     var theme = curTheme[id];
-    if ( !theme ) return;
+    if ( !theme ) {
+      if ( isDebug ) {
+        console.log( '@nodeCreating: invalid theme. returning!' );
+      }
+
+      return;
+    }
 
     provis.applyNodeDefaults( node, theme );
+    if ( isDebug ) {
+      console.log( '@nodeCreating: node of type "' + id + '" created.' );
+    }
   };
 
   /**
@@ -605,8 +707,18 @@ var ProVis = function( appletId ) {
       var index = swimlanes.indexOf( node );
       swimlanes.splice( index, 1 );
       swimlaneHashes.splice( index, 1 );
+
+      if ( isDebug ) {
+        console.log( '@nodeDeleted: swimlane deleted.' );
+        console.log( '@nodeDeleted: total lanes: ' + swimlanes.length );
+        console.log( '@nodeDeleted: total lane hashes: ' + swimlaneHashes.length );
+      }
+
       alignSwimlanes().done( function() {
         provis.view.recreateCacheImage();
+        if ( isDebug ) {
+          console.log( '@nodeDeleted: re-created cache image of diagram view.' );
+        }
       });
     }
   };
@@ -618,6 +730,10 @@ var ProVis = function( appletId ) {
       case constants.whitepaperTag:
       case constants.themeConfig:
         e.setCancel( true );
+        if ( isDebug ) {
+          console.log( '@nodeDeleting: canceling deletion for tag: ' + node.getTag() );
+        }
+
         break;
     }
   }
@@ -630,8 +746,20 @@ var ProVis = function( appletId ) {
    * @param e 'com.mindfusion.diagramming.NodeEvent'
    */
   var nodeDoubleClicked = function( d, e ) {
+    var link = provis.diagram.getLinkAt( e.getMousePosition(), 10, false );
+    if ( link ) {
+      provis.view.beginEdit( link );
+      return;
+    }
+
     var swimlane = e.getNode();
-    if ( swimlane.getTag() != constants.swimlaneTag ) return;
+    if ( swimlane.getTag() != constants.swimlaneTag ) {
+      if ( isDebug ) {
+        console.log( '@nodeDoubleClicked: ignoring dclick' )
+      }
+
+      return;
+    }
 
     var bounds = swimlane.getBounds();
     var pos = e.getMousePosition();
@@ -654,6 +782,11 @@ var ProVis = function( appletId ) {
     node.attachTo( swimlane, 0 );
     swimlane.getSubordinateGroup().setAutodeleteItems( true );
     composite.execute();
+
+    if ( isDebug ) {
+      console.log( '@nodeDoubleClicked: create node of type "' + shapeId + '" at (' + x + ';' + y + ')' );
+      console.log( '@nodeDoubleClicked: merged changes into composite: ' + composite.getTitle() );
+    }
   };
 
   /**
@@ -669,18 +802,18 @@ var ProVis = function( appletId ) {
     var handle = e.getAdjustmentHandle();
     var tag = node.getTag();
 
+    if ( isDebug ) {
+      console.log( '@nodeModified: node modified by handle: ' + handle );
+      console.log( '  *   HandleStyles:' );
+      console.log( '  *   0----4----1' );
+      console.log( '  *   |    |    |' );
+      console.log( '  *   7----8----5' );
+      console.log( '  *   |    |    |' );
+      console.log( '  *   3----6----2' );
+    }
+
     var sh = provis.scriptHelper;
     var cc = constants.commands;
-    /*
-     *   HandleStyles:
-     *
-     *   0***4***1
-     *   *       *
-     *   7   8   5
-     *   *       *
-     *   3***6***2
-     */
-
     var undoable = false;
     switch ( handle ) {
       case 5:
@@ -689,21 +822,34 @@ var ProVis = function( appletId ) {
             adjustWhitepaperWidth( width );
           });
 
-          undoable = true;;
+          undoable = true;
+
+          if ( isDebug ) {
+            console.log( '@nodeModified: swimlane width changed.' );
+          }
         }
 
         break;
+
       case 6: // adjust whitepaper height
           if ( tag != constants.whitepaperTag ) break;
           var newHeight = bounds.getHeight() - cfg.captionHeight;
           setSwimlanesHeight( newHeight );
           undoable = true;
+          if ( isDebug ) {
+            console.log( '@nodeModified: whitepaper height changed.' );
+          }
+
           break;
 
       case 8:
         if ( tag == constants.swimlaneTopTag ) {
           alignSwimlanes().done( function() {
             undoable = true;
+
+            if ( isDebug ) {
+              console.log( '@nodeModified: swimlane moved.' );
+            }
           });
         } else {
           // update parent container (swimlane)
@@ -716,6 +862,10 @@ var ProVis = function( appletId ) {
           }
 
           undoable = true;
+
+          if ( isDebug ) {
+            console.log( '@nodeModified: node (' + node.getShape().getId() + ') attached to swimlane "' + parent.getMasterGroup().getMainItem().getText() + '".' );
+          }
         }
 
         break;
@@ -733,7 +883,13 @@ var ProVis = function( appletId ) {
         // If the current node event was not a move of a swimlane, just
         // finish the undo composite.
         if ( handle != 8 || tag != constants.swimlaneTopTag ) {
-          createOrGetUndoComposite().execute();
+          var composite = createOrGetUndoComposite();
+          composite.execute();
+
+          if ( isDebug ) {
+            console.log( '@nodeModified: composite "' + composite.getTitle() + '" finalized.' );
+          }
+
           return;
         }
 
@@ -742,6 +898,11 @@ var ProVis = function( appletId ) {
         var title = null;
         if ( undo ) title = undo.getTitle();
 
+        // compare references of swimlanes to their according hashes.
+        // a difference between those two arrays indicates a change, for instance
+        // deletion or move.
+
+        // different array sizes are the very most obvious indicator for recent changes.
         var haveChanged = swimlanes.length != swimlaneHashes.length;
 
         // dig deeper :)
@@ -779,7 +940,11 @@ var ProVis = function( appletId ) {
         }
 
         // finalize the undo composite.
-        createOrGetUndoComposite().execute();
+        var composite = createOrGetUndoComposite();
+        composite.execute();
+        if ( isDebug ) {
+          console.log( '@nodeModified: composite "' + composite.getTitle() + '" finalized.' );
+        }
 
         // nothing changed, e.g. the user draged the last lane to the (most)
         // right side of the applet area.
@@ -788,6 +953,10 @@ var ProVis = function( appletId ) {
         if ( !haveChanged ) {
           if ( !title ) provis.undoManager.undo();
           else history.mergeUndoRecords( 2, title );
+
+          if ( isDebug ) {
+            console.log( '@nodeModified: merged two most recent undos due to insignificant changes.' );
+          }
         }
       }, 100 );
     }
@@ -810,15 +979,16 @@ var ProVis = function( appletId ) {
     var sh = provis.scriptHelper;
     var cc = constants.commands;
 
-    /*
-     *   HandleStyles:
-     *
-     *   0***4***1
-     *   *       *
-     *   7   8   5
-     *   *       *
-     *   3***6***2
-     */
+
+    if ( isDebug ) {
+      console.log( '@nodeModifying: node modifying by handle: ' + handle );
+      console.log( '  *   HandleStyles:' );
+      console.log( '  *   0----4----1' );
+      console.log( '  *   |    |    |' );
+      console.log( '  *   7----8----5' );
+      console.log( '  *   |    |    |' );
+      console.log( '  *   3----6----2' );
+    }
 
     switch ( handle ) {
       case 5: // adjust swimlane width
@@ -838,11 +1008,22 @@ var ProVis = function( appletId ) {
           var y = bounds.getY();
 
           foreachArrayItem( lanes, function( lane ) {
-            var laneCmd = sh.createChangeItemCmd( lane, cc.modifySwimlane );
+            var laneCmd = null;
+            try {
+              laneCmd = sh.createChangeItemCmd( lane, cc.modifySwimlane );
+            } catch( e ) {
+              if ( isDebug ) {
+                console.log( e.message );
+                console.log( e.stack );
+              }
+            }
+
             lane.moveTo( x, y );
-            laneCmd.execute();
-            composite.addSubCmd( laneCmd );
             x += lane.getBounds().getWidth();
+            if ( laneCmd != null ) {
+              laneCmd.execute();
+              composite.addSubCmd( laneCmd );
+            }
           }).done( function() {
             provis.view.recreateCacheImage();
           });
@@ -1069,6 +1250,8 @@ var ProVis = function( appletId ) {
 
     node.setBrush( brush );
     node.setAnchorPattern( this.anchorPattern );
+    node.setEnabledHandles( theme.adjustmentHandles );
+    node.setHandlesStyle( theme.handleStyle );
 
     var textColor = provis.createColor( theme.foreground );
     node.setTextColor( textColor );
@@ -1091,7 +1274,7 @@ var ProVis = function( appletId ) {
     var deferred = $.Deferred();
 
     if ( theme ) {
-      curTheme = ProVis.nodeDefaults[theme];
+      curTheme = ProVis.themes[theme];
     }
 
     var nodes = provis.diagram.getNodes();
@@ -1416,6 +1599,10 @@ var ProVis = function( appletId ) {
     this.view.setBehavior( behavior );
   };
 
+  ProVis.prototype.setDebug = function( state ) {
+    isDebug = state && state != null;
+  };
+
   /**
    * Toggles the visibility of the alignment grid.
    *
@@ -1477,6 +1664,7 @@ var ProVis = function( appletId ) {
     this.view.setZoomFactor( value );
     return value;
   };
+
 
   /*****************************************************************************
    * initialization
@@ -1550,7 +1738,6 @@ var ProVis = function( appletId ) {
   $(window).resize( this.adjustAppletBounds );
 
   // event wire up
-  window.linkClicked = linkClicked;
   window.linkCreated = linkCreated;
   window.nodeClicked = nodeClicked;
   window.nodeCreating = nodeCreating;

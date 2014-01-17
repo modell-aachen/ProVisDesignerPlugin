@@ -228,6 +228,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
         var warning = $('#close-text').text();
         var oe = e.originalEvent || window.event;
         if (oe) oe.returnValue = warning;
+
         return warning;
       });
 

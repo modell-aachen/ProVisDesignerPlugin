@@ -307,6 +307,7 @@ ProVis = function( appletId ) {
         type: 'get',
         dataType: 'text',
         url: url,
+        dataType: 'text',
         success: function( data ) {
           provis.applet.loadFromString( data );
         },

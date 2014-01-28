@@ -1737,6 +1737,7 @@ var ProVis = function( appletId ) {
     $('applet').setHidden().done( function() {
       $.ajax({
         type: 'get',
+        dataType: 'text',
         url: url,
         success: function( data ) {
           provis.applet.loadFromString( data );

@@ -605,6 +605,8 @@ var ProVis = function( appletId ) {
     if ( isDebug ) {
       console.log( '@initialize: applet initialized!' );
     }
+
+    provis.diagram.setDirty( false );
   };
 
   var linkCreated = function( d, e ) {

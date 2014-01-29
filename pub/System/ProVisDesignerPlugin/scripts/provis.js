@@ -536,6 +536,9 @@ var ProVis = function( appletId ) {
 
     // allow inplace editing of captions and shape titles
     provis.view.setAllowInplaceEdit( cfg.allowInplaceEdit );
+    var inplace = provis.view.getInplaceTextArea();
+    inplace.setLineWrap( true );
+    inplace.setWrapStyleWord( true );
 
     // default behavior (cursor): connect
     provis.view.setBehavior( cfg.defaultBehavior );

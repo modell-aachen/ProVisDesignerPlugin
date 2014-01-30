@@ -218,7 +218,16 @@ var ProVis = function( appletId ) {
 
       // create group of nodes
       lane.attachTo( caption, 0 );
-      caption.getSubordinateGroup().setAutodeleteItems( true );
+      if(caption.getSubordiateGroup) {
+        var so = caption.getSubordiateGroup();
+        if(so && so.setAutodeleteItems) {
+          so.setAutodeleteItems( true );
+        } else {
+          if(console && console.log) console.log("no caption.getSubordinateGroup().setAutodeleteItems()");
+        }
+      } else {
+        if(console && console.log) console.log("no caption.getSubordinateGroup()");
+      }
 
       // undo commands
       var captionChangeCmd = sh.createChangeItemCmd( caption, cc.newNode );
@@ -536,9 +545,13 @@ var ProVis = function( appletId ) {
 
     // allow inplace editing of captions and shape titles
     provis.view.setAllowInplaceEdit( cfg.allowInplaceEdit );
-    var inplace = provis.view.getInplaceTextArea();
-    inplace.setLineWrap( true );
-    inplace.setWrapStyleWord( true );
+    if(provis.view.getInplaceTextArea) {
+      var inplace = provis.view.getInplaceTextArea();
+      inplace.setLineWrap( true );
+      inplace.setWrapStyleWord( true );
+    } else {
+      if(console && console.log) console.log("No provis.view.getInplaceTextArea(), could not set wrap");
+    }
 
     // default behavior (cursor): connect
     provis.view.setBehavior( cfg.defaultBehavior );
@@ -860,7 +873,16 @@ var ProVis = function( appletId ) {
           var parent = provis.getParentNodeAt( pt );
           if ( parent ) {
             node.attachTo( parent, 0 );
-            parent.getSubordinateGroup().setAutodeleteItems( true );
+            if(parent.getSubordinateGroup) {
+              var so = parent.getSubordinateGroup();
+              if(so && so.setAutodeleteItems) {
+                parent.getSubordinateGroup().setAutodeleteItems( true );
+              } else {
+                if(console && console.log) console.log("no parent.getSubordinateGroup().setAutodeleteItems()");
+              }
+            } else {
+              if(console && console.log) console.log("no parent.getSubordinateGroup()");
+            }
           }
 
           undoable = true;

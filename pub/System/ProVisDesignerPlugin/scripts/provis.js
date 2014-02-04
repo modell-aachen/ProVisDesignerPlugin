@@ -13,7 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-var ProVis = function( appletId ) {
+var ProVis;
+MindFusion = {
+  invokeInit: function( handler, applet, attempts ) {
+    window.provis = new ProVis(applet);
+  }
+};
+ProVis = function( appletId ) {
 
   // Extends an array to move elements around.
   if ( !Array.prototype.move ) {

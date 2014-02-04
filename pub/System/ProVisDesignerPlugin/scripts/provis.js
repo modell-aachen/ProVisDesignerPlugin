@@ -171,7 +171,7 @@ ProVis = function( appletId ) {
           composite.addSubCmd( cmd );
 
           if ( isDebug ) {
-            var txt = lane.getText();
+            var txt = lane.getCaption();
             console.log( '@alignSwimlanesEx: moved lane "' + txt + '" to: (' + x + ';' + y + ')' );
           }
         }
@@ -199,42 +199,49 @@ ProVis = function( appletId ) {
 
       var sh = provis.scriptHelper;
       var cc = constants.commands;
-      var shape = sh.shapeFromId( 'Rectangle' );
 
-      // a swimlane consists of 2 separate nodes: caption + lane
-      var caption = sh.createShapeNode( shape );
-      caption.setVisible( false );
-      provis.diagram.add( caption );
-
-      var lane = sh.createShapeNode( shape );
-      lane.setVisible( false );
-      provis.diagram.add( lane );
-
-      var titleBounds = sh.createRectangleF(
+      var container = provis.diagram.getFactory().createContainerNode(
         offsetX + (wpBounds.getWidth() == 1 ? 0 : wpBounds.getWidth()),
         offsetY,
         cfg.swimlaneWidth,
-        cfg.captionHeight );
+        cfg.captionHeight + wpBounds.getHeight() - cfg.captionHeight );
+      container.setCaptionHeight( cfg.captionHeight );
+      container.setMinimumSize( sh.createSizeF( cfg.swimlaneMinWidth, cfg.swimlaneMinHeight + cfg.captionHeight ) );
+      container.setFoldable( false );
 
-      var laneBounds = sh.createRectangleF(
-        offsetX + (wpBounds.getWidth() == 1 ? 0 : wpBounds.getWidth()),
-        offsetY + cfg.captionHeight,
-        cfg.swimlaneWidth,
-        wpBounds.getHeight() - cfg.captionHeight );
-
-      // create group of nodes
-      lane.attachTo( caption, 0 );
-      caption.getSubordinateGroup().setAutodeleteItems( true );
+      container.setVisible( false );
+      provis.diagram.add( container );
 
       // undo commands
-      var captionChangeCmd = sh.createChangeItemCmd( caption, cc.newNode );
-      var laneChangeCmd = sh.createChangeItemCmd( lane, cc.newNode );
-
-      caption.setBounds( titleBounds );
-      lane.setBounds( laneBounds );
+      var containerChangeCmd = sh.createChangeItemCmd( container, cc.newNode );
 
       var fg = provis.createColor( curTheme.captionForeground );
+      container.setCaptionColor( fg );
       var font = sh.createFont( 'Arial Bold', curTheme.captionFontSize );
+      container.setFont( font );
+      container.setCaption( 'Label' + (1 + swimlanes.length) );
+      container.setBrush( provis.createSolidBrush( cfg.swimlaneBackBrush ) );
+
+      container.setLocked( false );
+      container.setObstacle( false );
+      container.setTag( constants.swimlaneTag );
+      container.setAllowIncomingLinks( false );
+      container.setAllowOutgoingLinks( false );
+      container.setEnabledHandles( cfg.swimlaneTopHandles );
+      container.setHandlesStyle( cfg.defaultHandleStyle );
+      container.zTop();
+
+      var constraints = container.getConstraints();
+      constraints.setMoveDirection( 1 );
+      constraints.setMinWidth( cfg.swimlaneMinWidth );
+      constraints.setMinHeight( cfg.swimlaneMinHeight );
+
+      var lanePen = provis.createPen(
+        curTheme.laneBorderWidth,
+        curTheme.laneBorderColor );
+
+      container.setPen( lanePen );
+
       var brush = null;
       if ( curTheme.captionUseGradient ) {
         brush = provis.createGradientBrush(
@@ -244,59 +251,22 @@ ProVis = function( appletId ) {
       } else {
         brush = provis.createSolidBrush( curTheme.captionBackground );
       }
-
-      caption.setTextColor( fg );
-      caption.setFont( font );
-      caption.setBrush( brush );
-      caption.setLocked( false );
-      caption.setObstacle( true );
-      caption.setText( 'Label' + (1 + swimlanes.length) );
-      caption.setTag( constants.swimlaneTopTag );
-      caption.setAllowIncomingLinks( false );
-      caption.setAllowOutgoingLinks( false );
-      caption.setEnabledHandles( cfg.swimlaneTopHandles );
-      caption.setHandlesStyle( cfg.defaultHandleStyle );
-      caption.zTop();
-      // caption.setZIndex( 1 );
-
-
-      var titleConstraints = caption.getConstraints();
-      titleConstraints.setMoveDirection( 1 );
-      titleConstraints.setMinWidth( cfg.swimlaneMinWidth );
-
-      lane.setZIndex(1);
-      lane.setLocked( true );
-      lane.setEnabledHandles( cfg.swimlaneHandles );
-      lane.setHandlesStyle( cfg.defaultHandleStyle );
-      lane.setBrush( provis.createSolidBrush( cfg.swimlaneBackBrush ) );
-      lane.setObstacle( false );
-      lane.setTag( constants.swimlaneTag );
-      lane.setAllowIncomingLinks( false );
-      lane.setAllowOutgoingLinks( false );
-
-      var laneConstraints = lane.getConstraints();
-      laneConstraints.setMoveDirection( 1 );
+      container.setCaptionBrush( brush );
 
       var captionPen = provis.createPen(
         curTheme.captionBorderWidth,
         curTheme.captionBorderColor );
-      var lanePen = provis.createPen(
-        curTheme.laneBorderWidth,
-        curTheme.laneBorderColor );
-
-      caption.setPen( captionPen );
-      lane.setPen( lanePen );
+      container.setCaptionDividerPen( captionPen );
 
       // keep a reference to this swimlane
-      swimlanes.push( caption );
-      swimlaneHashes.push( caption.hashCode() );
+      swimlanes.push( container );
+      swimlaneHashes.push( container.hashCode() );
 
       // set visible
-      caption.setVisible( true );
-      lane.setVisible( true );
+      container.setVisible( true );
 
       if ( isDebug ) {
-        console.log( '@createSwimlaneEx: created lane at: (' + titleBounds.getX() + ';' + titleBounds.getY() + ')' );
+        console.log( '@createSwimlaneEx: created lane at: (' + container.getBounds().getX() + ';' + container.getBounds().getY() + ')' );
         console.log( '@createSwimlaneEx: total lanes: ' + swimlanes.length );
         console.log( '@createSwimlaneEx: total lane hashes: ' + swimlaneHashes.length );
       }
@@ -306,12 +276,10 @@ ProVis = function( appletId ) {
       var newWidth = cfg.swimlaneWidth + (wpw == 1 ? 0 : wpw);
       adjustWhitepaperWidth( newWidth ).done( function() {
         // add all (programmatically) made changes to the composite
-        captionChangeCmd.execute();
-        laneChangeCmd.execute();
+        containerChangeCmd.execute();
 
         var composite = createOrGetUndoComposite();
-        composite.addSubCmd( captionChangeCmd );
-        composite.addSubCmd( laneChangeCmd );
+        composite.addSubCmd( containerChangeCmd );
 
         if ( isDebug ) {
           var txt = composite.getTitle();
@@ -470,8 +438,8 @@ ProVis = function( appletId ) {
     var deferred = $.Deferred();
 
     var width = 0;
-    foreachArrayItem( swimlanes, function( caption ) {
-      width += caption.getBounds().getWidth();
+    foreachArrayItem( swimlanes, function( container ) {
+      width += container.getBounds().getWidth();
     }).done( function() {
       if ( isDebug ) {
         console.log( '@getSwimlanesWidth: width: ' + width );
@@ -498,7 +466,7 @@ ProVis = function( appletId ) {
   var getSuccessiveLanes = function( ancestor ) {
     var deferred = $.Deferred();
 
-    if ( ancestor && ancestor.getTag() == constants.swimlaneTopTag ) {
+    if ( ancestor && ancestor.getTag() == constants.swimlaneTag ) {
       var isSuccessor = false;
       var successors = [];
       for( var i = 0; i < swimlanes.length; i++ ) {
@@ -545,6 +513,7 @@ ProVis = function( appletId ) {
     var inplace = provis.view.getInplaceTextArea();
     inplace.setLineWrap( true );
     inplace.setWrapStyleWord( true );
+    provis.view.setInplaceEditAcceptOnEnter( true );
 
     // default behavior (cursor): connect
     provis.view.setBehavior( cfg.defaultBehavior );
@@ -659,7 +628,8 @@ ProVis = function( appletId ) {
     }
 
     if ( isDebug ) {
-      console.log( '@nodeClicked: node selected. tag: ' + node.getTag() + ', type: ' +node.getShape().getId() );
+      var shape = node.getShape ? node.getShape().getId() : 'swimlane';
+      console.log( '@nodeClicked: node selected. tag: ' + node.getTag() + ', type: ' + shape );
     }
   };
 
@@ -704,7 +674,7 @@ ProVis = function( appletId ) {
   var nodeDeleted = function( d, e ) {
     var node = e.getNode();
 
-    if ( node.getTag() == constants.swimlaneTopTag ) {
+    if ( node.getTag() == constants.swimlaneTag ) {
       var wp = d.findNode( constants.whitepaperTag );
       var wpWidth = wp.getBounds().getWidth();
       var newWidth = wpWidth - node.getBounds().getWidth();
@@ -728,6 +698,10 @@ ProVis = function( appletId ) {
           console.log( '@nodeDeleted: re-created cache image of diagram view.' );
         }
       });
+    } else if ( node.getTag() != constants.whitepaperTag ) {
+      // Shape node removed, undo autoresize damage
+      var wp = d.findNode( constants.whitepaperTag );
+      adjustSwimlaneHeight( wp.getBounds().getHeight() );
     }
   };
 
@@ -771,6 +745,10 @@ ProVis = function( appletId ) {
 
     var bounds = swimlane.getBounds();
     var pos = e.getMousePosition();
+
+    // Don't create node in header area
+    if (pos.getY() < bounds.getY() + cfg.captionHeight ) return;
+
     var factory = d.getFactory();
     var shapeId = $('div.node.node-selected').data( 'shape' );
     var theme = curTheme[shapeId];
@@ -787,14 +765,17 @@ ProVis = function( appletId ) {
     var node = factory.createShapeNode( x, y, theme.width, theme.height );
     provis.applyNodeDefaults( node, theme );
 
-    node.attachTo( swimlane, 0 );
-    swimlane.getSubordinateGroup().setAutodeleteItems( true );
+    swimlane.add( node );
+    // double-clicking the swimlane auto-triggered the caption editor. Cancel.
+    provis.view.endEdit( false );
+    provis.view.beginEdit( node );
     composite.execute();
 
     if ( isDebug ) {
       console.log( '@nodeDoubleClicked: create node of type "' + shapeId + '" at (' + x + ';' + y + ')' );
       console.log( '@nodeDoubleClicked: merged changes into composite: ' + composite.getTitle() );
     }
+
   };
 
   /**
@@ -825,7 +806,7 @@ ProVis = function( appletId ) {
     var undoable = false;
     switch ( handle ) {
       case 5:
-        if ( tag == constants.swimlaneTopTag ) {
+        if ( tag == constants.swimlaneTag ) {
           getSwimlanesWidth().done( function( width ) {
             adjustWhitepaperWidth( width );
           });
@@ -840,9 +821,10 @@ ProVis = function( appletId ) {
         break;
 
       case 6: // adjust whitepaper height
-          if ( tag != constants.whitepaperTag ) break;
+          if ( tag != constants.swimlaneTag ) break;
           var newHeight = bounds.getHeight() - cfg.captionHeight;
           setSwimlanesHeight( newHeight );
+          adjustWhitepaperHeight( newHeight );
           undoable = true;
           if ( isDebug ) {
             console.log( '@nodeModified: whitepaper height changed.' );
@@ -851,7 +833,7 @@ ProVis = function( appletId ) {
           break;
 
       case 8:
-        if ( tag == constants.swimlaneTopTag ) {
+        if ( tag == constants.swimlaneTag ) {
           alignSwimlanes().done( function() {
             undoable = true;
 
@@ -860,6 +842,7 @@ ProVis = function( appletId ) {
             }
           });
         } else {
+          return; // TODO -KRU
           // update parent container (swimlane)
           var b = node.getBounds();
           var pt = provis.scriptHelper.createPointF( b.getX(), b.getY() );
@@ -890,7 +873,7 @@ ProVis = function( appletId ) {
       setTimeout( function() {
         // If the current node event was not a move of a swimlane, just
         // finish the undo composite.
-        if ( handle != 8 || tag != constants.swimlaneTopTag ) {
+        if ( handle != 8 || tag != constants.swimlaneTag ) {
           var composite = createOrGetUndoComposite();
           composite.execute();
 
@@ -1000,14 +983,10 @@ ProVis = function( appletId ) {
 
     switch ( handle ) {
       case 5: // adjust swimlane width
-        if ( tag != constants.swimlaneTopTag ) break;
-
-        var group = node.getSubordinateGroup();
-        var body = group.getAttachedNodes().get( 0 );
+        if ( tag != constants.swimlaneTag ) break;
 
         var composite = createOrGetUndoComposite();
-        var cmd = sh.createChangeItemCmd( body, cc.modifySwimlane );
-        body.resize( bounds.getWidth(), body.getBounds().getHeight() );
+        var cmd = sh.createChangeItemCmd( node, cc.modifySwimlane );
         cmd.execute();
         composite.addSubCmd( cmd );
 
@@ -1039,15 +1018,16 @@ ProVis = function( appletId ) {
 
         break;
       case 6: // adjust whitepaper height
-        if ( tag != constants.whitepaperTag ) break;
+        if ( tag != constants.swimlaneTag ) break;
         var newHeight = bounds.getHeight() - cfg.captionHeight;
+        adjustWhitepaperHeight( newHeight );
         setSwimlanesHeight( newHeight ).done( function() {
           provis.view.recreateCacheImage();
         });
 
         break;
       case 8: // move swimlane
-        if ( tag != constants.swimlaneTopTag ) break;
+        if ( tag != constants.swimlaneTag ) break;
 
         var curTrigger = bounds.getX();
         var curIndex = swimlanes.indexOf( node );
@@ -1104,13 +1084,12 @@ ProVis = function( appletId ) {
     cmd.execute();
     composite.addSubCmd( cmd );
 
-    if ( node.getTag() == constants.swimlaneTopTag ) {
-      var lane = node.getSubordinateGroup().getAttachedNodes().get( 0 );
-      var laneCmd = provis.scriptHelper.createChangeItemCmd( lane, title );
+    if ( node.getTag() == constants.swimlaneTag ) {
+      var laneCmd = provis.scriptHelper.createChangeItemCmd( node, title );
       laneCmd.execute();
       composite.addSubCmd( laneCmd );
-      if ( lane.getSubordinateGroup() != null ) {
-        var nodes = lane.getSubordinateGroup().getAttachedNodes();
+      if ( node.getSubordinateGroup() != null ) {
+        var nodes = node.getSubordinateGroup().getAttachedNodes();
         for( var i = 0; i < nodes.size(); i++ ) {
           var n = nodes.get( i );
           var nodeCmd = provis.scriptHelper.createChangeItemCmd( n, title );
@@ -1133,13 +1112,13 @@ ProVis = function( appletId ) {
     var tag = node.getTag();
     var font = null;
 
-    var shapeName = node.getShape().getId();
+    var shapeName = node.getShape ? node.getShape().getId() : '';
     var theme = curTheme[shapeName];
 
-    if ( tag == constants.swimlaneTopTag ) {
+    if ( tag == constants.swimlaneTag ) {
       font = provis.scriptHelper.createFont( 'Arial Bold', curTheme.captionFontSize );
       var fg = provis.createColor( curTheme.captionForeground );
-      node.setTextColor( fg );
+      node.setCaptionColor( fg );
     } else {
       var color = provis.createColor( theme.foreground );
       node.setTextColor( color );
@@ -1160,8 +1139,8 @@ ProVis = function( appletId ) {
     var deferred = $.Deferred();
 
     var composite = createOrGetUndoComposite();
-    foreachArrayItem( swimlanes, function( caption ) {
-      var group = caption.getSubordinateGroup();
+    foreachArrayItem( swimlanes, function( container ) {
+      var group = container.getSubordinateGroup();
       if ( group ) {
         var lane = group.getAttachedNodes().get( 0 );
         var cmd = provis.scriptHelper.createChangeItemCmd(
@@ -1192,9 +1171,8 @@ ProVis = function( appletId ) {
   var setSwimlanesWidth = function( newWidth ) {
     var deferred = $.Deferred();
 
-    foreachArrayItem( swimlanes, function( caption ) {
-      var lane = caption.getSubordinateGroup().getAttachedNodes().get( 0 );
-      lane.resize( newWidth, lane.getBounds().getHeight() );
+    foreachArrayItem( swimlanes, function( container ) {
+      container.resize( newWidth, container.getBounds().getHeight() );
     }).done( function() {
       deferred.resolve();
     }).fail( function() {
@@ -1235,15 +1213,7 @@ ProVis = function( appletId ) {
    */
   ProVis.prototype.applyNodeDefaults = function( node, theme ) {
     if ( this.anchorPattern == null ) {
-      this.anchorPattern = this.scriptHelper.anchorPatternFromId( 'Decision2In2Out' );
-      var points = this.anchorPattern.getPoints();
-      for( var i = 0; i < points.size(); i++ ) {
-        var pt = points.get( i );
-        pt.setMarkStyle( 3 );
-        pt.setColor(
-          this.createColor(
-            i < 2 ? cfg.anchorInColor : cfg.anchorOutColor ) );
-      }
+      this.anchorPattern = this.scriptHelper.anchorPatternFromId( 'ProVis2In2Out' );
     }
 
     var brush = null;
@@ -1294,6 +1264,7 @@ ProVis = function( appletId ) {
       var tag = node.getTag();
       switch( tag ) {
         case constants.swimlaneTopTag:
+/* TODO: nach ContainerNode konvertieren -KRU
           var font = provis.scriptHelper.createFont( 'Arial Bold', curTheme.captionFontSize );
           var fg = provis.createColor( curTheme.captionForeground );
           node.setFont( font );
@@ -1326,19 +1297,22 @@ ProVis = function( appletId ) {
             curTheme.captionBorderWidth,
             curTheme.captionBorderColor );
           node.setPen( captionPen );
+*/
           break;
         case constants.swimlaneTag:
           node.setZIndex( 1 );
-          node.setLocked( true );
-          node.setEnabledHandles( cfg.swimlaneHandles );
+          node.setLocked( false );
+          node.setEnabledHandles( cfg.swimlaneTopHandles );
           node.setHandlesStyle( cfg.defaultHandleStyle );
           node.setBrush( provis.createSolidBrush( cfg.swimlaneBackBrush ) );
           node.setObstacle( false );
           node.setAllowIncomingLinks( false );
           node.setAllowOutgoingLinks( false );
 
-          var laneConstraints = node.getConstraints();
-          laneConstraints.setMoveDirection( 1 );
+          var nodeConstraints = node.getConstraints();
+          nodeConstraints.setMoveDirection( 1 );
+          nodeConstraints.setMinWidth( cfg.swimlaneMinWidth );
+          nodeConstraints.setMinHeight( cfg. swimlaneMinHeight );
 
           var lanePen = provis.createPen(
             curTheme.laneBorderWidth,
@@ -1811,6 +1785,7 @@ ProVis = function( appletId ) {
   window.nodeModifying = nodeModifying;
   window.nodeStartModifying = nodeStartModifying;
   window.nodeTextChanged = nodeTextChanged;
+  window.appletStarted = initialize;
 
   // initialize ProVis UI Controller
   this.ui.init().done( function() {

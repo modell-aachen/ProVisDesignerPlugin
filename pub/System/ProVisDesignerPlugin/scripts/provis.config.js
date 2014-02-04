@@ -40,7 +40,7 @@ ProVis.config = {
   swimlaneHeight: 500,
   swimlaneMinHeight: 100,
   swimlaneMinWidth: 100,
-  swimlaneTopHandles: 32 + 256,
+  swimlaneTopHandles: 32 + 64 + 256, // 32: right, 64: bottom, 256: middle
   swimlaneWidth: 150,
   undoCommandHistory: 25,
   zoomStep: 25

@@ -62,6 +62,7 @@ ProVis = function( appletId ) {
   var curTheme = ProVis.themes[defaultTheme];
   var undoComposite = null;
   var isDebug = false;
+  var swimlaneContainer = null;
 
 
   /*****************************************************************************
@@ -288,11 +289,14 @@ ProVis = function( appletId ) {
    *
    * @param orientation A value determining whether a vertical or horizontal swimlane shall be created.
    */
-  ProVis.prototype.createSwimlane = function( orientation ) {
-    var composite = createOrGetUndoComposite( constants.commands.createSwimlane );
-    createSwimlaneEx().done( function() {
-      composite.execute();
-    });
+  ProVis.prototype.createSwimlane = function() {
+    if ( !swimlaneContainer ) {
+      var type = provis.scriptHelper.getConstant( 'SwimlaneType', 'Horizontal' );
+      var fac = provis.diagram.getFactory();
+      swimlaneContainer = fac.createSwimlaneContainer( type );
+    }
+
+    swimlaneContainer.addLane();
   };
 
   /**

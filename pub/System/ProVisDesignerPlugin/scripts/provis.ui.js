@@ -23,7 +23,6 @@ if ( ProVis && !ProVis.prototype.ui ) {
     var isMouseDown = false;
     var mouseX = -1;
 
-
     /***************************************************************************
      * public properties
      **************************************************************************/
@@ -36,7 +35,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
      **************************************************************************/
 
     var adjustAppletSize = function() {
-      return;
+      // return;
       var applet = $('.col-applet applet');
       var col = applet.parent();
 
@@ -175,6 +174,11 @@ if ( ProVis && !ProVis.prototype.ui ) {
     var shapeButtonClicked = function() {
       $('div.node.node-selected').removeClass( 'node-selected' );
       $(this).addClass( 'node-selected' );
+
+      // tell the applet which shape is currently selected.
+      var shapeType = provis.scriptHelper.getConstant( 'ProVisShapeType', $(this).data( 'shape' ) );
+      provis.view.setCurrentShape( shapeType );
+
       return false;
     };
 
@@ -260,13 +264,15 @@ if ( ProVis && !ProVis.prototype.ui ) {
   $.fn.extend( {
     setVisible: function() {
       var deferred = $.Deferred();
-      deferred.resolve( this.css('visibility', 'visible') );
+      // deferred.resolve( this.css('visibility', 'visible') );
+      deferred.resolve();
       return deferred.promise();
     },
 
     setHidden: function() {
       var deferred = $.Deferred();
-      deferred.resolve( this.css('visibility', 'hidden') );
+      // deferred.resolve( this.css('visibility', 'hidden') );
+      deferred.resolve();
       return deferred.promise();
     },
 

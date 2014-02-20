@@ -69,66 +69,6 @@ ProVis = function( appletId ) {
    ****************************************************************************/
 
   /**
-   * Adjusts the height of the diagrams whitepaper.
-   * Called when a vertical swimlane has changed.
-   *
-   * @param newHeight The new height of the whitepaper node.
-   * @return A jQuery promise containing the ItemChangeCmd.
-   */
-  var adjustWhitepaperHeight = function( newHeight ) {
-    var deferred = $.Deferred();
-
-    var wp = provis.diagram.findNode( constants.whitepaperTag );
-    var b = wp.getBounds();
-
-    var sh = provis.scriptHelper;
-    var cc = constants.commands;
-
-    var cmd = sh.createChangeItemCmd( wp, cc.adjustWhitepaper );
-    var composite = createOrGetUndoComposite();
-    wp.setBounds( b.getX(), b.getY(), b.getWidth(), newHeight );
-    cmd.execute();
-    composite.addSubCmd( cmd );
-
-    if ( isDebug ) {
-      console.log( '@adjustWhitepaperHeight: new height: ' + newHeight );
-    }
-
-    deferred.resolve();
-    return deferred.promise();
-  };
-
-  /**
-   * Adjusts the width of the diagrams whitepaper.
-   * Called when a horizontal swimlane has changed.
-   *
-   * @param newWidth The new width of the whitepaper.
-   * @return A jQuery promise containing the ItemChangeCmd.
-   */
-  var adjustWhitepaperWidth = function( newWidth ) {
-    var deferred = $.Deferred();
-
-    var wp = provis.diagram.findNode( constants.whitepaperTag );
-    var b = wp.getBounds();
-
-    var sh = provis.scriptHelper;
-    var cc = constants.commands;
-
-    var composite = createOrGetUndoComposite();
-    var cmd = sh.createChangeItemCmd( wp, cc.adjustWhitepaper );
-    wp.setBounds( b.getX(), b.getY(), newWidth, b.getHeight() );
-    cmd.execute();
-    composite.addSubCmd( cmd );
-
-    if ( isDebug ) {
-      console.log( '@adjustWhitepaperWidth: new width: ' + newWidth );
-    }
-
-    deferred.resolve();
-    return deferred.promise();
-  };
-
-  /**
    * Aligns all swimlanes in a row.
    * Called after a swimlane has been moved, resized or deleted.
    *
@@ -169,11 +109,6 @@ ProVis = function( appletId ) {
           lane.moveTo( x, y );
           cmd.execute();
           composite.addSubCmd( cmd );
-
-          if ( isDebug ) {
-            var txt = lane.getCaption();
-            console.log( '@alignSwimlanesEx: moved lane "' + txt + '" to: (' + x + ';' + y + ')' );
-          }
         }
 
         x += lane.getBounds().getWidth();
@@ -186,110 +121,94 @@ ProVis = function( appletId ) {
   var createSwimlaneEx = function( rotation ) {
     var deferred = $.Deferred();
 
-    if ( isDebug ) {
-      console.log( '@createSwimlaneEx: creating lane with rotation: ' + rotation );
+    var offsetX = 0;
+    var offsetY = 0;
+
+    getSwimlanesWidth().done( function( width ) { offsetX = width; } );
+
+    var sh = provis.scriptHelper;
+    var cc = constants.commands;
+
+    var container = provis.scriptHelper.createSwimlane();
+    container.setBounds(
+      offsetX,
+      offsetY,
+      cfg.swimlaneWidth,
+      cfg.swimlaneHeight - cfg.captionHeight
+    );
+
+    // var container = provis.diagram.getFactory().createContainerNode(
+    //   offsetX,
+    //   offsetY,
+    //   cfg.swimlaneWidth,
+    //   cfg.swimlaneHeight - cfg.captionHeight );
+    container.setCaptionHeight( cfg.captionHeight );
+    container.setMinimumSize( sh.createSizeF( cfg.swimlaneMinWidth, cfg.swimlaneMinHeight + cfg.captionHeight ) );
+
+    container.setFoldable( false );
+    container.setVisible( false );
+
+    provis.diagram.add( container );
+
+    // undo commands
+    var containerChangeCmd = sh.createChangeItemCmd( container, cc.newNode );
+
+    var fg = provis.createColor( curTheme.captionForeground );
+    container.setCaptionColor( fg );
+    var font = sh.createFont( 'Arial Bold', curTheme.captionFontSize );
+    container.setFont( font );
+    container.setCaption( 'Label' + (1 + swimlanes.length) );
+    container.setBrush( provis.createSolidBrush( cfg.swimlaneBackBrush ) );
+
+    container.setLocked( false );
+    container.setObstacle( false );
+    container.setTag( constants.swimlaneTag );
+    container.setAllowIncomingLinks( false );
+    container.setAllowOutgoingLinks( false );
+    container.setEnabledHandles( cfg.swimlaneTopHandles );
+    container.setHandlesStyle( cfg.defaultHandleStyle );
+    container.zTop();
+
+    var constraints = container.getConstraints();
+    constraints.setMoveDirection( 1 );
+    constraints.setMinWidth( cfg.swimlaneMinWidth );
+    constraints.setMinHeight( cfg.swimlaneMinHeight );
+
+    var lanePen = provis.createPen(
+      curTheme.laneBorderWidth,
+      curTheme.laneBorderColor );
+
+    container.setPen( lanePen );
+
+    var brush = null;
+    if ( curTheme.captionUseGradient ) {
+      brush = provis.createGradientBrush(
+        curTheme.captionBackground,
+        curTheme.captionGradientColor,
+        curTheme.captionGradientAngle );
+    } else {
+      brush = provis.createSolidBrush( curTheme.captionBackground );
     }
+    container.setCaptionBrush( brush );
 
-    ensureWhitepaper().done( function() {
-      var wp = provis.diagram.findNode( constants.whitepaperTag );
-      var wpBounds = wp.getBounds();
+    var captionPen = provis.createPen(
+      curTheme.captionBorderWidth,
+      curTheme.captionBorderColor );
+    container.setCaptionDividerPen( captionPen );
 
-      var offsetX = 0;
-      var offsetY = 0;
+    // keep a reference to this swimlane
+    swimlanes.push( container );
+    swimlaneHashes.push( container.hashCode() );
 
-      var sh = provis.scriptHelper;
-      var cc = constants.commands;
+    // set visible
+    container.setVisible( true );
 
-      var container = provis.diagram.getFactory().createContainerNode(
-        offsetX + (wpBounds.getWidth() == 1 ? 0 : wpBounds.getWidth()),
-        offsetY,
-        cfg.swimlaneWidth,
-        cfg.captionHeight + wpBounds.getHeight() - cfg.captionHeight );
-      container.setCaptionHeight( cfg.captionHeight );
-      container.setMinimumSize( sh.createSizeF( cfg.swimlaneMinWidth, cfg.swimlaneMinHeight + cfg.captionHeight ) );
-      container.setFoldable( false );
+    // execute undo command
+    containerChangeCmd.execute();
+    var composite = createOrGetUndoComposite();
+    composite.addSubCmd( containerChangeCmd );
 
-      container.setVisible( false );
-      provis.diagram.add( container );
-
-      // undo commands
-      var containerChangeCmd = sh.createChangeItemCmd( container, cc.newNode );
-
-      var fg = provis.createColor( curTheme.captionForeground );
-      container.setCaptionColor( fg );
-      var font = sh.createFont( 'Arial Bold', curTheme.captionFontSize );
-      container.setFont( font );
-      container.setCaption( 'Label' + (1 + swimlanes.length) );
-      container.setBrush( provis.createSolidBrush( cfg.swimlaneBackBrush ) );
-
-      container.setLocked( false );
-      container.setObstacle( false );
-      container.setTag( constants.swimlaneTag );
-      container.setAllowIncomingLinks( false );
-      container.setAllowOutgoingLinks( false );
-      container.setEnabledHandles( cfg.swimlaneTopHandles );
-      container.setHandlesStyle( cfg.defaultHandleStyle );
-      container.zTop();
-
-      var constraints = container.getConstraints();
-      constraints.setMoveDirection( 1 );
-      constraints.setMinWidth( cfg.swimlaneMinWidth );
-      constraints.setMinHeight( cfg.swimlaneMinHeight );
-
-      var lanePen = provis.createPen(
-        curTheme.laneBorderWidth,
-        curTheme.laneBorderColor );
-
-      container.setPen( lanePen );
-
-      var brush = null;
-      if ( curTheme.captionUseGradient ) {
-        brush = provis.createGradientBrush(
-          curTheme.captionBackground,
-          curTheme.captionGradientColor,
-          curTheme.captionGradientAngle );
-      } else {
-        brush = provis.createSolidBrush( curTheme.captionBackground );
-      }
-      container.setCaptionBrush( brush );
-
-      var captionPen = provis.createPen(
-        curTheme.captionBorderWidth,
-        curTheme.captionBorderColor );
-      container.setCaptionDividerPen( captionPen );
-
-      // keep a reference to this swimlane
-      swimlanes.push( container );
-      swimlaneHashes.push( container.hashCode() );
-
-      // set visible
-      container.setVisible( true );
-
-      if ( isDebug ) {
-        console.log( '@createSwimlaneEx: created lane at: (' + container.getBounds().getX() + ';' + container.getBounds().getY() + ')' );
-        console.log( '@createSwimlaneEx: total lanes: ' + swimlanes.length );
-        console.log( '@createSwimlaneEx: total lane hashes: ' + swimlaneHashes.length );
-      }
-
-      // resize whitepaper
-      var wpw = wpBounds.getWidth();
-      var newWidth = cfg.swimlaneWidth + (wpw == 1 ? 0 : wpw);
-      adjustWhitepaperWidth( newWidth ).done( function() {
-        // add all (programmatically) made changes to the composite
-        containerChangeCmd.execute();
-
-        var composite = createOrGetUndoComposite();
-        composite.addSubCmd( containerChangeCmd );
-
-        if ( isDebug ) {
-          var txt = composite.getTitle();
-          console.log( '@createSwimlaneEx: merged changes into composite: ' + txt );
-        }
-
-        deferred.resolve();
-      });
-    });
-
+    deferred.resolve( container );
     return deferred.promise();
   };
 
@@ -303,76 +222,6 @@ ProVis = function( appletId ) {
     if ( !title ) title = 'current';
     return provis.undoManager.startComposite( title, true );
   }
-
-    /**
-   * A method checking for the presence of a whitepaper node.
-   * Called each time before a new swimlane is added to the diagram.
-   *
-   * @return A jQuery promise.
-   */
-  var ensureWhitepaper = function() {
-    var deferred = $.Deferred();
-
-    var wp = provis.diagram.findNode( constants.whitepaperTag );
-    if ( wp != null ) {
-      wp.zBottom(); // hotfix for imported (provis v1) diagrams.
-      if ( isDebug ) {
-        console.log( '@ensureWhitepaper: whitepaper present. returning.' );
-      }
-
-      deferred.resolve();
-      return deferred.promise();
-    }
-
-    if ( isDebug ) {
-      console.log( '@ensureWhitepaper: creating whitepaper.' );
-    }
-
-    // Reachable only if there's no whitepaper present
-    var factory = provis.diagram.getFactory();
-    var offsetX = 0;
-    var offsetY = 0;
-
-    whitepaper = factory.createShapeNode(
-      offsetX,
-      offsetY,
-      0,
-      cfg.captionHeight + cfg.swimlaneHeight );
-
-    // var addCmd = provis.scriptHelper.createAddItemCmd
-    var changeCmd = provis.scriptHelper.createChangeItemCmd(
-      whitepaper,
-      constants.commands.createWhitepaper );
-
-    whitepaper.setTag( constants.whitepaperTag );
-    whitepaper.setLocked( false );
-    whitepaper.setAllowIncomingLinks( false );
-    whitepaper.setAllowOutgoingLinks( false );
-    whitepaper.setObstacle( false );
-    whitepaper.setTransparent( true );
-    whitepaper.setVisible( true );
-    whitepaper.setZIndex( 0 );
-
-    whitepaper.setEnabledHandles( 64 );
-    whitepaper.setHandlesStyle( 1 );
-
-    // add ItemChangeCommand to UndoComposite
-    changeCmd.execute();
-
-    var composite = createOrGetUndoComposite();
-    composite.addSubCmd( changeCmd );
-
-    if ( isDebug ) {
-      var b = whitepaper.getBounds();
-      var size = b.getWidth() + 'x' + b.getHeight();
-      var pos = '(' + b.getX() + ';' + b.getY() + ')';
-      console.log( '@ensureWhitepaper: created whitepaper of size ' + size + ' at ' + pos );
-      console.log( '@ensureWhitepaper: merged changes into composite: ' + composite.getTitle() );
-    }
-
-    deferred.resolve();
-    return deferred.promise();
-  };
 
    /**
     * Helper method to iterate through a Java list synchronously.
@@ -441,16 +290,8 @@ ProVis = function( appletId ) {
     foreachArrayItem( swimlanes, function( container ) {
       width += container.getBounds().getWidth();
     }).done( function() {
-      if ( isDebug ) {
-        console.log( '@getSwimlanesWidth: width: ' + width );
-      }
-
       deferred.resolve( width );
     }).fail( function() {
-      if ( isDebug ) {
-        console.log( '@getSwimlanesWidth: iteration failed. rejecting!' );
-      }
-
       deferred.reject();
     });
 
@@ -474,19 +315,8 @@ ProVis = function( appletId ) {
         else if ( swimlanes[i] === ancestor ) isSuccessor = true;
       }
 
-      if ( isDebug ) {
-        var s = '';
-        for ( var i = 0; i < successors.length; ++i )
-          s += successors[i].getText() + ' ';
-        console.log( '@getSuccessiveLanes: successors: ' + s.trim() );
-      }
-
       deferred.resolve( successors );
     } else {
-      if ( isDebug ) {
-        console.log( '@getSuccessiveLanes: rejecting! invalid ancestor: ' + ancestor );
-      }
-
       deferred.reject( 'Invalid ancestor node.' );
     }
 
@@ -580,10 +410,6 @@ ProVis = function( appletId ) {
       cfg.diagramHeight );
     provis.diagram.setBounds( rect );
 
-    if ( isDebug ) {
-      console.log( '@initialize: applet initialized!' );
-    }
-
     provis.diagram.setDirty( false );
   };
 
@@ -600,10 +426,8 @@ ProVis = function( appletId ) {
       link.setStyle( curTheme.linkStyle );
       link.setTextStyle( curTheme.linkTextStyle );
     } catch ( e ) {
-      if ( isDebug ) {
-        console.log( e.message );
-        console.log( e.stack );
-      }
+      console.log( e.message );
+      console.log( e.stack );
     }
 
     var font = provis.scriptHelper.createFont( 'Arial', curTheme.captionFontSize );
@@ -611,10 +435,6 @@ ProVis = function( appletId ) {
 
     var textColor = provis.createColor( curTheme.linkTextColor );
     link.setTextColor( textColor );
-
-    if ( isDebug ) {
-      console.log( '@linkCreated: link created' );
-    }
   };
 
   var nodeClicked = function( d, e ) {
@@ -625,11 +445,6 @@ ProVis = function( appletId ) {
       if ( selection ) selection.clear();
       link.setLocked( false );
       link.setSelected( true );
-    }
-
-    if ( isDebug ) {
-      var shape = node.getShape ? node.getShape().getId() : 'swimlane';
-      console.log( '@nodeClicked: node selected. tag: ' + node.getTag() + ', type: ' + shape );
     }
   };
 
@@ -651,17 +466,10 @@ ProVis = function( appletId ) {
 
     var theme = curTheme[id];
     if ( !theme ) {
-      if ( isDebug ) {
-        console.log( '@nodeCreating: invalid theme. returning!' );
-      }
-
       return;
     }
 
     provis.applyNodeDefaults( node, theme );
-    if ( isDebug ) {
-      console.log( '@nodeCreating: node of type "' + id + '" created.' );
-    }
   };
 
   /**
@@ -675,33 +483,20 @@ ProVis = function( appletId ) {
     var node = e.getNode();
 
     if ( node.getTag() == constants.swimlaneTag ) {
-      var wp = d.findNode( constants.whitepaperTag );
-      var wpWidth = wp.getBounds().getWidth();
-      var newWidth = wpWidth - node.getBounds().getWidth();
-      if ( newWidth >= 0 ) {
-        adjustWhitepaperWidth( newWidth == 0 ? 1 : newWidth );
-      }
-
       var index = swimlanes.indexOf( node );
       swimlanes.splice( index, 1 );
       swimlaneHashes.splice( index, 1 );
 
-      if ( isDebug ) {
-        console.log( '@nodeDeleted: swimlane deleted.' );
-        console.log( '@nodeDeleted: total lanes: ' + swimlanes.length );
-        console.log( '@nodeDeleted: total lane hashes: ' + swimlaneHashes.length );
-      }
-
       alignSwimlanes().done( function() {
         provis.view.recreateCacheImage();
-        if ( isDebug ) {
-          console.log( '@nodeDeleted: re-created cache image of diagram view.' );
-        }
       });
-    } else if ( node.getTag() != constants.whitepaperTag ) {
+    } else {
+      // wtf?
+      // ToDo. hier muss vermutlich der entsprechende undo command erzeugt
+      // und ausgeführt werden.
       // Shape node removed, undo autoresize damage
-      var wp = d.findNode( constants.whitepaperTag );
-      adjustSwimlaneHeight( wp.getBounds().getHeight() );
+      // var wp = d.findNode( constants.whitepaperTag );
+      // adjustSwimlaneHeight( wp.getBounds().getHeight() );
     }
   };
 
@@ -709,13 +504,9 @@ ProVis = function( appletId ) {
     var node = e.getNode();
 
     switch ( node.getTag() ) {
-      case constants.whitepaperTag:
+      // diagram (esp. theme) configuration should not be deleteable.
       case constants.themeConfig:
         e.setCancel( true );
-        if ( isDebug ) {
-          console.log( '@nodeDeleting: canceling deletion for tag: ' + node.getTag() );
-        }
-
         break;
     }
   }
@@ -728,7 +519,8 @@ ProVis = function( appletId ) {
    * @param e 'com.mindfusion.diagramming.NodeEvent'
    */
   var nodeDoubleClicked = function( d, e ) {
-    var link = provis.diagram.getLinkAt( e.getMousePosition(), 10, false );
+    var pos = e.getMousePosition();
+    var link = provis.diagram.getLinkAt( pos, 10, false );
     if ( link ) {
       provis.view.beginEdit( link );
       return;
@@ -736,17 +528,11 @@ ProVis = function( appletId ) {
 
     var swimlane = e.getNode();
     if ( swimlane.getTag() != constants.swimlaneTag ) {
-      if ( isDebug ) {
-        console.log( '@nodeDoubleClicked: ignoring dclick' )
-      }
-
       return;
     }
 
-    var bounds = swimlane.getBounds();
-    var pos = e.getMousePosition();
-
     // Don't create node in header area
+    var bounds = swimlane.getBounds();
     if (pos.getY() < bounds.getY() + cfg.captionHeight ) return;
 
     var factory = d.getFactory();
@@ -770,12 +556,6 @@ ProVis = function( appletId ) {
     provis.view.endEdit( false );
     provis.view.beginEdit( node );
     composite.execute();
-
-    if ( isDebug ) {
-      console.log( '@nodeDoubleClicked: create node of type "' + shapeId + '" at (' + x + ';' + y + ')' );
-      console.log( '@nodeDoubleClicked: merged changes into composite: ' + composite.getTitle() );
-    }
-
   };
 
   /**
@@ -786,20 +566,11 @@ ProVis = function( appletId ) {
    * @param e 'com.mindfusion.diagramming.NodeEvent'
    */
   var nodeModified = function( d, e ) {
+    return;
     var node = e.getNode();
     var bounds = node.getBounds();
     var handle = e.getAdjustmentHandle();
     var tag = node.getTag();
-
-    if ( isDebug ) {
-      console.log( '@nodeModified: node modified by handle: ' + handle );
-      console.log( '  *   HandleStyles:' );
-      console.log( '  *   0----4----1' );
-      console.log( '  *   |    |    |' );
-      console.log( '  *   7----8----5' );
-      console.log( '  *   |    |    |' );
-      console.log( '  *   3----6----2' );
-    }
 
     var sh = provis.scriptHelper;
     var cc = constants.commands;
@@ -808,38 +579,27 @@ ProVis = function( appletId ) {
       case 5:
         if ( tag == constants.swimlaneTag ) {
           getSwimlanesWidth().done( function( width ) {
-            adjustWhitepaperWidth( width );
+            // adjustWhitepaperWidth( width );
           });
 
           undoable = true;
-
-          if ( isDebug ) {
-            console.log( '@nodeModified: swimlane width changed.' );
-          }
         }
 
         break;
 
       case 6: // adjust whitepaper height
           if ( tag != constants.swimlaneTag ) break;
+          // unter verwendung von container ist das falsch hier.!!
           var newHeight = bounds.getHeight() - cfg.captionHeight;
           setSwimlanesHeight( newHeight );
-          adjustWhitepaperHeight( newHeight );
+          // adjustWhitepaperHeight( newHeight );
           undoable = true;
-          if ( isDebug ) {
-            console.log( '@nodeModified: whitepaper height changed.' );
-          }
-
           break;
 
       case 8:
         if ( tag == constants.swimlaneTag ) {
           alignSwimlanes().done( function() {
             undoable = true;
-
-            if ( isDebug ) {
-              console.log( '@nodeModified: swimlane moved.' );
-            }
           });
         } else {
           return; // TODO -KRU
@@ -853,10 +613,6 @@ ProVis = function( appletId ) {
           }
 
           undoable = true;
-
-          if ( isDebug ) {
-            console.log( '@nodeModified: node (' + node.getShape().getId() + ') attached to swimlane "' + parent.getMasterGroup().getMainItem().getText() + '".' );
-          }
         }
 
         break;
@@ -876,11 +632,6 @@ ProVis = function( appletId ) {
         if ( handle != 8 || tag != constants.swimlaneTag ) {
           var composite = createOrGetUndoComposite();
           composite.execute();
-
-          if ( isDebug ) {
-            console.log( '@nodeModified: composite "' + composite.getTitle() + '" finalized.' );
-          }
-
           return;
         }
 
@@ -906,36 +657,35 @@ ProVis = function( appletId ) {
           }
         }
 
+        // ToDo. wp gibt's nicht mehr.
+
         // update hashes
-        if ( haveChanged ) {
-          swimlaneHashes = [];
-          var wp = provis.diagram.findNode( constants.whitepaperTag );
-          var wpb = wp.getBounds();
-          var x = 1 + wpb.getX();
-          var y = 1 + wpb.getY();
+        // if ( haveChanged ) {
+        //   swimlaneHashes = [];
+        //   var wp = provis.diagram.findNode( constants.whitepaperTag );
+        //   var wpb = wp.getBounds();
+        //   var x = 1 + wpb.getX();
+        //   var y = 1 + wpb.getY();
 
-          var sh = provis.scriptHelper;
-          var lastHash = null;
-          while( true ) {
-            var node = provis.diagram.getNodeAt( sh.createPoint( x, y ) );
-            if ( node ) {
-              var hash = node.hashCode();
-              if ( hash != lastHash ) {
-                swimlaneHashes.push( hash );
-                lastHash = hash;
-              }
+        //   var sh = provis.scriptHelper;
+        //   var lastHash = null;
+        //   while( true ) {
+        //     var node = provis.diagram.getNodeAt( sh.createPoint( x, y ) );
+        //     if ( node ) {
+        //       var hash = node.hashCode();
+        //       if ( hash != lastHash ) {
+        //         swimlaneHashes.push( hash );
+        //         lastHash = hash;
+        //       }
 
-              x += cfg.swimlaneMinWidth;
-            } else break;
-          }
-        }
+        //       x += cfg.swimlaneMinWidth;
+        //     } else break;
+        //   }
+        // }
 
         // finalize the undo composite.
         var composite = createOrGetUndoComposite();
         composite.execute();
-        if ( isDebug ) {
-          console.log( '@nodeModified: composite "' + composite.getTitle() + '" finalized.' );
-        }
 
         // nothing changed, e.g. the user draged the last lane to the (most)
         // right side of the applet area.
@@ -962,6 +712,7 @@ ProVis = function( appletId ) {
    * @param e 'com.mindfusion.diagramming.NodeEvent'
    */
   var nodeModifying = function( d, e ) {
+    return;
     var node = e.getNode();
     var bounds = node.getBounds();
     var handle = e.getAdjustmentHandle();
@@ -969,17 +720,6 @@ ProVis = function( appletId ) {
 
     var sh = provis.scriptHelper;
     var cc = constants.commands;
-
-
-    if ( isDebug ) {
-      console.log( '@nodeModifying: node modifying by handle: ' + handle );
-      console.log( '  *   HandleStyles:' );
-      console.log( '  *   0----4----1' );
-      console.log( '  *   |    |    |' );
-      console.log( '  *   7----8----5' );
-      console.log( '  *   |    |    |' );
-      console.log( '  *   3----6----2' );
-    }
 
     switch ( handle ) {
       case 5: // adjust swimlane width
@@ -999,10 +739,8 @@ ProVis = function( appletId ) {
             try {
               laneCmd = sh.createChangeItemCmd( lane, cc.modifySwimlane );
             } catch( e ) {
-              if ( isDebug ) {
-                console.log( e.message );
-                console.log( e.stack );
-              }
+              console.log( e.message );
+              console.log( e.stack );
             }
 
             lane.moveTo( x, y );
@@ -1019,8 +757,7 @@ ProVis = function( appletId ) {
         break;
       case 6: // adjust whitepaper height
         if ( tag != constants.swimlaneTag ) break;
-        var newHeight = bounds.getHeight() - cfg.captionHeight;
-        adjustWhitepaperHeight( newHeight );
+        var newHeight = bounds.getHeight();
         setSwimlanesHeight( newHeight ).done( function() {
           provis.view.recreateCacheImage();
         });
@@ -1074,6 +811,7 @@ ProVis = function( appletId ) {
    * @param e 'com.mindfusion.diagramming.NodeEvent'
    */
   var nodeStartModifying = function( d, e ) {
+    return;
     // ToDo. richtigen titel setzen!!
     // createUndoComposite( constants.commands.modify );
     var title = constants.commands.modify;
@@ -1137,21 +875,8 @@ ProVis = function( appletId ) {
    */
   var setSwimlanesHeight = function( newHeight ) {
     var deferred = $.Deferred();
-
-    var composite = createOrGetUndoComposite();
-    foreachArrayItem( swimlanes, function( container ) {
-      var group = container.getSubordinateGroup();
-      if ( group ) {
-        var lane = group.getAttachedNodes().get( 0 );
-        var cmd = provis.scriptHelper.createChangeItemCmd(
-          lane,
-          constants.commands.modifySwimlane
-        );
-
-        lane.resize( lane.getBounds().getWidth(), newHeight );
-        cmd.execute();
-        composite.addSubCmd( cmd );
-      }
+    foreachArrayItem( swimlanes, function( lane ) {
+      lane.resize( lane.getBounds().getWidth(), newHeight );
     }).done( function() {
       deferred.resolve();
     }).fail( function() {
@@ -1319,17 +1044,17 @@ ProVis = function( appletId ) {
             curTheme.laneBorderColor );
           node.setPen( lanePen );
           break;
-        case constants.whitepaperTag:
-          node.setLocked( false );
-          node.setAllowIncomingLinks( false );
-          node.setAllowOutgoingLinks( false );
-          node.setObstacle( false );
-          node.setTransparent( true );
-          node.setVisible( true );
-          node.setEnabledHandles( 64 );
-          node.setHandlesStyle( 1 );
-          node.zBottom();
-          break;
+        // case constants.whitepaperTag:
+        //   node.setLocked( false );
+        //   node.setAllowIncomingLinks( false );
+        //   node.setAllowOutgoingLinks( false );
+        //   node.setObstacle( false );
+        //   node.setTransparent( true );
+        //   node.setVisible( true );
+        //   node.setEnabledHandles( 64 );
+        //   node.setHandlesStyle( 1 );
+        //   node.zBottom();
+        //   break;
         default:
           var shape = node.getShape().getId();
           switch ( shape ) {
@@ -1380,20 +1105,22 @@ ProVis = function( appletId ) {
       link.setAllowMoveEnd( true );
     }
 
-    var wp = this.diagram.findNode( constants.whitepaperTag );
-    var wpb = wp.getBounds();
-    var themeNode = this.diagram.findNode( constants.themeConfig );
-    if ( themeNode == null ) {
-      var factory = this.diagram.getFactory();
-      themeNode = factory.createShapeNode( wpb.getX(), wpb.getY(), 1, 1 );
-      themeNode.setLocked( true );
-      themeNode.setVisible( false );
-      themeNode.setTransparent( true ); // the more the merrier ;)
-      themeNode.setTag( constants.themeConfig );
-      themeNode.setText( theme || defaultTheme );
-      themeNode.attachTo( wp, 0 );
-      themeNode.zBottom();
-    }
+
+    // MEY: ToDo. gibt kein wp mehr
+    // var wp = this.diagram.findNode( constants.whitepaperTag );
+    // var wpb = wp.getBounds();
+    // var themeNode = this.diagram.findNode( constants.themeConfig );
+    // if ( themeNode == null ) {
+    //   var factory = this.diagram.getFactory();
+    //   themeNode = factory.createShapeNode( wpb.getX(), wpb.getY(), 1, 1 );
+    //   themeNode.setLocked( true );
+    //   themeNode.setVisible( false );
+    //   themeNode.setTransparent( true ); // the more the merrier ;)
+    //   themeNode.setTag( constants.themeConfig );
+    //   themeNode.setText( theme || defaultTheme );
+    //   themeNode.attachTo( wp, 0 );
+    //   themeNode.zBottom();
+    // }
 
     deferred.resolve();
     return deferred.promise();
@@ -1702,7 +1429,6 @@ ProVis = function( appletId ) {
     return value;
   };
 
-
   /*****************************************************************************
    * initialization
    ****************************************************************************/
@@ -1738,29 +1464,30 @@ ProVis = function( appletId ) {
             $('applet').setVisible();
           }
 
-          // re-create swimlane and swimlane hashes references.
-          swimlanes = [];
-          swimlaneHashes = [];
-          var wp = provis.diagram.findNode( constants.whitepaperTag );
-          var wpb = wp.getBounds();
-          var x = 1 + wpb.getX();
-          var y = 1 + wpb.getY();
+          // ToDo
+          // // re-create swimlane and swimlane hashes references.
+          // swimlanes = [];
+          // swimlaneHashes = [];
+          // var wp = provis.diagram.findNode( constants.whitepaperTag );
+          // var wpb = wp.getBounds();
+          // var x = 1 + wpb.getX();
+          // var y = 1 + wpb.getY();
 
-          var sh = provis.scriptHelper;
-          var lastHash = null;
-          while( true ) {
-            var node = provis.diagram.getNodeAt( sh.createPoint( x, y ) );
-            if ( node ) {
-              var hash = node.hashCode();
-              if ( hash != lastHash ) {
-                swimlanes.push( node );
-                swimlaneHashes.push( node.hashCode() );
-                lastHash = hash;
-              }
+          // var sh = provis.scriptHelper;
+          // var lastHash = null;
+          // while( true ) {
+          //   var node = provis.diagram.getNodeAt( sh.createPoint( x, y ) );
+          //   if ( node ) {
+          //     var hash = node.hashCode();
+          //     if ( hash != lastHash ) {
+          //       swimlanes.push( node );
+          //       swimlaneHashes.push( node.hashCode() );
+          //       lastHash = hash;
+          //     }
 
-              x += cfg.swimlaneMinWidth;
-            } else break;
-          }
+          //     x += cfg.swimlaneMinWidth;
+          //   } else break;
+          // }
 
           initialize();
         },

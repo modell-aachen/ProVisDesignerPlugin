@@ -16,9 +16,9 @@
 
 ProVis.strings = {
   themeConfig:'theme-config',
-  swimlaneTopTag: 'Swimlane_top',
+  // swimlaneTopTag: 'Swimlane_top',
   swimlaneTag: 'Swimlane',
-  whitepaperTag: 'whitepaper',
+  // whitepaperTag: 'whitepaper',
   adjustSwimlaneCommand: 'adjustSwimlaneWidth',
   adjustWhitepaperCommand: 'adjustWhitepaperHeight',
   createSwimlaneCommand: 'createSwimlane',

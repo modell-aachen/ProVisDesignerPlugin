@@ -7,6 +7,9 @@ msgstr "Schablonen"
 msgid "Layout"
 msgstr "Ausrichtung"
 
+msgid "Preview"
+msgstr "Vorschau"
+
 msgid "Process"
 msgstr "Prozess"
 
@@ -66,3 +69,18 @@ msgstr "Vergrößern"
 
 msgid "Zoom out"
 msgstr "Verkleinern"
+
+msgid "Discard changes"
+msgstr "Änderungen verwerfen"
+
+msgid "This diagram contains unsaved changes."
+msgstr "Dieses Diagramm beinhaltet nicht gespeicherte Änderungen."
+
+msgid "If you quit ProVis now, these changes will be lost."
+msgstr "Wenn Sie ProVis nun beenden, gehen diese Änderungen verloren."
+
+msgid "Topic preview"
+msgstr "Artikel-Vorschau"
+
+msgid "Themes"
+msgid "Motive"

@@ -3,271 +3,250 @@
  * Copyright (C) 2013 Modell Aachen GmbH. All rights reserved.
  */
 
-(function($) {
-  var $keyboard = {
-    isCtrl: false,
-    isShift: false,
-    isAlt: false
-  };
 
-  // 3508x2480 =  DIN A4 @ 300dpi, landscape
-  // see http://www.din-formate.de/reihe-a-din-groessen-mm-pixel-dpi.html
-  var $config = {
-    gridWidth: 3508,
-    gridHeight: 2480,
-    gridSizeX: 15,
-    gridSizeY: 15,
-    gridColor: '#eee',
-    gridStyle: 1,
-    defaultShapeBrush: '#6494c8',
-    defaultCaptionBrush: '#777',
-    defaultShapeTextColor: '#fff',
-    defaultCaptionTextColor: '#fff',
-    defaultHandleStyle: 5,
-    swimlaneHandles: 0,
-    swimlaneTopHandles: 32 + 128 + 256,
-    swimlaneBackBrush: '#fff',
-    swimlaneWidth: 150,
-    swimlaneHeight: 500,
-    undoCommandHistory: 25,
-    zoomStep: 25,
-    captionHeight: 40
-  };
 
-  var $constants = {
-    swimlaneTopTag: 'Swimlane_top',
-    swimlaneTag: 'Swimlane',
-    whitepaperTag: 'whitepaper',
-    adjustSwimlaneCommand: 'adjustSwimlaneWidth',
-    adjustWhitepaperCommand: 'adjustWhitepaperHeight',
-    modifyCommand: 'Modify'
+var $anchorPattern = null;
+
+var $undoComposition = null;
+
+// maus-position während drag
+var $mouseX;
+
+// hält die ursprüngliche x-koordinate vor einem resize!
+var $resizeX;
+
+var $stats = {
+  lanes: [],
+  saving: false,
+  modifying: false,
+  moving: false
+};
+
+
+
+function adjustAppletSize( ui ) {
+  var $area = $('div.provis-apparea');
+  var $applet = $('#jDiagApplet');
+  var $container = $('div.provis-right-container');
+
+  // resize handler for jQuery Resizable
+  if ( ui != null ) {
+    var right = 20 + $(window).width() - ui.position.left;
+    $area.css( 'right', right );
+
+    var $adorner = $('#adorner');
+    var min = 300, max = $(window).width() / 2;
+    var width = ui.size.width;
+
+    if ( width < max && width > min ) {
+      $adorner.addClass( 'chevron-left-right' ).removeClass( 'chevron-left' ).removeClass( 'chevron-right' );
+    } else if ( width == max ) {
+      $adorner.addClass( 'chevron-right' ).removeClass( 'chevron-left' ).removeClass( 'chevron-left-right' );
+    } else if ( width == min ) {
+      $adorner.addClass( 'chevron-left' ).removeClass( 'chevron-left-right' ).removeClass( 'chevron-right' );
+    }
   }
 
-  var $anchorPattern = null;
+  // window resize
+  $applet.width( $area.width() );
+  $applet.height( $area.height() );
+}
 
-  var $undoComposition = null;
 
-  var $mouseX;
+function applyDefaultStyles( provis ) {
+  if ( !provis ) provis = document.provis;
+  var laneBrush = $(this).createSolidBrush( $config.swimlaneBackBrush );
+  var shapeBrush = $(this).createSolidBrush( $config.defaultShapeBrush );
+  var captionBrush = $(this).createSolidBrush( $config.defaultCaptionBrush );
+  var shapeTextColor = $(this).createColor( $config.defaultShapeTextColor );
+  var captionTextColor = $(this).createColor( $config.defaultCaptionTextColor );
 
-  var $stats = {
-    lanes: [],
-    saving: false
-  };
+  var nodes = provis.diagram.getNodes();
+  $(this).foreach( nodes, function( node ) {
+    var shape = node.getShape();
+    var shapeId = shape.getId();
+    var tag = node.getTag();
+
+    node.setHandlesStyle( $config.defaultHandleStyle );
+
+    // not swimlane
+    if ( tag == null ) {
+      node.setBrush( shapeBrush );
+      node.setTextColor( shapeTextColor );
+      $(this).applyAnchorPattern( node );
+    }
+
+    if ( /Swimlane/.test( tag ) ) {
+      if ( tag == $constants.swimlaneTopTag ) {
+        // $stats.lanes++;
+        $stats.lanes.push( node );
+        node.setLocked( false );
+        node.setEnabledHandles( $config.swimlaneTopHandles );
+        var gb = $(this).createGradientBrush( '#fff', '#ccc', 90 );
+        node.setBrush( gb );
+        // node.setBrush( captionBrush );
+
+        var text = '<b>' + node.getText() + '</b>';
+        node.setEnableStyledText( true );
+        node.setTextColor( captionTextColor );
+        node.setText( text );
+      }
+
+      if ( tag == $constants.swimlaneTag ) {
+        node.setLocked( true );
+        node.setEnabledHandles( $config.swimlaneHandles );
+        node.setBrush( laneBrush );
+      }
+    }
+  });
+}
+
+// foobar inc.
+// due to compatibility reasons we have to adjust the drawing area
+// by one half of the grid size
+function adjustDrawingArea( diagram, offsetX, offsetY ) {
+  return;
+
+  var whitepaper = diagram.findNode( $constants.whitepaperTag );
+  var wb = whitepaper.getBounds();
+  whitepaper.setBounds( offsetX + wb.getX(), offsetY + wb.getY(), wb.getWidth(), wb.getHeight() );
+
+  var nodes = diagram.getNodes();
+  $(this).foreach( nodes, function( node) {
+    var tag = node.getTag();
+    if ( /Swimlane/.test( tag ) ) {
+      var nb = node.getBounds();
+      var ox = 0, oy = offsetY + nb.getY();;
+      if ( tag == $constants.swimlaneTopTag ) ox = offsetX + nb.getX();
+      if ( tag == $constants.swimlaneTag ) ox = nb.getX();
+      node.setBounds( ox, oy, nb.getWidth(), nb.getHeight() );
+    }
+  });
+}
+
+
+function adjustSwimlaneWidth( diagram, node ) {
+  var d = $.Deferred();
+
+  var swimlane = $(this).getSwimlane( node );
+  var laneBounds = swimlane.getBounds();
+  var nodeBounds = node.getBounds();
+
+  swimlane.setBounds( laneBounds.getX(), laneBounds.getY(), nodeBounds.getWidth(), laneBounds.getHeight() );
+
+  var width = 0;
+  var offset = $config.gridSizeX / 2;
+  var nodes = $stats.nodes;
+  // $(this).foreach( nodes, function( node ) {
+  //   var bounds = node.getBounds();
+  //   if ( bounds.getX() != width + offsetX ) {
+  //     var x = offsetX + width;
+  //     var y = bounds.getY();
+  //     node.moveTo( x, y );
+  //   }
+
+  //   width += bounds.getWidth();
+  // });
+  for ( var i = 0; i < $stats.lanes.length; i++ ) {
+    var node = $stats.lanes[i];
+    var bounds = node.getBounds();
+    if ( bounds.getX() != width + offset ) {
+      var x = offset + width;
+      node.moveTo( x, offset );
+    }
+
+    width += bounds.getWidth();
+  }
+
+  d.resolve( diagram, width );
+  return d;
+}
+
+function adjustWhitepaper( diagram, width ) {
+  var d = $.Deferred();
+  var whitepaper = diagram.findNode( $constants.whitepaperTag );
+  var b = whitepaper.getBounds();
+  whitepaper.setBounds( b.getX(), b.getY(), width, b.getHeight() );
+  d.resolve( width );
+  return d;
+}
+
+function applyAnchorPattern( node ) {
+  if ( $anchorPattern == null ) {
+    var helper = document.provis.scriptHelper;
+    $anchorPattern = helper.anchorPatternFromId( 'Decision2In2Out' );
+    var points = $anchorPattern.getPoints();
+    for( var i = 0; i < points.size(); i++ ) {
+      var pt = points.get( i );
+      pt.setMarkStyle( 3 );
+      pt.setColor( $(this).createColor( i < 2 ? '#0f0' : '#f00' ) );
+    }
+  }
+
+  node.setAnchorPattern( $anchorPattern );
+}
+
+function createSwimlane( provis ) {
+  var composition = provis.undoManager.startComposite( 'newSwimlane', true );
+
+  $(this).ensureWhitepaper( provis );
+  var wp = provis.diagram.findNode( $constants.whitepaperTag );
+  var wpb = wp.getBounds();
+
+  var offsetX = $config.gridSizeX / 2;
+  var offsetY = $config.gridSizeY / 2;
+
+  var factory = provis.diagram.getFactory();
+  var titleNode = factory.createShapeNode( offsetX + wpb.getWidth(), offsetY, $config.swimlaneWidth, $config.captionHeight );
+
+  titleNode.setLocked( false );
+  // ToDo: lanefont + lanepen (siehe applyDefaultStyle)
+  // titleNode.setFont( lanefont );
+  // titleNode.setPen( lanepen );
+  titleNode.setBrush( $(this).createSolidBrush( $config.defaultCaptionBrush ) );
+  titleNode.setObstacle( true );
+  titleNode.setText( "Label" + ($stats.lanes.length + 1) ); // ToDo!!
+  titleNode.setTag( $constants.swimlaneTopTag );
+  titleNode.setAllowIncomingLinks( false );
+  titleNode.setAllowOutgoingLinks( false );
+
+  titleNode.setEnabledHandles( $config.swimlaneTopHandles );
+  titleNode.setHandlesStyle( $config.defaultHandleStyle );
+
+  var titleConstraints = titleNode.getConstraints();
+  titleConstraints.setMoveDirection( 1 );
+
+  // Add to lanes array
+  $stats.lanes.push( titleNode );
+
+  // // Content
+  var laneNode = factory.createShapeNode( offsetX + wpb.getWidth(), offsetY + $config.captionHeight, $config.swimlaneWidth, wpb.getHeight() - $config.captionHeight );
+  // laneNode.setPen(lanepen);
+  laneNode.setZIndex(1);
+
+  laneNode.setLocked( true );
+  laneNode.setEnabledHandles( $config.swimlaneHandles );
+  laneNode.setHandlesStyle( $config.defaultHandleStyle );
+
+  var laneConstraints = laneNode.getConstraints();
+  laneConstraints.setMoveDirection( 1 );
+  laneNode.setBrush( $(this).createSolidBrush( $config.swimlaneBackBrush ) );
+  laneNode.setObstacle( false );
+  laneNode.setTag( $constants.swimlaneTag );
+  laneNode.attachTo( titleNode, 0 );
+  laneNode.setAllowIncomingLinks( false );
+  laneNode.setAllowOutgoingLinks( false );
+  titleNode.getSubordinateGroup().setAutodeleteItems( true );
+  titleNode.setZIndex( 2 );
+
+  var newWidth = wpb.getWidth() + $config.swimlaneWidth;
+  $(this).adjustWhitepaper( provis.diagram, newWidth );
+  composition.execute();
+}
+
+(function($) {
 
   $.fn.extend( {
-    adjustAppletSize: function() {
-      var area = $('div.provis-apparea');
-      var cssToInt = function( selector ) {
-        return parseInt( area.css(selector).replace( 'px', '' ) );
-      }
-
-      var padLeft = cssToInt( 'padding-left' );
-      var padRight = cssToInt( 'padding-right' );
-      var padTop = cssToInt( 'padding-top' );
-      var padBottom = cssToInt( 'padding-bottom' );
-      var posTop = cssToInt( 'top' );
-      var left = cssToInt( 'left' );
-
-      var width = $(this).width() - left - (padLeft + padRight);
-      var height = $(this).height() - (padTop + padBottom + posTop);
-
-      var applet = $('#jDiagApplet');
-      applet.width( width );
-      applet.height( height );
-    },
-
-    // foobar inc.
-    // due to compatibility reasons we have to adjust the drawing area
-    // by one half of the grid size
-    adjustDrawingArea: function( diagram, offsetX, offsetY ) {
-      var whitepaper = diagram.findNode( $constants.whitepaperTag );
-      var wb = whitepaper.getBounds();
-      whitepaper.setBounds( offsetX + wb.getX(), offsetY + wb.getY(), wb.getWidth(), wb.getHeight() );
-
-      var nodes = diagram.getNodes();
-      $(this).foreach( nodes, function( node) {
-        var tag = node.getTag();
-        if ( /Swimlane/.test( tag ) ) {
-          var nb = node.getBounds();
-          var ox = 0, oy = offsetY + nb.getY();;
-          if ( tag == $constants.swimlaneTopTag ) ox = offsetX + nb.getX();
-          if ( tag == $constants.swimlaneTag ) ox = nb.getX();
-          node.setBounds( ox, oy, nb.getWidth(), nb.getHeight() );
-        }
-      });
-    },
-
-    adjustSwimlaneWidth: function( diagram, node ) {
-      var d = $.Deferred();
-
-      var swimlane = $(this).getSwimlane( node );
-      var laneBounds = swimlane.getBounds();
-      var nodeBounds = node.getBounds();
-
-      swimlane.setBounds( laneBounds.getX(), laneBounds.getY(), nodeBounds.getWidth(), laneBounds.getHeight() );
-
-      var width = 0;
-      var offsetX = $config.gridSizeX / 2;
-      var nodes = diagram.getNodes();
-      $(this).foreach( nodes, function( node ) {
-        if ( node.getTag() == $constants.swimlaneTopTag ) {
-          var bounds = node.getBounds();
-          if ( bounds.getX() != width + offsetX ) {
-            var x = offsetX + width;
-            var y = bounds.getY();
-            node.moveTo( x, y );
-          }
-
-          width += bounds.getWidth();
-        }
-      });
-
-      d.resolve( diagram, width );
-      return d;
-    },
-
-    adjustWhitepaper: function( diagram, width ) {
-      var d = $.Deferred();
-      var whitepaper = diagram.findNode( $constants.whitepaperTag );
-      var b = whitepaper.getBounds();
-      whitepaper.setBounds( b.getX(), b.getY(), width, b.getHeight() );
-      d.resolve( width );
-      return d;
-    },
-
-    applyAnchorPattern: function( node ) {
-      if ( $anchorPattern == null ) {
-        var helper = document.provis.scriptHelper;
-        $anchorPattern = helper.anchorPatternFromId( 'Decision2In2Out' );
-        var points = $anchorPattern.getPoints();
-        for( var i = 0; i < points.size(); i++ ) {
-          var pt = points.get( i );
-          pt.setMarkStyle( 3 );
-        }
-      }
-
-      node.setAnchorPattern( $anchorPattern );
-    },
-
-    applyDefaultStyles: function( provis ) {
-      var laneBrush = $(this).createSolidBrush( $config.swimlaneBackBrush );
-      var shapeBrush = $(this).createSolidBrush( $config.defaultShapeBrush );
-      var captionBrush = $(this).createSolidBrush( $config.defaultCaptionBrush );
-      var shapeTextColor = $(this).createColor( $config.defaultShapeTextColor );
-      var captionTextColor = $(this).createColor( $config.defaultCaptionTextColor );
-
-      var nodes = provis.diagram.getNodes();
-      $(this).foreach( nodes, function( node ) {
-        var shape = node.getShape();
-        var shapeId = shape.getId();
-        var tag = node.getTag();
-
-        node.setHandlesStyle( $config.defaultHandleStyle );
-
-        // not swimlane
-        if ( tag == null ) {
-          node.setBrush( shapeBrush );
-          node.setTextColor( shapeTextColor );
-          $(this).applyAnchorPattern( node );
-        }
-
-        if ( /Swimlane/.test( tag ) ) {
-          if ( tag == $constants.swimlaneTopTag ) {
-            // $stats.lanes++;
-            $stats.lanes.push( node );
-            node.setLocked( false );
-            node.setEnabledHandles( $config.swimlaneTopHandles );
-            node.setBrush( captionBrush );
-
-            var text = '<b>' + node.getText() + '</b>';
-            node.setEnableStyledText( true );
-            node.setTextColor( captionTextColor );
-            node.setText( text );
-          }
-
-          if ( tag == $constants.swimlaneTag ) {
-            node.setLocked( true );
-            node.setEnabledHandles( $config.swimlaneHandles );
-            node.setBrush( laneBrush );
-          }
-        }
-      });
-    },
-
-    createSwimlane: function( provis ) {
-      var composition = provis.undoManager.startComposite( 'newSwimlane', true );
-
-      $(this).ensureWhitepaper( provis );
-      var wp = provis.diagram.findNode( $constants.whitepaperTag );
-      var wpb = wp.getBounds();
-
-      var offsetX = $config.gridSizeX / 2;
-      var offsetY = $config.gridSizeY / 2;
-
-      var factory = provis.diagram.getFactory();
-      var titleNode = factory.createShapeNode( offsetX + wpb.getWidth(), offsetY, $config.swimlaneWidth, $config.captionHeight );
-
-      titleNode.setLocked( false );
-      // titleNode.setFont(lanefont);
-      // titleNode.setPen(lanepen);
-      titleNode.setBrush( $(this).createSolidBrush( $config.defaultCaptionBrush ) );
-      titleNode.setObstacle( true );
-      // titleNode.setText("Label"+ (idx+1));
-      titleNode.setTag( $constants.swimlaneTopTag );
-      titleNode.setAllowIncomingLinks( false );
-      titleNode.setAllowOutgoingLinks( false );
-
-      titleNode.setEnabledHandles( $config.swimlaneTopHandles );
-      titleNode.setHandlesStyle( $config.defaultHandleStyle );
-
-      var titleConstraints = titleNode.getConstraints();
-      titleConstraints.setMoveDirection( 1 );
-
-      // // Content
-      var laneNode = factory.createShapeNode( offsetX + wpb.getWidth(), offsetY + $config.captionHeight, $config.swimlaneWidth, wpb.getHeight() - $config.captionHeight );
-      // laneNode.setPen(lanepen);
-      laneNode.setZIndex(1);
-      // // laneNode.setLocked(true);
-
-      laneNode.setLocked( true );
-      laneNode.setEnabledHandles( $config.swimlaneHandles );
-      laneNode.setHandlesStyle( $config.defaultHandleStyle );
-
-      var laneConstraints = laneNode.getConstraints();
-      laneConstraints.setMoveDirection( 1 );
-      laneNode.setBrush( $(this).createSolidBrush( $config.swimlaneBackBrush ) );
-      laneNode.setObstacle( false );
-      laneNode.setTag( $constants.swimlaneTag );
-      laneNode.attachTo( titleNode, 0 );
-      laneNode.setAllowIncomingLinks( false );
-      laneNode.setAllowOutgoingLinks( false );
-      titleNode.getSubordinateGroup().setAutodeleteItems( true );
-      titleNode.setZIndex( 2 );
-
-      var newWidth = wpb.getWidth() + $config.swimlaneWidth;
-      $(this).adjustWhitepaper( provis.diagram, newWidth );
-      composition.execute();
-    },
-
-    createColor: function( hexColor ) {
-      var c = $(this).getRGBColor( hexColor );
-      return document.provis.scriptHelper.createColor( c.r, c.g, c.b );
-    },
-
-    createNode: function( provis, id ) {
-      var shape = provis.scriptHelper.shapeFromId( id );
-    },
-
-    createPen: function( width, hexColor ) {
-      var c = $(this).getRGBColor( hexColor );
-      return document.provis.scriptHelper.createPen( width, c.r, c.g, c.b );
-    },
-
-    createSolidBrush: function( hexColor ) {
-      var c = $(this).getRGBColor( hexColor );
-      return document.provis.scriptHelper.createSolidBrush( c.r, c.g, c.b );
-    },
-
     // called when the user tries to add a new swimlane
     ensureWhitepaper: function( provis ) {
       var wp = provis.diagram.findNode( $constants.whitepaperTag );
@@ -290,7 +269,8 @@
 
       // whitepaper.setEnabledHandles( 32);
       whitepaper.setEnabledHandles( 64 );
-      whitepaper.setHandlesStyle( $config.defaultHandleStyle );
+      whitepaper.setHandlesStyle( 1 );
+      // whitepaper.setHandlesStyle( $config.defaultHandleStyle );
     },
 
     foreach: function( jlist, callback ) {
@@ -300,23 +280,6 @@
 
       d.resolve();
       return d;
-    },
-
-    // Taken from:
-    // http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-    getRGBColor: function( hex ) {
-      // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-      var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-      hex = hex.replace(shorthandRegex, function(m, r, g, b) {
-          return r + r + g + g + b + b;
-      });
-
-      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      return result ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16)
-      } : null;
     },
 
     getSwimlane: function( swimlaneTop ) {
@@ -337,29 +300,6 @@
     onKeyDown: function( view, keyEvent ) {
       var code = keyEvent.getKeyCode();
       // console.log( code );
-      if ( $keyboard.isAlt ) {
-        switch( code ) {
-          case 49: // 1
-            $('div.node[data-shape=Rectangle]').click();
-            break;
-          case 50: // 2
-            $('div.node[data-shape=Decision2]').click();
-            break;
-          case 51: // 3
-            $('div.node[data-shape=Document]').click();
-            break;
-          case 52: // 4
-            $('div.node[data-shape=Cylinder]').click();
-            break;
-          case 53: // 5
-            $('div.node[data-shape=Terminator]').click();
-            break;
-          case 54: // 6
-            $('div.node[data-shape=Ellipse]').click();
-            break;
-        }
-      }
-
       if ( $keyboard.isCtrl ) {
         switch( code ) {
           case 45: // -
@@ -404,11 +344,6 @@
             break;
           case 18:
             $keyboard.isAlt = true;
-            setTimeout( function() {
-              if ( $keyboard.isAlt ) {
-                $('.hint').show( 'slow' );
-              }
-            }, 250 );
             break;
         }
       }
@@ -425,9 +360,20 @@
           break;
         case 18:
           $keyboard.isAlt = false;
-          $('.hint').hide( 'slow' );
           break;
       }
+    },
+
+    getParentContainer: function( pointF ) {
+      var parents = document.provis.diagram.getNodesAt( pointF );
+      for ( var i = 0; i < parents.size(); i++ ) {
+        var parent = parents.get( i );
+        if ( parent.getTag() == $constants.swimlaneTag ) {
+          return parent;
+        }
+      }
+
+      return null;
     },
 
     onNodeClicked: function( diagram, nodeEvent ) {
@@ -437,6 +383,13 @@
     onNodeCreated: function( diagram, nodeEvent ) {
       var node = nodeEvent.getNode();
       $(this).applyAnchorPattern( node );
+
+      var bounds = node.getBounds();
+      var pt = document.provis.scriptHelper.createPointF( bounds.getX(), bounds.getY() );
+      var parent = $(this).getParentContainer( pt );
+      if ( parent ) {
+        node.attachTo( parent, 0 );
+      }
     },
 
     onNodeDeleted: function( diagram, nodeEvent ) {
@@ -451,16 +404,42 @@
 
     onNodeDeleting: function() {},
 
+    onNodeDoubleClicked: function( diagram, nodeEvent ) {
+      var node = nodeEvent.getNode();
+      if ( node.getTag() != $constants.swimlaneTag ) return;
+
+      var bounds = node.getBounds();
+      var pos = nodeEvent.getMousePosition();
+      var factory = diagram.getFactory();
+      var cfg = $defaults[$('div.node.node-selected').data( 'shape' )];
+
+      var x = bounds.getX() + bounds.getWidth()/2 - cfg.width/2;
+      var y = pos.getY() - cfg.height/2;
+      var shape = factory.createShapeNode( x, y, cfg.width, cfg.height );
+      $(this).applyAnchorPattern( shape );
+      shape.attachTo( node, 0 );
+    },
+
     onNodeModified: function( diagram, nodeEvent ) {
       var node = nodeEvent.getNode();
       var handle = nodeEvent.getAdjustmentHandle();
-      if ( handle == 8 && node.getTag() == $constants.swimlaneTopTag ) {
-        var offsetX = $config.gridSizeX / 2;
-        for( var i = 0; i < $stats.lanes.length; i++ ) {
-          var lane = $stats.lanes[i];
-          var laneB = lane.getBounds();
-          lane.moveTo( offsetX, laneB.getY() );
-          offsetX += laneB.getWidth();
+
+      // move
+      if ( handle == 8 ) {
+        if ( node.getTag() == $constants.swimlaneTopTag ) {
+          var offsetX = $config.gridSizeX / 2;
+          for( var i = 0; i < $stats.lanes.length; i++ ) {
+            var lane = $stats.lanes[i];
+            var bounds = lane.getBounds();
+            lane.moveTo( offsetX, bounds.getY() );
+            offsetX += bounds.getWidth();
+          }
+        } else {
+          // update nodes parent swimlane
+          var bounds = node.getBounds();
+          var pt = document.provis.scriptHelper.createPointF( bounds.getX(), bounds.getY() );
+          var parent = $(this).getParentContainer( pt );
+          if ( parent ) node.attachTo( parent, 0 );
         }
       }
 
@@ -468,6 +447,7 @@
       if ( node.getTag() == $constants.whitepaperTag ) {
         var undoManager = diagram.getUndoManager();
         var bounds = node.getBounds();
+
         $undoComposition = undoManager.startComposite( $constants.adjustWhitepaperCommand, true );
         var nodes = diagram.getNodes();
         $(this).foreach( nodes, function( item ) {
@@ -479,7 +459,10 @@
         });
       }
 
-      // In case there's an unfished (undo) composition -> execute/finish it.
+      // resize
+      if ( handle == 5 ) $resizeX = null;
+
+      // In case there's an unfinished (undo) composition -> execute/finish it.
       if ( $undoComposition != null ) {
         $undoComposition.execute();
         $undoComposition = null;
@@ -491,69 +474,69 @@
       var node = nodeValidationEvent.getNode();
       var bounds = node.getBounds();
 
-      if ( node.getTag() == $constants.swimlaneTopTag ) {
-        var handle = nodeValidationEvent.getAdjustmentHandle();
-
-        // move:
-        if ( handle == 8 ) {
-          if ( !Array.prototype.move ) {
-            Array.prototype.move = function ( from, to ) {
-              this.splice( to, 0, this.splice( from, 1 )[0] );
-            };
+      if ( node.getTag() != $constants.swimlaneTopTag ) return;
+      switch( nodeValidationEvent.getAdjustmentHandle() ) {
+        // resize
+        case 5:
+          if ( $resizeX == null ) $resizeX = bounds.getX();
+          if ( $resizeX < bounds.getX() || bounds.getWidth() < $config.swimlaneWidth ) {
+            nodeValidationEvent.setCancel( true );
+            nodeValidationEvent.cancelDrag();
+            node.setBounds($resizeX, bounds.getY(), $config.swimlaneWidth, bounds.getHeight());
+            return;
           }
 
+          $undoComposition = undoManager.startComposite( $constants.adjustSwimlaneCommand, true );
+          $.when( $(this).adjustSwimlaneWidth( diagram, node ) ).done( $(this).adjustWhitepaper );
+          break;
+        // move
+        case 8:
           var nodeX = bounds.getX();
           var nodeW = bounds.getWidth();
-          var nodeIndex = $stats.lanes.indexOf( node );
+          var index = $stats.lanes.indexOf( node );
 
           var mouseX = nodeValidationEvent.getMousePosition().getX();
-          if ( $mouseX == null ) $mouseX = mouseX;
           if ( $mouseX == mouseX ) return;
-
           var isDragLeft = $mouseX > mouseX;
           $mouseX = mouseX;
 
-          var nodeLeft = null, nodeRight = null;
-          if ( nodeIndex - 1 >= 0 ) nodeLeft = $stats.lanes[nodeIndex - 1];
-          if ( nodeIndex + 1 < $stats.lanes.length ) nodeRight = $stats.lanes[nodeIndex + 1];
+          var nodeLeft = index - 1 >= 0 ? $stats.lanes[index - 1] : null;
+          var nodeRight = index + 1 < $stats.lanes.length ? nodeRight = $stats.lanes[index + 1] : null;
 
-          if ( nodeLeft != null && isDragLeft ) {
-            var leftBounds = nodeLeft.getBounds();
-            var leftTrigger = leftBounds.getX() + leftBounds.getWidth() / 2;
-            if ( nodeX < leftTrigger ) {
-              $stats.lanes.move( nodeIndex, nodeIndex - 1 );
-              nodeLeft.moveTo( leftBounds.getX() + leftBounds.getWidth(), leftBounds.getY() );
+          if ( nodeLeft && isDragLeft ) {
+            var lb = nodeLeft.getBounds();
+            var trigger = lb.getX() + lb.getWidth() / 2;
+            if ( nodeX <= trigger ) {
+              $stats.lanes.move( index, index - 1 );
+            }
+          } else if ( nodeRight && !isDragLeft ) {
+            var rb = nodeRight.getBounds();
+            var trigger = rb.getX() + rb.getWidth() / 2;
+            if ( nodeX + nodeW > trigger ) {
+              $stats.lanes.move( index, index + 1 );
             }
           }
-
-          if ( nodeRight != null && !isDragLeft ) {
-            var rightBounds = nodeRight.getBounds();
-            var rightTrigger = rightBounds.getX() + rightBounds.getWidth() / 2;
-            if ( nodeX + nodeW > rightTrigger ) {
-              $stats.lanes.move( nodeIndex, nodeIndex + 1 );
-              nodeRight.moveTo( rightBounds.getX() - nodeW, rightBounds.getY() );
-            }
-          }
-
-        } else {
-          // resize:
-          $undoComposition = undoManager.startComposite( $constants.adjustSwimlaneCommand, true );
-          $.when(
-            $(this).adjustSwimlaneWidth( diagram, node )
-          ).done(
-            $(this).adjustWhitepaper
-          );
-        }
+          break;
       }
     },
 
     onNodeTextChanged: function( diagram, textEvent ) {
       var node = textEvent.getNode();
       var tag = node.getTag();
+      var font = null;
+
       if ( tag == $constants.swimlaneTopTag ) {
-        var text = textEvent.getNewText();
-        node.setText( '<b>' + text + '</b>' );
+        font = document.provis.scriptHelper.createFont( 'Arial Bold', 14 );
+      } else {
+        var shapeName = node.getShape().getId();
+        var cfg = $defaults[shapeName];
+
+        var color = $(this).createColor( cfg.foreground );
+        node.setTextColor( color );
+        font = document.provis.scriptHelper.createFont( 'Arial', cfg.fontsize );
       }
+
+      node.setFont( font );
     },
 
     onNodeTextChanging: function( diagram, textEvent ) {
@@ -572,7 +555,6 @@
     onSave: function() {
       if ( $stats.saving ) return;
       $stats.saving = true;
-
       var provis = document.provis;
 
       // Resize grid to minimum required size (margin: 5px)
@@ -625,7 +607,7 @@
         url: url,
         data: request,
         // dataType: 'json',
-        contentType: 'multipart/form-data; boundary='+ sep,
+        contentType: 'multipart/form-data; boundary=' + sep,
         error: function( xhr, status, error ) {
           console.log( 'error' );
           // ToDo
@@ -664,9 +646,20 @@
       provis.view.setBehavior( behavior );
     },
 
+    setGridBounds: function( provis, width, height ) {
+      var rect = provis.scriptHelper.createRectangleF( 0, 0, width, height );
+      provis.diagram.setBounds( rect );
+    },
+
     setup: function( provis ) {
-      // set default shape brush
-      var defaultBrush = $(this).createSolidBrush( $config.defaultShapeBrush );
+      // set default shape brush (for Rectangle)
+      var defaultBrush = null;
+      var cfg = $defaults["Rectangle"];
+      if ( cfg.useGradient ) {
+        defaultBrush = $(this).createGradientBrush( cfg.background, cfg.gradientColor, cfg.gradientAngle );
+      } else {
+        defaultBrush = $(this).createSolidBrush( cfg.background );
+      }
 
       var d = provis.diagram;
       d.setShapeBrush( defaultBrush );
@@ -680,8 +673,10 @@
       d.setShowGrid( true );
 
       // grid size
-      var rect = provis.scriptHelper.createRectangleF( 0, 0, $config.gridWidth, $config.gridHeight );
-      d.setBounds( rect );
+      var $apparea = $('div.provis-apparea');
+      var gridWidth = $config.gridWidth ? $config.gridWidth : ($apparea.width() - 5);
+      var gridHeight = $config.gridHeight ? $config.gridHeight : ($apparea.height() - 5);
+      $(this).setGridBounds( provis, gridWidth, gridHeight );
 
       // fix placement of the drawing area to match grid lines x/y offset
       var offsetX = d.getGridSizeX() / 2;
@@ -696,8 +691,8 @@
       // allow inplace editing of captions and shape titles
       provis.view.setAllowInplaceEdit( true );
 
-      // default behavior (cursor): modify
-      provis.view.setBehavior( 0 );
+      // default behavior (cursor): connect
+      provis.view.setBehavior( 3 );
 
       // default handles.
       d.setShapeHandlesStyle( $config.defaultHandleStyle );
@@ -746,12 +741,10 @@
       history.setCapacity( $config.undoCommandHistory );
       history.clear();
 
-
-
       // Testing..
       var opts = d.getRoutingOptions();
-      opts.setNodeVicinitySize( 50 );
-      opts.setNodeVicinityCost( 75 );
+      opts.setNodeVicinitySize( 550 );
+      opts.setNodeVicinityCost( 575 );
       opts.setSmartPolylineEnds( true );
     },
 
@@ -785,20 +778,19 @@
     },
 
     zoomIn: function( provis ) {
-      var zoom = provis.view.getZoomFactor();
-      $(this).zoomTo( provis, zoom + $config.zoomStep );
+      var zoom = provis.view.getZoomFactor() + $config.zoomStep;
+      $(this).zoomTo( provis, zoom );
     },
 
     zoomOut: function( provis ) {
-      var zoom = provis.view.getZoomFactor();
-      $(this).zoomTo( provis, zoom - $config.zoomStep );
+      var zoom = provis.view.getZoomFactor() - $config.zoomStep;
+      $(this).zoomTo( provis, zoom );
     },
 
     zoomTo: function( provis, value ) {
       if ( value < 25 || value > 200 ) return;
       provis.view.setZoomFactor( value );
-      $('#select-zoom option:selected').removeAttr( 'selected' );
-      $('#select-zoom option[value=' + value + ']').attr( 'selected', 'selected' );
+      return value;
     },
 
     zoomReset: function( provis ) {
@@ -807,81 +799,21 @@
   });
 
   $(document).ready( function() {
-    window.onNodeDeleted = $(this).onNodeDeleted;
-    window.onNodeModifying = $(this).onNodeModifying;
-    window.onNodeModified = $(this).onNodeModified;
-    window.onNodeClicked = $(this).onNodeClicked;
-    window.onNodeCreated = $(this).onNodeCreated;
-    window.onNodeDoubleClicked = $(this).onNodeDoubleClicked;
-    window.onNodeTextChanged = $(this).onNodeTextChanged;
-    window.onNodeTextChanging = $(this).onNodeTextChanging;
-    window.onKeyDown = $(this).onKeyDown;
-    window.onKeyUp = $(this).onKeyUp;
+    Array.prototype.move = function ( from, to ) {
+      this.splice( to, 0, this.splice( from, 1 )[0] );
+    };
 
-    var provis = new Object();
-    provis.applet = $('#jDiagApplet').get(0);
-    provis.diagram = provis.applet.getDiagram();
-    provis.scriptHelper = provis.applet.getScriptHelper();
-    provis.undoManager = provis.diagram.getUndoManager();
-    provis.view = provis.applet.getDiagramView();
-    this.provis = provis;
+    var applet = $('#jDiagApplet').get(0);
+    this.provis = {
+      applet: applet,
+      diagram: applet.getDiagram(),
+      scriptHelper: applet.getScriptHelper(),
+      undoManager: applet.getDiagram().getUndoManager(),
+      view: applet.getDiagramView()
+    };
 
-    // top menu
-    $('a.btn').on( 'click', function() {
-      var selectable = $(this).data( 'selectable' );
-      if ( selectable == '1' ) {
-        $('a.selected').removeClass( 'selected' );
-        $(this).addClass( 'selected' );
-      }
-
-      // toggable, e.g. 'Snap to grid' or 'Show grid'
-      var toggable = $(this).data( 'toggable' );
-      if ( toggable == '1' ) {
-        if ( $(this).hasClass( 'toggled' ) ) {
-          $(this).removeClass( 'toggled' );
-        } else {
-          $(this).addClass( 'toggled' );
-        }
-      }
-
-      // invoke
-      var action = $(this).data( 'action' );
-      var args = $(this).data( 'actionargs' );
-      if ( action ) {
-        if ( args != null ) {
-          $(this)[action]( document.provis, args );
-        } else {
-          $(this)[action]( document.provis );
-        }
-      }
-
-      return false;
-    });
-
-    $('#btn-save').on( 'click', function() {
-      $(this).onSave( document.provis );
-      return false;
-    });
-
-    $('#btn-cancel').on( 'click', function() {
-      $(this).onCancel( document.provis );
-    });
-
-    // shapes menu
-    $('div.node').on( 'click', function() {
-      $('div.node.selected').removeClass('selected');
-      $(this).addClass('selected');
-      var shapeName = $(this).data('shape');
-      var shape = provis.scriptHelper.shapeFromId( shapeName );
-      provis.diagram.setDefaultShape( shape );
-      provis.diagram.setShapeOrientation( shapeName == 'Cylinder' ? 90 : 0 );
-    });
-
-    // layout menu
-    $('div.layout').on( 'click', function() {
-      $('div.layout.selected').removeClass('selected');
-      $(this).addClass('selected');
-    });
+    // scrolling to 0 seems to be broken.
+    this.provis.view.scrollTo( 0, -1 * $config.gridSizeY );
 
     // bind to (zoom) selection changed event
     $('#select-zoom').change( function() {
@@ -892,7 +824,7 @@
     $('#select-zoom option:selected').removeAttr( 'selected' );
     $('#select-zoom option[value=100]').attr( 'selected', 'selected' );
 
-    // adjust applet size and listen to the window's resize event
+    // adjust applet initial size and listen to the window's resize event
     // we gonna keep the applet sized according to its parent bounds
     $(this).adjustAppletSize();
     $(window).resize( function() {
@@ -903,5 +835,92 @@
 
     // final initialization, default values, etc.
     $(this).setup( this.provis );
+
+    // observer callback. Called by CKE.
+    window.notify = function( d ) {
+      $('div#topic-content').html( d );
+    }
+
+    // set initial topic content within preview area
+    if ( window.opener.topic != null ) {
+      $('div#topic-content').html( window.opener.topic );
+    }
+
+    // Some magic for the topic preview area.
+    // $('div.provis-right-container').resizable({
+    //   handles: "w",
+    //   ghost: false, // disable eye-candy. seems broken (corrupts the absolute layout)
+    //   animate: false,
+    //   maxWidth: $(window).width() / 2,
+    //   minWidth: 300,
+    //   resize: function( e, ui ) {
+    //     $(this).adjustAppletSize( ui );
+    //   }
+    // });
+
+    // $('#adorner').dblclick( function( e ) {
+    //   var $cnt = $('div.provis-right-container');
+    //   var $area = $('div.provis-apparea');
+
+    //   var wndWidth = $(window).width();
+    //   var minWidth = 300;
+    //   var maxWidth = wndWidth / 2;
+    //   var speed = 400;
+
+    //   var appLeft = $area.position().left;
+    //   var appWidth = $area.width();
+    //   var appRight = wndWidth - (appLeft + $area.outerWidth() );
+
+    //   var cntLeft = $cnt.position().left;
+    //   var cntWidth = $cnt.width();
+    //   var cntRight = wndWidth - (cntLeft + $cnt.outerWidth() );
+
+    //   // set animation properties explicitly.
+    //   $area.css( 'left', appLeft ).css( 'right', appRight ).css( 'width', appWidth );
+    //   $cnt.css( 'left', cntLeft ).css( 'right', cntRight ).css( 'width', cntWidth );
+
+    //   // expand
+    //   if ( cntWidth < maxWidth ) {
+    //     var cntDiff = maxWidth - cntWidth;
+    //     cntLeft = cntLeft - cntDiff;
+
+    //     $cnt.animate({
+    //       left: cntLeft,
+    //       right: cntRight,
+    //       width: maxWidth },
+    //       speed );
+
+    //     var offset = $area.outerWidth() - $area.width();
+    //     appRight = wndWidth - cntLeft + offset;
+    //     appWidth = wndWidth - appLeft - appRight - offset;
+    //     $area.animate({
+    //       left: appLeft,
+    //       right: appRight,
+    //       width: appWidth },
+    //       speed, function() {
+    //         $(this).adjustAppletSize( { position: { left: appLeft}, size: { width: maxWidth } } );
+    //       });
+    //   } else {
+    //     // collapse
+    //     var cntDiff = maxWidth - minWidth;
+    //     cntLeft = cntLeft + cntDiff;
+    //     $cnt.animate({
+    //       left: cntLeft,
+    //       right: cntRight,
+    //       width: minWidth },
+    //       speed );
+
+    //     var offset = $area.outerWidth() - $area.width();
+    //     appRight = wndWidth - cntLeft + offset;
+    //     appWidth = wndWidth - appLeft - appRight - offset;
+    //     $area.animate({
+    //       left: appLeft,
+    //       right: appRight,
+    //       width: appWidth },
+    //       speed, function() {
+    //         $(this).adjustAppletSize( { position: { left: appLeft}, size: { width: minWidth } } );
+    //       });
+    //   }
+    // });
   });
 })(jQuery);

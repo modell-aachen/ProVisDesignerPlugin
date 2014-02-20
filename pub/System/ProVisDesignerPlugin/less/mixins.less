@@ -1,0 +1,53 @@
+.hide() {
+  display: none;
+}
+
+.size( @size: 1em ) {
+  font-size: @size;
+}
+
+.bold() {
+  font-weight: bold;
+}
+
+.overflow( @x: auto, @y: auto ) {
+  overflow-x: @x;
+  overflow-y: @y;
+}
+
+.pie() {
+  behavior: url('pie.htc');
+}
+
+.drop-shadow( @h: 0px, @v: 1px, @blur: 3px, @color: #000 ) {
+  box-shadow: @h @v @blur @color;
+  -webkit-box-shadow: @h @v @blur @color;
+  -moz-box-shadow: @h @v @blur @color;
+}
+
+.inset( @h: 0px, @v: 1px, @blur: 1px, @color: #555 ) {
+  box-shadow: @h @v @blur @color inset;
+  -webkit-box-shadow: @h @v @blur @color inset;
+  -moz-box-shadow: @h @v @blur @color inset;
+}
+
+.border-radius( @r: 5px ) {
+  border-radius: @r;
+  -webkit-border-radius: @r;
+  -moz-border-radius: @r;
+}
+
+.gradient( @colorTop, @colorBottom, @from: 0%, @to: 100% ) {
+  background: @colorTop;
+  background: -moz-linear-gradient( top, @colorTop @from, @colorBottom @to ); // FF3.6+
+  background: -webkit-gradient( linear, left top, left bottom, color-stop( @from, @colorTop ), color-stop( @to, @colorBottom ) ); // Chrome,Safari4+
+  background: -webkit-linear-gradient( top, @colorTop @from, @colorBottom @to ); // Chrome10+,Safari5.1+
+  background: -o-linear-gradient( top, @colorTop @from, @colorBottom @to ); // Opera 11.10+
+  background: -ms-linear-gradient( top, @colorTop @from, @colorBottom @to ); // IE10+
+  background: linear-gradient( to bottom, @colorTop @from, @colorBottom @to ); // W3C
+  filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='@{colorTop}', endColorstr='@{colorBottom}',GradientType=0 )"; // IE6-9
+}
+
+.gradient4shape( @colorTop, @colorBottom ) {
+  .gradient( @colorTop, @colorBottom, 10%, 90% );
+}

@@ -46,20 +46,20 @@
       <div class="toolbar-group">
         <a class='btn ui-tooltip' href='#' title='%MAKETEXT{"Undo"}%' data-action='undo' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/undo.png' /></a>
         <a id='btn-redo' class='btn ui-tooltip' href='#' title='%MAKETEXT{"Redo"}%' data-action='redo' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/redo.png' /></a>
-      </div>
-      <div class="toolbar-group" style="display: none;">
+      </div><!--
+       --><div class="toolbar-group" style="display: none;">
         <a class='btn ui-tooltip' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='0' title='%MAKETEXT{"Select"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-modify.png' /></a><!--
         --><a class='btn ui-tooltip' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='1' title='%MAKETEXT{"Draw"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-draw.png' /></a><!--
         --><a class='btn btn-selected ui-tooltip' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='3' title='%MAKETEXT{"Connect"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-link.png' /></a><!--
         --><a class='btn ui-tooltip' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='12' title='%MAKETEXT{"Pan"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-pan.png' /></a>
-      </div>
-      <div class="toolbar-group">
+      </div><!--
+       --><div class="toolbar-group">
         <a class='btn ui-tooltip' href='#' data-action='zoomIn' title='%MAKETEXT{"Zoom in"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/zoomIn.png' /></a><!--
         --><a class='btn ui-tooltip' href='#' data-action='zoomOut' title='%MAKETEXT{"Zoom out"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/zoomOut.png' /></a><!--
         --><a class='btn btn-toggled ui-tooltip' href='#' data-action='toggleGridVisibility' data-toggable='1' title='%MAKETEXT{"Show grid"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/showGrid.png' /></a><!--
         --><a class='btn btn-toggled ui-tooltip' href='#' data-action='toggleSnapToGrid' data-toggable='1' title='%MAKETEXT{"Snap to grid"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/snapToGrid.png' /></a>
-      </div>
-      <select id='select-zoom'>
+      </div><!--
+       --><select id='select-zoom'>
         <option value="200">200%</option>
         <option value="175">175%</option>
         <option value="150">150%</option>
@@ -131,8 +131,6 @@
   <div id="provis-rightbar">
     <div>
       <a href="#">%MAKETEXT{"Topic preview"}%</a>
-      <a href="#">%MAKETEXT{"Properties"}%</a>
-      <a href="#">%MAKETEXT{"Themes"}%</a>
     </div>
   </div>
   <div id="close-text" style="display: none;"><!--

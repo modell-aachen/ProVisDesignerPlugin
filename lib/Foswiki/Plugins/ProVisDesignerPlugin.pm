@@ -173,19 +173,6 @@ deployJava.runApplet( {
 //-->
 SCRIPT
 
-Foswiki::Func::writeWarning( $deployJava );
-
-# LinkCreating: 'linkCreated',
-#     NodeClicked: 'nodeClicked',
-#     NodeCreating: 'nodeCreating',
-#     NodeDeleted: 'nodeDeleted',
-#     NodeDeleting: 'nodeDeleting',
-#     NodeDoubleClicked: 'nodeDoubleClicked',
-#     NodeModified: 'nodeModified',
-#     NodeModifying: 'nodeModifying',
-#     NodeStartModifying: 'nodeStartModifying',
-#     NodeTextEdited: 'nodeTextChanged',
-
   if ( Foswiki::Func::getContext()->{SafeWikiSignable} ) {
     Foswiki::Plugins::SafeWikiPlugin::Signatures::permitInlineCode( $deployJava );
   }

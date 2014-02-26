@@ -136,64 +136,11 @@ ProVis = function( appletId ) {
   this.undoManager = applet.getDiagram().getUndoManager();
   this.view = applet.getDiagramView();
   this.anchorPattern = null;
-
+  this.container = null;
 
   /*****************************************************************************
    * public methods
    ****************************************************************************/
-
-  /**
-   * Wrapper/Helper method.
-   * Creates a new 'java.awt.Color' instance.
-   *
-   * @param hexColor The color value.
-   * @return An 'java.awt.Color' instance.
-   */
-  ProVis.prototype.createColor = function( hexColor ) {
-    var c = this.getRGBColor( hexColor );
-    return this.scriptHelper.createColor( c.r, c.g, c.b );
-  };
-
-  /**
-   * Wrapper/Helper method.
-   * Creates a new 'com.mindfusion.diagramming.Pen' instance.
-   *
-   * @param width The width (in px) this pen should draw.
-   * @param hexColor The color of this pen.
-   * @return An 'com.mindfusion.diagramming.Pen' instance.
-   */
-  ProVis.prototype.createPen = function( width, hexColor ) {
-    var c = this.getRGBColor( hexColor );
-    return this.scriptHelper.createPen( width, c.r, c.g, c.b );
-  };
-
-  /**
-   * Wrapper/Helper method.
-   * Creates a new 'com.mindfusion.diagramming.SolidBrush' instance.
-   *
-   * @param hecColor The color of this brush.
-   * @return An 'com.mindfusion.diagramming.SolidBrush' instance.
-   */
-  ProVis.prototype.createSolidBrush = function( hexColor ) {
-    var c = this.getRGBColor( hexColor );
-    return this.scriptHelper.createSolidBrush( c.r, c.g, c.b );
-  };
-
-  /**
-   * Wrapper/Helper method.
-   * Creates a new 'com.mindfusion.diagramming.GradientBrush' instance.
-   *
-   * @param hexFrom The starting color.
-   * @param hexTo The ending color.
-   * @param angle The gradient angle.
-   * @return An 'com.mindfusion.diagramming.GradientBrush' instance.
-   */
-  ProVis.prototype.createGradientBrush = function( hexFrom, hexTo, angle ) {
-    var c1 = this.getRGBColor( hexFrom );
-    var c2 = this.getRGBColor( hexTo );
-    var sc = this.scriptHelper;
-    return sc.createGradientBrush( c1.r, c1.g, c1.b, c2.r, c2.g, c2.b, angle );
-  };
 
   /**
    * Creates a new swimlane and adds it to the diagram's whitepaper.
@@ -201,39 +148,25 @@ ProVis = function( appletId ) {
    * @param orientation A value determining whether a vertical or horizontal swimlane shall be created.
    */
   ProVis.prototype.createSwimlane = function() {
-    if ( !swimlaneContainer ) {
-      swimlaneContainer = this.diagram.getSwimlaneContainer();
-      if ( swimlaneContainer == null ) {
-        var type = provis.scriptHelper.getConstant( 'SwimlaneType', 'Horizontal' );
-        var fac = provis.diagram.getFactory();
-        swimlaneContainer = fac.createSwimlaneContainer( type );
-      }
+    if ( !this.container ) {
+      // var type = provis.scriptHelper.getConstant( 'SwimlaneType', 'Vertical' );
+      if ( !this.createSwimlaneContainer( 1 ) ) return;
     }
 
-    swimlaneContainer.addLane();
-    provis.container = swimlaneContainer;
+    this.container.addLane();
   };
 
   /**
-   * Helper method to convert a hex color string to a RGB color object.
-   * Taken from: 'http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb'.
+   * Creates a new swimlane and adds it to the diagram's whitepaper.
    *
-   * @param hex The hex color.
-   * @return An object representing the color in RGB notation.
+   * @param orientation A value determining whether a vertical or horizontal swimlane shall be created.
    */
-  ProVis.prototype.getRGBColor = function( hex ) {
-    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    hex = hex.replace( shorthandRegex, function( m, r, g, b ) {
-        return r + r + g + g + b + b;
-    });
+  ProVis.prototype.createSwimlaneContainer = function( containerType ) {
+    if ( !this.container ) {
+      this.container = this.diagram.getSwimlaneContainer( containerType );
+    }
 
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec( hex );
-    return result ? {
-        r: parseInt( result[1], 16 ),
-        g: parseInt( result[2], 16 ),
-        b: parseInt( result[3], 16 )
-    } : null;
+    return this.container;
   };
 
   /**
@@ -366,10 +299,6 @@ ProVis = function( appletId ) {
    */
   ProVis.prototype.setBehavior = function( behavior ) {
     this.view.setBehavior( behavior );
-  };
-
-  ProVis.prototype.setDebug = function( state ) {
-    isDebug = state && state != null;
   };
 
   /**

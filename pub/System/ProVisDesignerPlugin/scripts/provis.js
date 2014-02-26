@@ -117,100 +117,11 @@ ProVis = function( appletId ) {
       string += chars[Math.round( Math.random() * (chars.length - 1) )];
     }
 
-    if ( isDebug ) {
-      console.log( '@getRandomString: created: ' + string );
-    }
-
     return string;
   };
 
   var initialize = function( p ) {
     if ( p ) provis = p;
-
-    // enable grid
-    provis.diagram.setGridSizeX( cfg.gridSizeX );
-    provis.diagram.setGridSizeY( cfg.gridSizeY );
-    provis.diagram.setGridStyle( cfg.gridStyle );
-    provis.diagram.setShowGrid( cfg.showGrid );
-    var gridColor = provis.createColor( cfg.gridColor );
-    provis.diagram.setGridColor( gridColor );
-
-    // eye candy. 3px white frame around grid
-    var whitePen = provis.createPen( 3, '#fff' );
-    provis.diagram.setBoundsPen( whitePen );
-
-    // allow inplace editing of captions and shape titles
-    provis.view.setAllowInplaceEdit( cfg.allowInplaceEdit );
-    var inplace = provis.view.getInplaceTextArea();
-    inplace.setLineWrap( true );
-    inplace.setWrapStyleWord( true );
-    provis.view.setInplaceEditAcceptOnEnter( true );
-
-    // default behavior (cursor): connect
-    provis.view.setBehavior( cfg.defaultBehavior );
-
-    // default handles.
-    provis.diagram.setShapeHandlesStyle( cfg.defaultHandleStyle );
-    provis.diagram.setAdjustmentHandlesSize( cfg.defaultHandleSize );
-
-    // Sets whether link segments can be added and removed interactively.
-    provis.diagram.setAllowSplitLinks( cfg.allowSplitLinks );
-
-    // Sets a value indicating whether users are allowed to
-    // attach links to nodes that do not have any anchor points.
-    provis.diagram.setAllowUnanchoredLinks( cfg.allowUnanchoredLinks );
-
-    // Sets a value indicating users are allowed to move the end points of
-    // a link after the link is created.
-    // provis.diagram.setLinkEndsMovable( cfg.linkEndsMovable );
-
-    // Sets whether disabled manipulation handles should be displayed.
-    provis.diagram.setShowDisabledHandles( !cfg.hideDisabledHandles );
-
-    // Sets a value indicating whether newly created links are set to
-    // align their end points to the borders of the nodes they connect.
-    // provis.diagram.setLinksSnapToBorders( cfg.linksSnapToBorders );
-
-    // Sets a value indicating whether anchor points will be shown on screen.
-    // 2: auto
-    provis.diagram.setShowAnchors( cfg.showAnchors );
-
-    // Sets a value indicating when links snap to anchor points.
-    // 1: OnCreateOrModify
-    provis.diagram.setSnapToAnchor( cfg.snapToAnchor );
-
-    // Sets the style that should be assigned to new links.
-    // 2: Cascading
-    provis.diagram.setLinkStyle( cfg.linkStyle );
-
-    // Sets the default orientation of the first segments of cascading links.
-    // 2: vertical
-    provis.diagram.setLinkCascadeOrientation( cfg.linkCascadeOrientation );
-
-    // Sets the default pen that should be assigned to new links.
-    // var linkPen = provis.createPen( cfg.linkPenSize, cfg.linkPenColor );
-    // provis.diagram.setLinkPen( linkPen );
-
-    // Set inplace edit font
-    var inplaceFont = provis.scriptHelper.createFont( 'Arial', 12 );
-    provis.view.setInplaceEditFont( inplaceFont );
-
-    // Enable undo/redo functionality.
-    provis.undoManager.setUndoEnabled( true );
-    var history = provis.undoManager.getHistory();
-    history.setCapacity( cfg.undoCommandHistory );
-    history.clear();
-
-    // set initial diagram bounds
-    // DIN A4@300ppi: 2480x3508 [px]
-    var db = provis.diagram.getBounds();
-    var rect = provis.scriptHelper.createRectangleF(
-      db.getX(),
-      db.getY(),
-      cfg.diagramWidth,
-      cfg.diagramHeight );
-    provis.diagram.setBounds( rect );
-
     provis.diagram.setDirty( false );
   };
 
@@ -291,12 +202,16 @@ ProVis = function( appletId ) {
    */
   ProVis.prototype.createSwimlane = function() {
     if ( !swimlaneContainer ) {
-      var type = provis.scriptHelper.getConstant( 'SwimlaneType', 'Horizontal' );
-      var fac = provis.diagram.getFactory();
-      swimlaneContainer = fac.createSwimlaneContainer( type );
+      swimlaneContainer = this.diagram.getSwimlaneContainer();
+      if ( swimlaneContainer == null ) {
+        var type = provis.scriptHelper.getConstant( 'SwimlaneType', 'Horizontal' );
+        var fac = provis.diagram.getFactory();
+        swimlaneContainer = fac.createSwimlaneContainer( type );
+      }
     }
 
     swimlaneContainer.addLane();
+    provis.container = swimlaneContainer;
   };
 
   /**
@@ -340,8 +255,6 @@ ProVis = function( appletId ) {
    * Saves all changes and uploads the resulting documents to the server.
    */
   ProVis.prototype.save = function() {
-    return;
-
     $('applet').setHidden().done( function() { $.blockUI(); });
 
     // Resize grid to minimum required size (margin: 5px)
@@ -354,8 +267,8 @@ ProVis = function( appletId ) {
     this.toggleGridVisibility();
 
     var imagemap = provis.applet.saveToMap('%MAPNAME%');
-    var imageaqm = provis.applet.saveToString(true);
     var imagepng = provis.applet.saveToImage();
+    var imageaqm = provis.applet.saveToString(true);
 
     var opener = window.opener.provis;
     var scriptPath = foswiki.getPreference( 'SCRIPTURLPATH' );

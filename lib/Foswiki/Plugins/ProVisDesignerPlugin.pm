@@ -111,15 +111,15 @@ sub _handleDesignerTag {
 
   my $pluginURL = '%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin';
   my $style = <<STYLE;
-<link rel="stylesheet" type="text/css" media="all" href="$pluginURL/bootstrap/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" media="all" href="$pluginURL/bootstrap/bootstrap.min.css?version=$RELEASE" />
 <link rel="stylesheet" type="text/css" media="all" href="$pluginURL/css/provis.ui.css?version=$RELEASE" />
 STYLE
 
   Foswiki::Func::addToZone( 'head', 'PROVIS::DESIGNER::STYLES', $style );
 
   my $script = <<SCRIPT;
-<script type="text/javascript" src="$pluginURL/bootstrap/bootstrap.min.js"></script>
-<script type="text/javascript" src="$pluginURL/scripts/deployJava.js"></script>
+<script type="text/javascript" src="$pluginURL/bootstrap/bootstrap.min.js?version=$RELEASE"></script>
+<script type="text/javascript" src="$pluginURL/scripts/deployJava.js?version=$RELEASE"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.js?version=$RELEASE"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.ui.js?version=$RELEASE"></script>
 SCRIPT

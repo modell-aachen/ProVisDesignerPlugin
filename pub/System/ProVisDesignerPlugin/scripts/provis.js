@@ -21,26 +21,6 @@ MindFusion = {
 };
 ProVis = function( appletId ) {
 
-  // Extends an array to move elements around.
-  if ( !Array.prototype.move ) {
-    Array.prototype.move = function ( from, to ) {
-      this.splice( to, 0, this.splice( from, 1 )[0] );
-    };
-  }
-
-  /**
-   * Note:
-   *
-   * Neither WebKit nor Trident (at least v7 as used by IE11) won't recognize
-   * the applet's 'appletStarted' event.
-   *
-   * As workaround an instance of this "class" is created and injected into
-   * the window by the applet itself. During applet startup this constructor is
-   * invoked without passing a proper argument.
-   *
-   * Therefore it is mandatory to initialize the ctor's argument with an
-   * accurate default value (a.k.a. applet id).
-   */
   if ( !appletId ) appletId = 'jDiagApplet';
   var applet = document.getElementById( appletId );
 
@@ -50,56 +30,10 @@ ProVis = function( appletId ) {
   applet.height = parent.height();
 
 
-  /*****************************************************************************
-   * private members
-   ****************************************************************************/
-
-  var swimlanes = [];
-  var swimlaneHashes = [];
-  var cfg = ProVis.config;
-  var constants = ProVis.strings;
-  var defaultTheme = "ModAc"
-  var curTheme = ProVis.themes[defaultTheme];
-  var undoComposite = null;
-  var isDebug = false;
-  var swimlaneContainer = null;
-
 
   /*****************************************************************************
    * private methods
    ****************************************************************************/
-
-   /**
-    * Helper method to iterate through a Java list synchronously.
-    *
-    * @param list The list.
-    * @param action A callback to which each list item is passed to.
-    * @return A jQuery promise.
-    */
-  var foreachListItem = function( list, action ) {
-    var deferred = $.Deferred();
-    for( var i = 0; i < list.size(); i++ )
-      action( list.get( i ) );
-
-    deferred.resolve();
-    return deferred.promise();
-  };
-
-  /**
-    * Helper method to iterate through a JavaScript array synchronously.
-    *
-    * @param array The list.
-    * @param action A callback to which each element is passed to.
-    * @return A jQuery promise.
-    */
-  var foreachArrayItem = function( array, action ) {
-    var deferred = $.Deferred();
-    for( var i = 0; i < array.length; i++ )
-      action( array[i] );
-
-    deferred.resolve();
-    return deferred.promise();
-  };
 
   /**
    * Gets a random string.
@@ -120,11 +54,6 @@ ProVis = function( appletId ) {
     return string;
   };
 
-  var initialize = function( p ) {
-    if ( p ) provis = p;
-    provis.diagram.setDirty( false );
-  };
-
 
   /*****************************************************************************
    * public properties
@@ -143,9 +72,7 @@ ProVis = function( appletId ) {
    ****************************************************************************/
 
   /**
-   * Creates a new swimlane and adds it to the diagram's whitepaper.
-   *
-   * @param orientation A value determining whether a vertical or horizontal swimlane shall be created.
+   * Creates a new swimlane.
    */
   ProVis.prototype.createSwimlane = function() {
     if ( !this.container ) {
@@ -157,9 +84,9 @@ ProVis = function( appletId ) {
   };
 
   /**
-   * Creates a new swimlane and adds it to the diagram's whitepaper.
+   * Creates a new swimlane container.
    *
-   * @param orientation A value determining whether a vertical or horizontal swimlane shall be created.
+   * @param containerType A value determining whether a vertical or horizontal container shall be created.
    */
   ProVis.prototype.createSwimlaneContainer = function( containerType ) {
     if ( !this.container ) {
@@ -293,15 +220,6 @@ ProVis = function( appletId ) {
   };
 
   /**
-   * Sets a value indicating how the control should respond to users actions.
-   *
-   * @param behavior One of the 'com.mindfusion.diagramming.Behavior' constants.
-   */
-  ProVis.prototype.setBehavior = function( behavior ) {
-    this.view.setBehavior( behavior );
-  };
-
-  /**
    * Toggles the visibility of the alignment grid.
    *
    * @param forceOff A value indicating whether the alignment grid is displayed.
@@ -336,7 +254,7 @@ ProVis = function( appletId ) {
   };
 
   /**
-   *
+   * Increases the current zoom level.
    */
   ProVis.prototype.zoomIn = function() {
     var zoom = this.view.getZoomFactor() + cfg.zoomStep;
@@ -344,7 +262,7 @@ ProVis = function( appletId ) {
   };
 
   /**
-   *
+   * Decreases the current zoom level.
    */
   ProVis.prototype.zoomOut = function() {
     var zoom = this.view.getZoomFactor() - cfg.zoomStep;
@@ -385,19 +303,12 @@ ProVis = function( appletId ) {
         url: url,
         success: function( data ) {
           provis.applet.loadFromString( data );
-          initialize();
         },
         error: function() {
           $.unblockUI();
-          initialize();
         }
       });
-  } else {
-    initialize( this );
   }
-
-  // event wire up
-  window.appletStarted = initialize;
 
   // initialize ProVis UI Controller
   this.ui.init().done( function() {

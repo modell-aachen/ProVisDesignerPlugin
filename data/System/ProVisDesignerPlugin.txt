@@ -1,3 +1,4 @@
+%META:TOPICINFO{author="BaseUserMapping_333" comment="reprev" date="1393531658" format="1.1" reprev="2" version="2"}%
 <verbatim>
 %STARTSECTION{"PROVISCONFIG"}%
 {
@@ -61,7 +62,7 @@
       "foreground": "#222222",
       "gradient": "#000000",
       "gradientAngle": 90,
-      "handleStyle": 11,
+      "handleStyle": 7,
       "height": 60,
       "shadowColor": "#e5e5e5",
       "shadowOffsetX": 2,
@@ -78,7 +79,7 @@
       "foreground": "#222222",
       "gradient": "#000000",
       "gradientAngle": 90,
-      "handleStyle": 11,
+      "handleStyle": 2,
       "height": 60,
       "shadowColor": "#e5e5e5",
       "shadowOffsetX": 2,
@@ -146,7 +147,7 @@
       "foreground": "#222222",
       "gradient": "#000000",
       "gradientAngle": 90,
-      "handleStyle": 11,
+      "handleStyle": 8,
       "height": 30,
       "shadowColor": "#e5e5e5",
       "shadowOffsetX": 2,

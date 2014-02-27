@@ -20,6 +20,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
      * private members
      **************************************************************************/
 
+    var forceClose = false;
     var isMouseDown = false;
     var mouseX = -1;
     var isOptionsVisible = false;
@@ -57,9 +58,31 @@ if ( ProVis && !ProVis.prototype.ui ) {
      * Event handler. Invoked after the user has clicked the close button.
      */
     var closeButtonClicked = function() {
-      window.close();
+      if ( provis.isDirty() ) {
+        $('applet').setHidden();
+        $('#modal-close').modal('show');
+      } else {
+        window.close();
+      }
+
       return false;
     }
+
+    var closeModalDismissed = function() {
+      $('applet').setVisible();
+    };
+
+    var closeModalDiscard = function() {
+      forceClose = true;
+      window.close();
+    };
+
+    var closeModalSave = function() {
+      provis.save( true ).done( function() {
+        forceClose = true;
+        window.close();
+      }).fail( function( e ) { alert( e ); });
+    };
 
     /**
      * Initializes element tooltips as provided by Bootstrap.
@@ -185,17 +208,6 @@ if ( ProVis && !ProVis.prototype.ui ) {
       return false;
     };
 
-    /**
-     * Shows a modal dialog to the user to let him choose whether he wants to
-     * discard unsaved changes.
-     */
-    var showBeforeCloseHint = function() {
-      $(provis.applet).css( 'visibility', 'hidden' );
-      $('#modal-close').modal().on('hidden.bs.modal', function() {
-        $(provis.applet).css( 'visibility', 'visible' );
-      });
-    };
-
     var toggleTopicPreview = function( e ) {
       if ( !isOptionsVisible ) {
         $('#provis-applet').setHidden();
@@ -236,6 +248,10 @@ if ( ProVis && !ProVis.prototype.ui ) {
       $.blockUI();
       initTooltips();
 
+      $('#modal-close').on( 'hidden.bs.modal', closeModalDismissed );
+      $('#btn-close-save').on( 'click', closeModalSave );
+      $('#btn-close-discard').on( 'click', closeModalDiscard );
+
       $('.provis-topbar').show( 'slide', {direction: 'up'}, 500 );
       $('#provis-shapes').show( 'slide', {direction: 'left'}, 500 );
 
@@ -259,10 +275,8 @@ if ( ProVis && !ProVis.prototype.ui ) {
 
       // beforeunload
       $(window).on( 'beforeunload', null, null, function( e ) {
-        if ( provis && provis.diagram ) {
-          var isDirty = provis.diagram.getDirty();
-          if ( !isDirty ) return;
-        }
+        if ( forceClose ) return;
+        if ( !provis.isDirty() ) return;
 
         var warning = $('#close-text').text();
         var oe = e.originalEvent || window.event;

@@ -120,7 +120,16 @@ ProVis = function( appletId ) {
   /**
    * Saves all changes and uploads the resulting documents to the server.
    */
-  ProVis.prototype.save = function() {
+  ProVis.prototype.save = function( keepHidden ) {
+    if ( !window.opener.provisTab || window.opener.provisTab.closed ) {
+      // ToDo. user darauf hinweisen, dass die zugehörige cke instanz bereits geschlossen wurde
+      // speichern ist somit nicht mehr möglich.s
+      alert( 'foo');
+      return;
+    }
+
+    var deferred = $.Deferred();
+
     $('applet').setHidden().done( function() { $.blockUI(); });
 
     // Resize grid to minimum required size (margin: 5px)
@@ -181,7 +190,7 @@ ProVis = function( appletId ) {
       data: request,
       contentType: 'multipart/form-data; boundary=' + sep,
       error: function( xhr, status, error ) {
-        // ToDo!!
+        deferred.reject( error );
       },
       success: function( data, status, xhr ) {
         var r = jQuery.parseJSON( data );
@@ -208,21 +217,28 @@ ProVis = function( appletId ) {
             var regexp = new RegExp( pattern, 'g' );
             data = data.replace( regexp, macro );
             cke.setData( data );
+
+            // fixme!
+            setTimeout( deferred.resolve, 1000 );
           },
           error: function( xhr, status, error ) {
-            console.log( 'update error' );
-            console.log( xhr );
-            console.log( status );
-            console.log( error );
+            deferred.reject( error );
           }
         });
       },
       complete: function() {
         provis.diagram.setBounds( bounds );
         provis.toggleGridVisibility();
-        $('applet').setVisible().done( function() { $.unblockUI(); });
+
+        if ( !keepHidden ) {
+          $('applet').setVisible();
+        }
+
+        $.unblockUI();
       }
     });
+
+    return deferred.promise();
   };
 
   /**

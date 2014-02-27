@@ -111,7 +111,6 @@ sub _handleDesignerTag {
 
   my $pluginURL = '%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin';
   my $style = <<STYLE;
-<link rel="stylesheet" type="text/css" media="all" href="$pluginURL/bootstrap/bootstrap.min.css?version=$RELEASE" />
 <link rel="stylesheet" type="text/css" media="all" href="$pluginURL/css/provis.ui.css?version=$RELEASE" />
 STYLE
 

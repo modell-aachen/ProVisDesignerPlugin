@@ -1,8 +1,10 @@
+@import "bootstrap/bootstrap.less";
 @import "pantone.less";
 @import "vars.less";
 @import "mixins.less";
 @import "toolbar.less";
 @import "leftbar.less";
+
 
 html {
   body{
@@ -16,9 +18,11 @@ html {
 div {
   &.provis-topbar {
     position: relative;
+    width: 100%;
     height: 45px;
     background-image: url('../assets/toolbar-bg.png');
     background-repeat: repeat-x;
+    // background-color: #f3f3f3;
     border-top: 5px solid @coty;
     z-index: 5;
     display: none;

@@ -61,6 +61,15 @@ msgstr "Verkleinern"
 msgid "Discard changes"
 msgstr "Änderungen verwerfen"
 
+msgid "Save changes"
+msgstr "Änderungen speichern"
+
+msgid "Save & close"
+msgstr "Speichern & schließen"
+
+msgid "Discard"
+msgstr "Verwerfen"
+
 msgid "This diagram contains unsaved changes."
 msgstr "Dieses Diagramm beinhaltet nicht gespeicherte Änderungen."
 

@@ -40,17 +40,17 @@ if ( ProVis && !ProVis.prototype.ui ) {
       var applet = $('.col-applet applet');
       var col = applet.parent();
 
-      var left = $('.provis-options').position().left;
+      var left = $('.provis-preview').position().left;
       var first = $('#table-container table td:first-child').innerWidth()
       var prev = $('#table-container table td:last-child').prev().innerWidth()
       var last = $('#table-container table td:last-child').innerWidth()
       var width = left - (first + last + prev + 25);
 
       applet.width( width)
-      applet.height( $('.provis-options').height() );
+      applet.height( $('.provis-preview').height() );
 
       col.width( width );
-      col.height( $('.provis-options').height() );
+      col.height( $('.provis-preview').height() );
     }
 
     /**
@@ -129,7 +129,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
 
       var applet = $('#provis-applet');
       var adorner = $('#opts-adorner');
-      var options = $('#provis-options');
+      var options = $('#provis-preview');
       var appletWidth = applet.width() - (mouseX - e.pageX);
       var optionsWidth = options.width() + (mouseX - e.pageX);
 
@@ -199,13 +199,15 @@ if ( ProVis && !ProVis.prototype.ui ) {
     var toggleTopicPreview = function( e ) {
       if ( !isOptionsVisible ) {
         $('#provis-applet').setHidden();
-        $('#provis-options').width( $(window).width() - 125 );
-        $('#provis-options').show( 'slide', {direction: 'right'}, 400, function() {
+        $('#provis-preview').width( $(window).width() - 125 );
+        $('#preview-topic').setVisible();
+        $('#provis-preview').show( 'slide', {direction: 'right'}, 400, function() {
           isOptionsVisible = true;
         });
       } else {
-        $('#provis-options').hide( 'slide', {direction: 'right'}, 400, function() {
+        $('#provis-preview').hide( 'slide', {direction: 'right'}, 400, function() {
           isOptionsVisible = false;
+          $('#preview-topic').setHidden();
           $('#provis-applet').setVisible();
         });
       }
@@ -240,7 +242,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
       $('#btn-close').on( 'click', closeButtonClicked );
       // $(window).bind("beforeunload", closeButtonClicked );
 
-      $('a#topic-preview').on( 'click', toggleTopicPreview );
+      $('a#preview-toggle').on( 'click', toggleTopicPreview );
 
       $('a.btn').on( 'click', menuButtonClicked );
       $('div.node').on( 'click', shapeButtonClicked );
@@ -327,7 +329,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
   $(document).ready( function() {
     var isFirstLoad = true;
     $(window).resize( function() {
-      var options = $('#provis-options');
+      var options = $('#provis-preview');
       var rightbar = $('#provis-rightbar');
       var container = $('#provis-applet');
       var adorner = $('#opts-adorner');
@@ -342,7 +344,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
         options.width( 450 );
 
         options.show( 'slide', {direction: left}, 400, function() {
-          $('#opts-topic').setVisible();
+          $('#preview-topic').setVisible();
           adorner.fadeIn();
           container.width( width - (70 + options.width() + left) );
           $('applet').toParentBounds().done( function() {
@@ -352,7 +354,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
       } else {
         options.hide();
         adorner.hide();
-        $('#opts-topic').setHidden().done( function() {
+        $('#preview-topic').setHidden().done( function() {
           rightbar.show( 'slide', {direction: left}, 400 );
           container.width( width - (90 + left) );
           if ( isFirstLoad ) {
@@ -366,12 +368,12 @@ if ( ProVis && !ProVis.prototype.ui ) {
 
     // observer callback. Called by CKE.
     window.notify = function( d ) {
-      $('#opts-topic').html( d );
+      $('#preview-topic').html( d );
     }
 
     // set initial topic content within preview area
     if ( window.opener.provis ) {
-      $('#opts-topic').html( window.opener.provis.topicContent );
+      $('#preview-topic').html( window.opener.provis.topicContent );
     }
   });
 })(jQuery);

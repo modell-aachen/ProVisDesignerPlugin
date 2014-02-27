@@ -4,9 +4,6 @@ msgstr "Neue Schwimmbahn"
 msgid "Shapes"
 msgstr "Schablonen"
 
-msgid "Layout"
-msgstr "Ausrichtung"
-
 msgid "Preview"
 msgstr "Vorschau"
 
@@ -15,6 +12,9 @@ msgstr "Prozess"
 
 msgid "Decision"
 msgstr "Entscheidung"
+
+msgid "Swimlane"
+msgstr "Schwimmbahn"
 
 msgid "Document"
 msgstr "Dokument"
@@ -52,18 +52,6 @@ msgstr "An Raster ausrichten"
 msgid "Show grid"
 msgstr "Raster anzeigen"
 
-msgid "Select"
-msgstr "Auswählen"
-
-msgid "Draw"
-msgstr "Zeichnen"
-
-msgid "Connect"
-msgstr "Verbinden"
-
-msgid "Pan"
-msgstr "Schwenken"
-
 msgid "Zoom in"
 msgstr "Vergrößern"
 
@@ -81,6 +69,3 @@ msgstr "Wenn Sie ProVis nun beenden, gehen diese Änderungen verloren."
 
 msgid "Topic preview"
 msgstr "Artikel-Vorschau"
-
-msgid "Themes"
-msgid "Motive"

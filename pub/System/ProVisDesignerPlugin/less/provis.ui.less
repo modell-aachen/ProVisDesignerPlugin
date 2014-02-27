@@ -21,6 +21,7 @@ div {
     background-repeat: repeat-x;
     border-top: 5px solid @coty;
     z-index: 5;
+    display: none;
 
     .pie;
     .drop-shadow( 0px, 2px, 5px, @dark-gray );
@@ -86,28 +87,39 @@ div {
     left: 0;
     bottom: 0;
     width: 90px;
+    height: 100%;
     background: #333;
     z-index: 4;
     padding-top: 55px;
+    display: none;
 
     .pie;
     .drop-shadow( 1px, 0px, 5px, @dark-gray );
 
     > .ma-logo {
-      position: inherit;
+      position: absolute;
       border-top: 1px solid lighten(#444, 5%);
       padding: 24px;
       bottom: 0;
       left: 4px;
+      height: 66px;
+      width: 80px;
     }
   }
 
-  &#provis-options {
+  &#provis-options-container {
     position: absolute;
-    top: 65px;
+    top: 0px;
     right: 20px;
-    bottom: 20px;
+    height: 100%;
+    padding: 65px 0 20px 0;
+  }
+
+  &#provis-options {
     width: 450px;
+    height: 100%;
+
+    display: none;
     background: white;
     border-left: 1px solid darken(@body-bg, 10%);
     z-index: 4;
@@ -130,6 +142,7 @@ div {
     width: 20px;
     height: 100%;
     position: absolute;
+    display: none;
     right: 470px;
     top: 0;
 
@@ -174,6 +187,7 @@ div {
     left: 110px;
     background: #fff;
     padding: 15px;
+    visibility: hidden;
 
     .pie;
     .overflow( hidden, hidden );

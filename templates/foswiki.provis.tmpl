@@ -37,9 +37,6 @@
   <div class="provis-topbar">
     <div class="provis-menu">
       <div class="toolbar-group">
-        <a class='btn ui-tooltip' href='#' title='%MAKETEXT{"New swimlane"}%' data-action='createSwimlane' data-tooltip-placement='bottom'><div><span><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/newLane.png' />%MAKETEXT{"New swimlane"}%</span></div></a>
-      </div>
-      <div class="toolbar-group">
         <a href='#' class='btn ui-tooltip' title='%MAKETEXT{"Save"}%' data-action='save' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/save.png' /></a>
         <a id='btn-close' href='#' class='btn ui-tooltip' title='%MAKETEXT{"Close"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cancel.png' /></a>
       </div>
@@ -47,17 +44,11 @@
         <a class='btn ui-tooltip' href='#' title='%MAKETEXT{"Undo"}%' data-action='undo' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/undo.png' /></a>
         <a id='btn-redo' class='btn ui-tooltip' href='#' title='%MAKETEXT{"Redo"}%' data-action='redo' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/redo.png' /></a>
       </div><!--
-       --><div class="toolbar-group" style="display: none;">
-        <a class='btn ui-tooltip' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='0' title='%MAKETEXT{"Select"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-modify.png' /></a><!--
-        --><a class='btn ui-tooltip' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='1' title='%MAKETEXT{"Draw"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-draw.png' /></a><!--
-        --><a class='btn btn-selected ui-tooltip' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='3' title='%MAKETEXT{"Connect"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-link.png' /></a><!--
-        --><a class='btn ui-tooltip' href='#' data-selectable='1' data-action='setBehavior' data-actionargs='12' title='%MAKETEXT{"Pan"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/cursor-pan.png' /></a>
-      </div><!--
        --><div class="toolbar-group">
         <a class='btn ui-tooltip' href='#' data-action='zoomIn' title='%MAKETEXT{"Zoom in"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/zoomIn.png' /></a><!--
         --><a class='btn ui-tooltip' href='#' data-action='zoomOut' title='%MAKETEXT{"Zoom out"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/zoomOut.png' /></a><!--
         --><a class='btn btn-toggled ui-tooltip' href='#' data-action='toggleGridVisibility' data-toggable='1' title='%MAKETEXT{"Show grid"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/showGrid.png' /></a><!--
-        --><a class='btn btn-toggled ui-tooltip' href='#' data-action='toggleSnapToGrid' data-toggable='1' title='%MAKETEXT{"Snap to grid"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/snapToGrid.png' /></a>
+        --><a class='btn ui-tooltip' href='#' data-action='toggleSnapToGrid' data-toggable='1' title='%MAKETEXT{"Snap to grid"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/snapToGrid.png' /></a>
       </div><!--
        --><select id='select-zoom'>
         <option value="200">200%</option>
@@ -69,19 +60,16 @@
         <option value="50">50%</option>
         <option value="25">25%</option>
       </select><!--
-      <div>Delete me!!
-      <select id='select-theme'>
-        <option value="Theme1" selected="selected">Theme1</option>
-        <option value="Theme2">Theme2</option>
-        <option value="Theme3">Theme3</option>
-        <option value="Theme4">Theme4</option>
-        <option value="Theme5">Theme5</option>
-        <option value="ModAc">Modac</option>
-      </select></div>
     --></div>
   </div>
   <div id="provis-shapes">
     <div>
+      <div class='node lane' data-action='createSwimlane'>
+        <span>%MAKETEXT{"Swimlane"}%</span>
+        <div class='node-bg'>
+          <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_swimlane.png' />
+        </div>
+      </div>
       <div class='node node-selected' data-shape='Rectangle'>
         <span>%MAKETEXT{"Process"}%</span>
         <div id='node-rectangle' class='node-bg'>
@@ -125,12 +113,14 @@
   </div>
   <div id="provis-applet">%TEXT%</div>
   <div id="opts-adorner" class="chevron-left"></div>
-  <div id="provis-options">
-    <div id="opts-topic"></div>
+  <div id="provis-options-container">
+    <div id="provis-options">
+      <div id="opts-topic"></div>
+    </div>
   </div>
   <div id="provis-rightbar">
     <div>
-      <a href="#">%MAKETEXT{"Topic preview"}%</a>
+      <a id="topic-preview" href="#">%MAKETEXT{"Topic preview"}%</a>
     </div>
   </div>
   <div id="close-text" style="display: none;"><!--

@@ -22,6 +22,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
 
     var isMouseDown = false;
     var mouseX = -1;
+    var isOptionsVisible = false;
 
     /***************************************************************************
      * public properties
@@ -171,13 +172,15 @@ if ( ProVis && !ProVis.prototype.ui ) {
     /**
      * Event handler. Invoked after the user has selected a shape.
      */
-    var shapeButtonClicked = function() {
-      $('div.node.node-selected').removeClass( 'node-selected' );
-      $(this).addClass( 'node-selected' );
+    var shapeButtonClicked = function( e ) {
+      if ( !$(e.target).parents('.node').hasClass('lane') ) {
+        $('div.node.node-selected').removeClass( 'node-selected' );
+        $(this).addClass( 'node-selected' );
 
-      // tell the applet which shape is currently selected.
-      var shapeType = provis.scriptHelper.getConstant( 'ProVisShapeType', $(this).data( 'shape' ) );
-      provis.view.setCurrentShape( shapeType );
+        // tell the applet which shape is currently selected.
+        var shapeType = provis.scriptHelper.getConstant( 'ProVisShapeType', $(this).data( 'shape' ) );
+        provis.view.setCurrentShape( shapeType );
+      }
 
       return false;
     };
@@ -191,6 +194,23 @@ if ( ProVis && !ProVis.prototype.ui ) {
       $('#modal-close').modal().on('hidden.bs.modal', function() {
         $(provis.applet).css( 'visibility', 'visible' );
       });
+    };
+
+    var toggleTopicPreview = function( e ) {
+      if ( !isOptionsVisible ) {
+        $('#provis-applet').setHidden();
+        $('#provis-options').width( $(window).width() - 125 );
+        $('#provis-options').show( 'slide', {direction: 'right'}, 400, function() {
+          isOptionsVisible = true;
+        });
+      } else {
+        $('#provis-options').hide( 'slide', {direction: 'right'}, 400, function() {
+          isOptionsVisible = false;
+          $('#provis-applet').setVisible();
+        });
+      }
+
+      return false;
     };
 
     /**
@@ -211,14 +231,24 @@ if ( ProVis && !ProVis.prototype.ui ) {
      */
     ProVisUIController.prototype.init = function() {
       var deferred = $.Deferred();
+      $.blockUI();
       initTooltips();
+
+      $('.provis-topbar').show( 'slide', {direction: 'up'}, 500 );
+      $('#provis-shapes').show( 'slide', {direction: 'left'}, 500 );
 
       $('#btn-close').on( 'click', closeButtonClicked );
       // $(window).bind("beforeunload", closeButtonClicked );
 
+      $('a#topic-preview').on( 'click', toggleTopicPreview );
+
       $('a.btn').on( 'click', menuButtonClicked );
       $('div.node').on( 'click', shapeButtonClicked );
       $('#select-zoom').on( 'change', zoomSelectionChanged );
+      $('div.node.lane').on( 'click', function() {
+        var action = $(this).data( 'action' );
+        if ( action ) provis[action]();
+      });
 
       // wire up mouse events. used to resize content
       $('#opts-adorner').on( 'mousedown', onMouseDown );
@@ -250,6 +280,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
         deferred.resolve();
       });
 
+      $.unblockUI();
       return deferred.promise();
     };
   };
@@ -264,14 +295,14 @@ if ( ProVis && !ProVis.prototype.ui ) {
   $.fn.extend( {
     setVisible: function() {
       var deferred = $.Deferred();
-      // deferred.resolve( this.css('visibility', 'visible') );
+      deferred.resolve( this.css('visibility', 'visible') );
       deferred.resolve();
       return deferred.promise();
     },
 
     setHidden: function() {
       var deferred = $.Deferred();
-      // deferred.resolve( this.css('visibility', 'hidden') );
+      deferred.resolve( this.css('visibility', 'hidden') );
       deferred.resolve();
       return deferred.promise();
     },
@@ -294,6 +325,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
   });
 
   $(document).ready( function() {
+    var isFirstLoad = true;
     $(window).resize( function() {
       var options = $('#provis-options');
       var rightbar = $('#provis-rightbar');
@@ -303,21 +335,30 @@ if ( ProVis && !ProVis.prototype.ui ) {
       var left = container.position().left;
 
       if ( width > 1024 ) {
-        // $('applet').toParentBounds();
+        rightbar.hide();
 
-        rightbar.hide( 'slow' );
-        adorner.setVisible();
-        options.show( 'slow', function() {
+        // fix for previously shown options/preview pane.
+        isOptionsVisible = false;
+        options.width( 450 );
+
+        options.show( 'slide', {direction: left}, 400, function() {
           $('#opts-topic').setVisible();
+          adorner.fadeIn();
           container.width( width - (70 + options.width() + left) );
-          $('applet').toParentBounds();
+          $('applet').toParentBounds().done( function() {
+            $('#provis-applet').setVisible();
+          });
         });
       } else {
         options.hide();
-        adorner.setHidden();
+        adorner.hide();
         $('#opts-topic').setHidden().done( function() {
-          rightbar.show( 'slow' );
+          rightbar.show( 'slide', {direction: left}, 400 );
           container.width( width - (90 + left) );
+          if ( isFirstLoad ) {
+            isFirstLoad = false;
+            $('#provis-applet').setVisible();
+          }
           $('applet').toParentBounds();
         });
       }

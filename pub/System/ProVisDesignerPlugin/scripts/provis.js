@@ -29,6 +29,8 @@ ProVis = function( appletId ) {
   applet.width = parent.width();
   applet.height = parent.height();
 
+  this.ui.init();
+
 
 
   /*****************************************************************************
@@ -109,6 +111,10 @@ ProVis = function( appletId ) {
         console.log( ex.toString() );
       }
     }
+  };
+
+  ProVis.prototype.isDirty = function() {
+    return this.diagram.getDirty();
   };
 
   /**
@@ -257,7 +263,7 @@ ProVis = function( appletId ) {
    * Increases the current zoom level.
    */
   ProVis.prototype.zoomIn = function() {
-    var zoom = this.view.getZoomFactor() + cfg.zoomStep;
+    var zoom = this.view.getZoomFactor() + this.view.getZoomStep();
     return this.zoomTo( zoom );
   };
 
@@ -265,7 +271,7 @@ ProVis = function( appletId ) {
    * Decreases the current zoom level.
    */
   ProVis.prototype.zoomOut = function() {
-    var zoom = this.view.getZoomFactor() - cfg.zoomStep;
+    var zoom = this.view.getZoomFactor() - this.view.getZoomStep();
     return this.zoomTo( zoom );
   };
 
@@ -311,8 +317,10 @@ ProVis = function( appletId ) {
   }
 
   // initialize ProVis UI Controller
-  this.ui.init().done( function() {
-    setTimeout( function() { $(applet).height( 1 + $(applet).height() ); }, 500 );
-    setTimeout( function() { $(applet).width( 1 + $(applet).width() ); }, 500 );
-  });
+  // this.ui.init().done( function() {
+  //   setTimeout( function() { $(applet).height( 1 + $(applet).height() ); }, 500 );
+  //   setTimeout( function() { $(applet).width( 1 + $(applet).width() ); }, 500 );
+  // });
+
+
 };

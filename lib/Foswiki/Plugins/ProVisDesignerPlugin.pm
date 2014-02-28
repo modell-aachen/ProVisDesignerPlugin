@@ -284,8 +284,7 @@ sub _restUpload {
           comment     => "ProVisPlugin Upload",
           filedate    => time(),
           file        => $fn,
-          # hide    => 1,
-          attr => 'ht'
+          hide    => 1
         });
     if ($error) {
       print STDERR "ProVis Attachment save error $error\n";

@@ -62,7 +62,7 @@ ProVis = function( appletId ) {
   this.applet = applet;
   this.diagram = applet.getDiagram();
   this.scriptHelper = applet.getScriptHelper();
-  this.undoManager = applet.getDiagram().getUndoManager();
+  this.snapshotManager = applet.getDiagram().getSnapshotManager();
   this.view = applet.getDiagramView();
   this.anchorPattern = null;
   this.container = null;
@@ -100,14 +100,11 @@ ProVis = function( appletId ) {
    * Reverts the most recent undo operation.
    */
   ProVis.prototype.redo = function() {
-    var history = this.undoManager.getHistory();
-    var redo = history.getNextRedo();
-    if ( redo != null ) {
-      try {
-        this.undoManager.redo();
-      } catch ( ex ) {
-        console.log( ex.toString() );
-      }
+    try {
+      this.snapshotManager.triggerRedo(this.view);
+      this.container = this.diagram.getSwimlaneContainer(1);
+    } catch ( ex ) {
+      console.log( ex.toString() );
     }
   };
 
@@ -262,14 +259,11 @@ ProVis = function( appletId ) {
    * Reverts the most recent user changes.
    */
   ProVis.prototype.undo = function() {
-    var history = this.undoManager.getHistory();
-    var undo = history.getNextUndo();
-    if ( undo != null ) {
-      try {
-        this.undoManager.undo();
-      } catch( ex ) {
-        console.log( ex );
-      }
+    try {
+      this.snapshotManager.triggerUndo(this.view);
+      this.container = this.diagram.getSwimlaneContainer(1);
+    } catch( ex ) {
+      console.log( ex );
     }
   };
 
@@ -324,11 +318,17 @@ ProVis = function( appletId ) {
         dataType: 'text',
         success: function( data ) {
           provis.applet.loadFromString( data );
+          provis.snapshotManager.clear();
         },
         error: function() {
           $.unblockUI();
         }
       });
+  } else {
+    // Delay until 'provis' is actually defined
+    setTimeout(function() {
+      provis.snapshotManager.clear();
+    });
   }
 
   // initialize ProVis UI Controller

@@ -29,8 +29,6 @@ ProVis = function( appletId ) {
   applet.width = parent.width();
   applet.height = parent.height();
 
-  this.ui.init();
-
 
 
   /*****************************************************************************
@@ -334,10 +332,10 @@ ProVis = function( appletId ) {
   }
 
   // initialize ProVis UI Controller
-  // this.ui.init().done( function() {
-  //   setTimeout( function() { $(applet).height( 1 + $(applet).height() ); }, 500 );
-  //   setTimeout( function() { $(applet).width( 1 + $(applet).width() ); }, 500 );
-  // });
+  this.ui.init().done( function() {
+    setTimeout( function() { $(applet).height( 1 + $(applet).height() ); }, 500 );
+    setTimeout( function() { $(applet).width( 1 + $(applet).width() ); }, 500 );
+  });
 
 
 };

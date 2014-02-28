@@ -212,7 +212,7 @@ ProVis = function( appletId ) {
             var data = cke.getData();
 
             var pattern = '%PROCESS{.*name="' + r.name + '".*}%';
-            var macro = '%PROCESS{name="' + r.name + '" type="swimlane" aqmrev="' + r.aqmrev + '" maprev="' + r.maprev + '" pngrev="' + r.pngrev + '"}%';
+            var macro = '%PROCESS{name="' + r.name + '"type="swimlane" aqmrev="' + r.aqmrev + '" maprev="' + r.maprev + '" pngrev="' + r.pngrev + '"}%';
 
             var regexp = new RegExp( pattern, 'g' );
             data = data.replace( regexp, macro );

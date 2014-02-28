@@ -239,17 +239,17 @@ sub _restUpload {
   my $fileName    = $query->param('drawing');
   # ASSERT($fileName, $query->Dump()) if DEBUG;
 
-  GenFileName:
-  while ($fileName eq 'ProVis_') {
-    # Auto-generate name
-    $fileName .= sprintf("%08x_%04x", time, int(rand(65536)));
-    for (qw(aqm map png)) {
-      if (Foswiki::Func::attachmentExists($web, $topic, "$fileName.$_")) {
-        $fileName = 'ProVis_';
-        next GenFileName;
-      }
-    }
-  }
+  # GenFileName:
+  # while ($fileName eq 'ProVis_') {
+  #   # Auto-generate name
+  #   $fileName .= sprintf("%08x_%04x", time, int(rand(65536)));
+  #   for (qw(aqm map png)) {
+  #     if (Foswiki::Func::attachmentExists($web, $topic, "$fileName.$_")) {
+  #       $fileName = 'ProVis_';
+  #       next GenFileName;
+  #     }
+  #   }
+  # }
 
   my $origName = $fileName;
   Foswiki::Func::setSessionValue($web.$topic.'name', $origName);
@@ -284,7 +284,8 @@ sub _restUpload {
           comment     => "ProVisPlugin Upload",
           filedate    => time(),
           file        => $fn,
-          hide    => 1,
+          # hide    => 1,
+          attr => 'ht'
         });
     if ($error) {
       print STDERR "ProVis Attachment save error $error\n";

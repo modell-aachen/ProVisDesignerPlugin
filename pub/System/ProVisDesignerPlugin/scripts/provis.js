@@ -324,11 +324,6 @@ ProVis = function( appletId ) {
           $.unblockUI();
         }
       });
-  } else {
-    // Delay until 'provis' is actually defined
-    setTimeout(function() {
-      provis.snapshotManager.clear();
-    });
   }
 
   // initialize ProVis UI Controller

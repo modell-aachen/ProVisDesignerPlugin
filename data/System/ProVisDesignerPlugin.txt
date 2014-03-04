@@ -89,6 +89,24 @@
       "width": 105
     },{
       "adjustmentHandles": 256,
+      "background": "#dee7f3",
+      "borderColor": "#96bee3",
+      "borderWidth": 1,
+      "fontSize": 14,
+      "foreground": "#222222",
+      "gradient": "#000000",
+      "gradientAngle": 90,
+      "handleStyle": 7,
+      "height": 60,
+      "isTransparent": true,
+      "shadowColor": "#e5e5e5",
+      "shadowOffsetX": 2,
+      "shadowOffsetY": 2,
+      "type": "Comment",
+      "useGradient": false,
+      "width": 105
+    },{
+      "adjustmentHandles": 256,
       "background": "#5c9bd4",
       "borderColor": "#5c9bd4",
       "borderWidth": 1,

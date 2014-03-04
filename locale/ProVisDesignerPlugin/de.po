@@ -28,6 +28,9 @@ msgstr "Start/Ende"
 msgid "Junction"
 msgstr "Knotenpunkt"
 
+msgid "Comment"
+msgstr "Kommentar"
+
 msgid "Save"
 msgstr "Speichern"
 

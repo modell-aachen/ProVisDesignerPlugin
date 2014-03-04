@@ -15,14 +15,19 @@
   overflow-y: @y;
 }
 
-.pie() {
-  behavior: url('pie.htc');
-}
 
 .drop-shadow( @h: 0px, @v: 1px, @blur: 3px, @color: #000 ) {
   box-shadow: @h @v @blur @color;
   -webkit-box-shadow: @h @v @blur @color;
   -moz-box-shadow: @h @v @blur @color;
+}
+
+.dx-shadow( @direction: 135, @strength: 3px, @color: #333 ) {
+  filter: ~"progid:DXImageTransform.Microsoft.Shadow(color='@{color}', Direction=@{direction}, Strength=@{strength})";
+}
+
+.pie {
+  behavior: url('./PIE.htc');
 }
 
 .inset( @h: 0px, @v: 1px, @blur: 1px, @color: #555 ) {

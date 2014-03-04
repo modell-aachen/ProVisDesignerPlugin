@@ -311,6 +311,17 @@ sub _restUpload {
   return undef;
 }
 
+# Mark flowchart as thumbnail
+sub beforeUploadHandler {
+    my( $attrHashRef, $meta ) = @_;
+
+    return unless $attrHashRef->{comment} && $attrHashRef->{comment} eq 'ProVisPlugin Upload' && $attrHashRef->{name} =~ /\.png$/;
+    if(defined $attrHashRef->{extraattr}) {
+        $attrHashRef->{extraattr} .= ' t';
+    } else {
+        $attrHashRef->{extraattr} = 't';
+    }
+}
 
 sub _restUpdate {
   my ( $session, $plugin, $verb, $response ) = @_;

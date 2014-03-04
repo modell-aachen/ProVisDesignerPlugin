@@ -104,7 +104,7 @@ ProVis = function( appletId ) {
       this.snapshotManager.triggerRedo(this.view);
       this.container = this.diagram.getSwimlaneContainer(1);
     } catch ( ex ) {
-      console.log( ex.toString() );
+      if(console && console.log) console.log( ex.toString() );
     }
   };
 
@@ -263,7 +263,7 @@ ProVis = function( appletId ) {
       this.snapshotManager.triggerUndo(this.view);
       this.container = this.diagram.getSwimlaneContainer(1);
     } catch( ex ) {
-      console.log( ex );
+      if(console && console.log) console.log( ex );
     }
   };
 
@@ -324,11 +324,6 @@ ProVis = function( appletId ) {
           $.unblockUI();
         }
       });
-  } else {
-    // Delay until 'provis' is actually defined
-    setTimeout(function() {
-      provis.snapshotManager.clear();
-    });
   }
 
   // initialize ProVis UI Controller

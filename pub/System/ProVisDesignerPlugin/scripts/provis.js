@@ -319,6 +319,8 @@ ProVis = function( appletId ) {
         success: function( data ) {
           provis.applet.loadFromString( data );
           provis.snapshotManager.clear();
+          provis.snapshotManager.markTransient();
+          provis.snapshotManager.makeSnapshot("Loaded diagram");
         },
         error: function() {
           $.unblockUI();

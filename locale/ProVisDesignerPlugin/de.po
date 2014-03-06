@@ -4,14 +4,17 @@ msgstr "Neue Schwimmbahn"
 msgid "Shapes"
 msgstr "Schablonen"
 
-msgid "Layout"
-msgstr "Ausrichtung"
+msgid "Preview"
+msgstr "Vorschau"
 
 msgid "Process"
 msgstr "Prozess"
 
 msgid "Decision"
 msgstr "Entscheidung"
+
+msgid "Swimlane"
+msgstr "Schwimmbahn"
 
 msgid "Document"
 msgstr "Dokument"
@@ -49,20 +52,29 @@ msgstr "An Raster ausrichten"
 msgid "Show grid"
 msgstr "Raster anzeigen"
 
-msgid "Select"
-msgstr "Auswählen"
-
-msgid "Draw"
-msgstr "Zeichnen"
-
-msgid "Connect"
-msgstr "Verbinden"
-
-msgid "Pan"
-msgstr "Schwenken"
-
 msgid "Zoom in"
 msgstr "Vergrößern"
 
 msgid "Zoom out"
 msgstr "Verkleinern"
+
+msgid "Discard changes"
+msgstr "Änderungen verwerfen"
+
+msgid "Save changes"
+msgstr "Änderungen speichern"
+
+msgid "Save & close"
+msgstr "Speichern & schließen"
+
+msgid "Discard"
+msgstr "Verwerfen"
+
+msgid "This diagram contains unsaved changes."
+msgstr "Dieses Diagramm beinhaltet nicht gespeicherte Änderungen."
+
+msgid "If you quit ProVis now, these changes will be lost."
+msgstr "Wenn Sie ProVis nun beenden, gehen diese Änderungen verloren."
+
+msgid "Topic preview"
+msgstr "Artikel-Vorschau"

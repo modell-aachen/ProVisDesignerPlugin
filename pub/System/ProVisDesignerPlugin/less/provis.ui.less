@@ -1,0 +1,200 @@
+@import "bootstrap/bootstrap.less";
+@import "pantone.less";
+@import "vars.less";
+@import "mixins.less";
+@import "toolbar.less";
+@import "leftbar.less";
+
+
+html {
+  body{
+    background-image: none;
+    background: @body-bg !important;
+    color: @body-fg;
+    .overflow( hidden, hidden );
+  }
+}
+
+div {
+  &.provis-topbar {
+    position: relative;
+    width: 100%;
+    height: 45px;
+    background-image: url('../assets/toolbar-bg.png');
+    background-repeat: repeat-x;
+    // background-color: #f3f3f3;
+    border-top: 5px solid @coty;
+    z-index: 5;
+    display: none;
+
+    .drop-shadow( 0px, 2px, 5px, @dark-gray );
+    .dx-shadow( 135, 2px, #555 );
+  }
+
+  &#provis-rightbar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 40px;
+    height: 100%;
+    background: #333;
+    z-index: 4;
+    display: none;
+
+    .drop-shadow( -1px, 0px, 5px, @dark-gray );
+    .dx-shadow( 270, 2px, #555 );
+
+    > div {
+      position: absolute;
+      top: 70px;
+      line-height: 40px;
+      display: block;
+      width: 105px;
+      height: 40px;
+
+      -moz-transform: rotate(90deg) translateY(33px) translateX(50px);
+      -o-transform: rotate(90deg) translateY(33px) translateX(50px);
+      -webkit-transform: rotate(90deg) translateY(33px) translateX(50px);
+       transform: rotate(90deg) translateY(33px) translateX(50px);
+
+      /* IE8+ */
+      -ms-filter: ~"progid:DXImageTransform.Microsoft.Matrix(M11=-1.8369701961596905e-16, M12=-1, M21=1, M22=-1.8369701961596905e-16, SizingMethod='auto expand')";
+
+      /* IE6/7 */
+      filter: ~"progid:DXImageTransform.Microsoft.Matrix(M11=-1.8369701961596905e-16, M12=-1, M21=1, M22=-1.8369701961596905e-16, SizingMethod='auto expand')";
+
+      > a {
+        white-space:nowrap;
+        display: block;
+        margin-right: 5px;
+        padding: 0 5px;
+        text-decoration: none;
+        float: left;
+        color: darken(@body-bg, 20%);
+
+        &:hover {
+          background: @coty;
+          color: #fff;
+        }
+      }
+    }
+  }
+
+  &#provis-shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 90px;
+    height: 100%;
+    background: #333;
+    z-index: 4;
+    padding-top: 55px;
+    display: none;
+
+    .drop-shadow( 1px, 0px, 5px, @dark-gray );
+    .dx-shadow;
+
+    > .ma-logo {
+      position: absolute;
+      border-top: 1px solid lighten(#444, 5%);
+      padding: 24px;
+      bottom: 0;
+      left: 4px;
+      height: 66px;
+      width: 80px;
+    }
+  }
+
+  &#preview-container {
+    position: absolute;
+    top: 0px;
+    right: 20px;
+    height: 100%;
+    padding: 65px 0 20px 0;
+  }
+
+  &#provis-preview {
+    width: 450px;
+    height: 100%;
+
+    display: none;
+    background: white;
+    border-left: 1px solid darken(@body-bg, 10%);
+    z-index: 4;
+
+    .drop-shadow;
+    .dx-shadow( 135, 2px, #555 );
+    .border-radius;
+
+    > #preview-topic {
+      height: 100%;
+      padding: 10px;
+      .overflow;
+    }
+  }
+
+  &#opts-adorner {
+    background: @adorner-bg;
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 20px;
+    height: 100%;
+    position: absolute;
+    display: none;
+    right: 470px;
+    top: 0;
+
+    &:hover {
+      cursor: col-resize;
+    }
+
+    &:active {
+      background-color: @coty;
+
+      &.chevron-left {
+        background-image: url('../assets/chevronLeft-white.png');
+      }
+
+      &.chevron-left-right {
+        background-image: url('../assets/chevronLeftRight-white.png');
+      }
+
+      &.chevron-right {
+        background-image: url('../assets/chevronRight-white.png');
+      }
+    }
+
+    &.chevron-left {
+      background-image: url('../assets/chevronLeft.png');
+    }
+
+    &.chevron-left-right {
+      background-image: url('../assets/chevronLeftRight.png');
+    }
+
+    &.chevron-right {
+      background-image: url('../assets/chevronRight.png');
+    }
+  }
+
+  &#provis-applet {
+    position: absolute;
+    top: 65px;
+    right: 490px;
+    bottom: 20px;
+    left: 110px;
+    background: #fff;
+    padding: 15px;
+    visibility: hidden;
+
+    .overflow( hidden, hidden );
+    .drop-shadow;
+    .dx-shadow( 135, 2px, #555 );
+    .border-radius;
+    .pie;
+  }
+}
+
+

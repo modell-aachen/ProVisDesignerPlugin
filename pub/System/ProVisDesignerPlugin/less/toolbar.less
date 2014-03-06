@@ -1,0 +1,73 @@
+a.btn {
+  // bootstrap overrides
+  padding: 0 !important;
+  border: none !important;
+  > img {
+    padding: 5px;
+
+    &:hover {
+      background-image: url('../assets/btn-inset.png');
+    }
+  }
+
+  > div {
+    padding: 5px;
+
+    :link:hover,
+    &:hover {
+      background-image: url('../assets/btn-inset.png');
+
+      > img {
+        background: @coty;
+      }
+    }
+
+    > img {
+      background: @coty;
+
+      :link:hover,
+      &:hover {
+        background-color: @coty;
+      }
+    }
+  }
+
+  &.btn-selected,
+  &.btn-toggled {
+    > img {
+      padding: 5px;
+      background: #eee;
+      background-image: url('../assets/btn-inset.png');
+    }
+  }
+}
+
+select#select-zoom {
+  float: right;
+  margin: 5px 15px 0 0;
+}
+
+div {
+  &.toolbar-group {
+    background: #fff;
+
+    border: 1px solid #d8d8d8;
+    .border-radius(3px);
+  }
+
+  &.provis-menu {
+    width: auto;
+    margin-left: 110px;
+    margin-top: 6px;
+
+    > div {
+      float: left;
+      margin-right: 15px;
+
+      &.toolbar-zoom {
+        float: right;
+        margin-right: 15px;
+      }
+    }
+  }
+}

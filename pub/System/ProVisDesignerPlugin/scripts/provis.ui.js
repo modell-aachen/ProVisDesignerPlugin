@@ -68,7 +68,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
       return false;
     }
 
-    var closeModalDismissed = function() {
+    var modalDismissed = function() {
       $('applet').setVisible();
     };
 
@@ -248,9 +248,16 @@ if ( ProVis && !ProVis.prototype.ui ) {
       $.blockUI();
       initTooltips();
 
-      $('#modal-close').on( 'hidden.bs.modal', closeModalDismissed );
+      $('#modal-close').on( 'hidden.bs.modal', modalDismissed );
+      $('#modal-link').on( 'hidden.bs.modal', modalDismissed );
+
       $('#btn-close-save').on( 'click', closeModalSave );
       $('#btn-close-discard').on( 'click', closeModalDiscard );
+      $('#btn-select-link').on( 'click', function() {
+        var modal = $('#modal-link');
+        modal.data( 'selected', true );
+        modal.modal('hide');
+      });
 
       $('.provis-topbar').show( 'slide', {direction: 'up'}, 500 );
       $('#provis-shapes').show( 'slide', {direction: 'left'}, 500 );
@@ -296,7 +303,65 @@ if ( ProVis && !ProVis.prototype.ui ) {
         deferred.resolve();
       });
 
+      // auto complete for link dialog(s)
+      $('ul.ui-autocomplete.ui-menu.ui-widget').livequery( function() {
+        var ul = $(this);
+        ul.css( 'z-index', 1051 );
+      });
+
+      $('input.autocomplete').livequery( function() {
+      var e = $(this);
+      console.log( e );
+      e.autocomplete({
+        html: true,
+        source: function(req, resp) {
+          $.ajax({
+            // TODO: the Ajax helper from CKE's config should be used
+            'url': foswiki.getPreference('SCRIPTURLPATH') +'/view/System/AjaxHelper?section=topic;contenttype=text/plain;skin=text;excludeweb=Trash+System+TWiki+Sandbox+Custom;input='+encodeURIComponent(req.term.toLowerCase())+';t='+((new Date()).getTime()),
+            dataType: 'json',
+            success: function(data) {
+              resp($.map(data, function(val) {
+                var o = {};
+                o.label = '<div class="autocomplete_label">'+val.label+'</div>'+
+                  '<div class="autocomplete_sublabel">'+val.sublabel+'</div>';
+                o.value = val.value;
+                console.log( o );
+                return o;
+              }));
+            },
+            error: function() { resp([]); }
+          });
+        }
+      });
+    });
+
       $.unblockUI();
+      return deferred.promise();
+    };
+
+    ProVisUIController.prototype.selectLink = function( caption, link, showDelete ) {
+      var deferred = $.Deferred();
+      var applet = $('applet');
+      applet.setHidden();
+
+      var dialog = $('#modal-link');
+
+      $('#input-link').val( link );
+      $('#node-text').text( caption );
+      if ( !showDelete )
+        $('#btn-delete-link').setHidden();
+      dialog.modal('show');
+
+      var callback = function( e ) {
+        dialog.off( 'hide.bs.modal' );
+
+        var isSelected = $(this).data( 'selected');
+        $(this).data( 'selected', '' );
+
+        deferred.resolve( isSelected ? $('#input-link').val() : null );
+      };
+
+      dialog.on('hide.bs.modal', callback );
       return deferred.promise();
     };
   };

@@ -52,6 +52,12 @@ msgstr "Einfügen"
 msgid "Snap to grid"
 msgstr "An Raster ausrichten"
 
+msgid "Select"
+msgstr "Auswählen"
+
+msgid "Edit link"
+msgstr "Link bearbeiten"
+
 msgid "Show grid"
 msgstr "Raster anzeigen"
 
@@ -69,6 +75,9 @@ msgstr "Änderungen speichern"
 
 msgid "Save & close"
 msgstr "Speichern & schließen"
+
+msgid "Shape"
+msgstr "Schablone"
 
 msgid "Discard"
 msgstr "Verwerfen"

@@ -121,6 +121,7 @@ STYLE
 <script type="text/javascript" src="$pluginURL/scripts/deployJava.js?version=$RELEASE"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.js?version=$RELEASE"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.ui.js?version=$RELEASE"></script>
+<script type="text/javascript" src="$pluginURL/scripts/typeahead.js?version=$RELEASE"></script>
 SCRIPT
 
   Foswiki::Func::addToZone( 'script', 'PROVIS::DESIGNER::SCRIPTS', $script, 'JQUERYPLUGIN::FOSWIKI' );
@@ -157,10 +158,12 @@ deployJava.runApplet( {
     width: '800px',
     height: '600px'
   }, {
-
     separate_jvm: 'true',
     ProVisConfig: '$encoded',
     AppletStarted: 'appletStarted',
+    nodeClicked: 'onNodeClicked',
+    KeyDownScript: 'onKeyDown',
+    KeyUpScript: 'onKeyUp',
     DiagramData: 'H4sIAAAAAAAAAO1b224bNxDlc4H+g5G+NvXKNzSAq8J2nMRALoYlp3HfFEmx1ehiSGsnzse3nTnkitzl8LJujBZtIUSJlmfOkMPhcDjL/P6H2lc/q89qpqZqQ92qsVqqlZqohZqrn9Qj1VE/qIL+3qCWuRrS8xG1ztUlWs9VXz1Tjwm1B8xKlWpArSP6noJjDNyc/v2I9HTVt+ob0viUOAbEsaTvGcm9FfRu07fGb5jPvnoN/WNCbnptL9Gvj2LbKbEv1DW0lIRjhjrG53lBqAFp66kr+ptluzTKfWKPIeKch4RbEc6VKGqcEiLOeULfJUY2o+8RLFtGdeRItLVNj1q+QLKjtuAzcUtZfFuLWcldT08M/VetGNPbRlruxwGtlwmtiDmtqIV6TkwT4umqD1hJPCbWF0LJnKx9oT45uJL+dWO4/FaZpWrvkfQd6ddzzAxSS5zjiDRyXFgS8jsaG3+2139cTheZ6pe27Dv0y86N1J7HdJFgukgyvcHIeNZK6C08riYin+8iyRfun/bHEebdn4s9kuY/P1KcrzxEQqe5VzWfKDy2VYbPuPimtTrr8cdQ7XgvsnjDtj2htc972thZpdXY5TaZp0+oz6TJn5/C+TCrhAxFlyH2Pd7fTxCZZhST9U49xW4orUz70bGnDUfI9mNgh5AfZfdl4Hz07LTlkfvDeciKZN5DYpTsx5DWhjsD+fLx3cddDVu1nSW9TixyTH41Q55WIr9pMjXbZb5D6vENRsGYx8jEeFV8T631X1tqB/aofm9TzCzoSbWG6kwhb6+sd2Yiw5GRKklmx/h5DJPi1bNwQyOfNyS3GuxhZBsdvyAelxQ/OJ5Ya6TReRbiXIojyBV6tifwS7j0CDhPKU0GXpfdFccQxrfT1XVaYjpS/n+E3G+IqD2mmL1Enj/HicRy1NdEnkx6PByNpvD3JZiW8PiONx4ZJ/Pbs84xRfnr9bnqvYkG9cwwhU6NgXfkIU5J3MOQljQ+pGcBZJ9seu2dz9x4PIbGG8KW6/3tGew1w5zIkpbB7q9VpKvmQWqJcz3DyC4xR9r/3SdxWe1h40h/Yog4dx9+OqOPPonbSNZ8Llt589523gcmp4+vcbJnjzhAr9iLtJ9Wz+Py9ry04+RksTOUlT2nHk7QRy1nf8flDuGj/qnLPo/LnyBu8GwOPY56W7r/OjpMjY802SREyp4l5uEjYXlfKz1OCRHnfI6T7hEy5SXyC+vdclvIH+Ne5ebWTyl+TJDdPzHVGKktj+UiwhLO8+trx57wN4hjhNrVmclMB1iFHBcfRWKeZTjF+k9ZPX0uSOWd7lh4/7sSTmtSS5zLzWTs+TSd32xmWsDu9Pe10y7FkicUK4e0W/0z7MTnzd1sO+WM393T/6v+lGcBd+Udoi7G/bOruIiuWltx9CU7UUnbO0l2KyorSWxnRpf62dSdh93GKgwjUyMKSzbPWm11HCDP5HONrfNznOX+6nzFrW2m0Skt5+Ztxxy7a1VnsGxSZTZXMkf3ACxXWHVNeXmkKSlZ6ynW9h3tUwvIT9fZ4Ev6dbfOBFyduTIpjwydt4pGFS6GlXWcmT6Mg3aTEfG1rn2I9fPvKltuekIKHddRWdKPoDFETn3C+qO2nV/Pz8fL+l5hda3Irux9NuvWaz/UGuLi0X69WpTEJ2s+hk9rO9gxj9Z2r/tRGp033zkRPI21dQ0+ma/wRnVuzqudmhdJCJnTIs9QJ5lgB3KrQiFEajX1YLtrVAeaNRHXxnkSqTeWof2mbpe2+9LZ2qPi+0MY1443NAd5+LTHv8T4x8IIQqiQ1yxMrNbn0yWtQD4JXuI3W71w/CeOzdcwQVSZobbqvq+1cWEnoVdmyO1Bs2LpI2S9eZXOlFyoattOLlf3CnvatFZldFdtnkQq5h3Bc0uSm9EZgu+LfFJdLzuQUel3UAfk46WxyNLkhn61JUcilNPdoFdnWCuVNxUmc5PaQtFgjPEtUT8q1++7VutIaHe1jokH+RIhO9lYe+DklZWGcHsqv+2R1BS7fzqrlbFpDTxjH0iG687XUX4fGYqStq7+hr5PTJ5vq63NeJnCh+d6iCyJvYLftrpM/r4SR4cztSWqXX2atSV85Wpd5SycrCmGi986cX3Cvo0MtabXqo5VbMk+Zqp5myWGDPnLSP1mIkdVe2/u/9W6tJlkG6m4hepS3F8duy69saXxcU3x99R+vMuTSp06/DOM3BbP3I5NnHpFfboN7DUpbKiSe4cYNkOMDOduYZzM+wLxqm8i8Cli8ALfPOYqfqZQ6Sh0SMg5TuP2DVW4vX4jcjPjTqS0/vy7lXqnWSAGDaOeYatXYZSE3kDsHOH0U1W8Nshyd+g9P+khJnFlsHlnNMyfvvGSX/fcdHp7/3F1HmhcT5zP3zGurQca13vK5gfk94PWdeqvM67igca1h/cUO7ht9LXHVcfEVqt9I7ai3/Y2TKg2brPOcCzYV28RacLZ+SG1clZ/a6Jh19wL9Z+Hdjx7K+FdrWakd7Z6a5rjwnAUIkf4LeGvyCdndOIZIHpWmXPhMMmY+EnC1d7MaSVEKlNmj+YMe4D5OkatIFxND6FDHiSh+R4h/+bzJ+cwx6q6O13X2l66TS+OTK2c9zfNs8Kb+XQPQpJttLe/RdHDGCdmZ2p/i8K9lf//PYp/6z2K+3jbPrLlEXxrgrtwbsV/gOywuz4PppHNPaEe8atbs/Z//+D5n4UK9zOINAAA'
 });
 //-->

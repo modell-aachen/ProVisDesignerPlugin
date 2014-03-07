@@ -29,7 +29,7 @@ ProVis = function( appletId ) {
   applet.width = parent.width();
   applet.height = parent.height();
 
-
+  var isCtrlDown = false;
 
   /*****************************************************************************
    * private methods
@@ -52,6 +52,114 @@ ProVis = function( appletId ) {
     }
 
     return string;
+  };
+
+  var onKeyDown = function( d, e ) {
+    var key = e.getKeycode();
+
+    if ( key != 17 && !isCtrlDown )
+      return;
+
+    switch( key ) {
+      case 17:
+        isCtrlDown = true;
+        break;
+      case 45:
+        // ctrl + -
+        provis.zoomOut();
+        break;
+      case 48:
+        // ctrl + 0
+        provis.zoomTo( 100 );
+        break;
+      case 49:
+        // ctrl + 1
+        $('div[data-shape=Rectangle]').click();
+        break;
+      case 50:
+        // ctrl + 2
+        $('div[data-shape=Decision]').click();
+        break;
+      case 51:
+        // ctrl + 3
+        $('div[data-shape=Document]').click();
+        break;
+      case 52:
+        // ctrl + 4
+        $('div[data-shape=Cylinder]').click();
+        break;
+      case 53:
+        // ctrl + 5
+        $('div[data-shape=Terminator]').click();
+        break;
+      case 54:
+        // ctrl + 6
+        $('div[data-shape=Ellipse]').click();
+        break;
+      case 55:
+        // ctrl + 7
+        $('div[data-shape=Comment]').click();
+        break;
+      case 65:
+        // ctrl + a
+        provis.diagram.selectAllItems();
+        break;
+      case 71:
+        // ctrl + g
+        provis.toggleSnapToGrid();
+        break;
+      case 78:
+        // ctrl + n
+        $('div[data-action=createSwimlane]').click();
+        break;
+      case 81:
+        // ctrl + q
+        $('#btn-close').click();
+        break;
+      case 82:
+        // ctrl + r
+        provis.toggleGridVisibility();
+        break;
+      case 83:
+        // ctrl + s
+        provis.save();
+        break;
+      case 89:
+        // ctrl + y
+        provis.redo();
+        break;
+      case 90:
+        // ctrl + z
+        provis.undo();
+        break;
+      case 521:
+        // ctrl + +
+        provis.zoomIn();
+        break;
+    }
+  };
+
+  var onKeyUp = function( d, e ) {
+    var key = e.getKeycode();
+    if ( key == 17 ) isCtrlDown = false;
+  }
+
+  /**
+   * Link dialog.
+   */
+  var onNodeClicked = function( d, e ) {
+    var btn = e.getMouseButton();
+    var node = e.getNode();
+    if ( btn == 1 || /Swimlane/.test( node.toString() ) ) return;
+
+    var text = node.getText();
+    var link = node.getHyperLink();
+    provis.ui.selectLink( text, link, false ).done( function( link ) {
+      if ( !link ) return;
+      console.log( link );
+      node.setHyperLink( link );
+      node.setToolTip( link );
+    });
   };
 
 
@@ -321,12 +429,19 @@ ProVis = function( appletId ) {
           provis.snapshotManager.clear();
           provis.snapshotManager.markTransient();
           provis.snapshotManager.makeSnapshot("Loaded diagram");
+
+          // java knows why...
+          provis.view.scrollTo( -100, -100 );
         },
         error: function() {
           $.unblockUI();
         }
       });
   }
+  // wire up applet events.
+  window.onNodeClicked = onNodeClicked;
+  window.onKeyDown = onKeyDown;
+  window.onKeyUp = onKeyUp;
 
   // initialize ProVis UI Controller
   this.ui.init().done( function() {

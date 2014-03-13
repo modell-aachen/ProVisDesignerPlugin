@@ -15,8 +15,25 @@ html {
   }
 }
 
-.ui-autocomplete {
-  z-index: 1051 !important;
+.coty-bg {
+  background: @coty;
+  color: white !important;
+}
+
+.modal-dialog {
+  position: static;
+}
+
+ul.ui-autocomplete {
+  z-index: 1600 !important;
+}
+
+.autocomplete_label {
+  font-weight: bold;
+}
+
+.autocomplete_sublabel {
+  color: #999;
 }
 
 div {
@@ -26,7 +43,6 @@ div {
     height: 45px;
     background-image: url('../assets/toolbar-bg.png');
     background-repeat: repeat-x;
-    // background-color: #f3f3f3;
     border-top: 5px solid @coty;
     z-index: 5;
     display: none;
@@ -134,7 +150,7 @@ div {
 
     > #preview-topic {
       height: 100%;
-      padding: 10px;
+      padding: 25px;
       .overflow;
     }
   }

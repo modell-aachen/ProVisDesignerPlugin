@@ -121,13 +121,13 @@ STYLE
 <script type="text/javascript" src="$pluginURL/scripts/deployJava.js?version=$RELEASE"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.js?version=$RELEASE"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.ui.js?version=$RELEASE"></script>
-<script type="text/javascript" src="$pluginURL/scripts/typeahead.js?version=$RELEASE"></script>
 SCRIPT
 
   Foswiki::Func::addToZone( 'script', 'PROVIS::DESIGNER::SCRIPTS', $script, 'JQUERYPLUGIN::FOSWIKI' );
 
   # jQuery.disableSelection/jQuery.enableSelection
   Foswiki::Plugins::JQueryPlugin::createPlugin( 'ui' );
+  Foswiki::Plugins::JQueryPlugin::createPlugin( 'ui::autocomplete' );
   Foswiki::Plugins::JQueryPlugin::createPlugin( 'blockui' );
 
   my $pubPath = Foswiki::Func::getPubUrlPath();

@@ -209,7 +209,9 @@ if ( ProVis && !ProVis.prototype.ui ) {
     };
 
     var toggleTopicPreview = function( e ) {
+      var link = $('#preview-toggle');
       if ( !isOptionsVisible ) {
+        link.addClass('coty-bg');
         $('#provis-applet').setHidden();
         $('#provis-preview').width( $(window).width() - 125 );
         $('#preview-topic').setVisible();
@@ -221,6 +223,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
           isOptionsVisible = false;
           $('#preview-topic').setHidden();
           $('#provis-applet').setVisible();
+          link.removeClass('coty-bg');
         });
       }
 
@@ -303,37 +306,65 @@ if ( ProVis && !ProVis.prototype.ui ) {
         deferred.resolve();
       });
 
+      // autocomplete
+
       // auto complete for link dialog(s)
       $('ul.ui-autocomplete.ui-menu.ui-widget').livequery( function() {
         var ul = $(this);
         ul.css( 'z-index', 1051 );
       });
 
-      $('input.autocomplete').livequery( function() {
-      var e = $(this);
-      console.log( e );
-      e.autocomplete({
-        html: true,
-        source: function(req, resp) {
-          $.ajax({
-            // TODO: the Ajax helper from CKE's config should be used
-            'url': foswiki.getPreference('SCRIPTURLPATH') +'/view/System/AjaxHelper?section=topic;contenttype=text/plain;skin=text;excludeweb=Trash+System+TWiki+Sandbox+Custom;input='+encodeURIComponent(req.term.toLowerCase())+';t='+((new Date()).getTime()),
-            dataType: 'json',
-            success: function(data) {
-              resp($.map(data, function(val) {
-                var o = {};
-                o.label = '<div class="autocomplete_label">'+val.label+'</div>'+
-                  '<div class="autocomplete_sublabel">'+val.sublabel+'</div>';
-                o.value = val.value;
-                console.log( o );
-                return o;
-              }));
-            },
-            error: function() { resp([]); }
-          });
+      var proto = $.ui.autocomplete.prototype;
+      var initSource = proto._initSource;
+
+      function filter( array, term ) {
+        var matcher = new RegExp( $.ui.autocomplete.escapeRegex(term), "i" );
+        return $.grep( array, function(value) {
+          return matcher.test( $( "<div>" ).html( value.label || value.value || value ).text() );
+        });
+      }
+
+      $.extend( proto, {
+        _initSource: function() {
+          if ( this.options.html && $.isArray(this.options.source) ) {
+            this.source = function( request, response ) {
+              response( filter( this.options.source, request.term ) );
+            };
+          } else {
+            initSource.call( this );
+          }
+        },
+
+        _renderItem: function( ul, item) {
+          return $( "<li></li>" )
+            .data( "item.autocomplete", item )
+            .append( $( "<a></a>" )[ this.options.html ? "html" : "text" ]( item.label ) )
+            .appendTo( ul );
         }
       });
-    });
+
+      $('input.autocomplete').livequery( function() {
+        var e = $(this);
+        e.autocomplete({
+          html: true,
+          source: function(req, resp) {
+            $.ajax({
+              'url': foswiki.getPreference('SCRIPTURLPATH') +'/view/System/AjaxHelper?section=topic;contenttype=text/plain;skin=text;excludeweb=Trash+System+TWiki+Sandbox+Custom;input='+encodeURIComponent(req.term.toLowerCase())+';t='+((new Date()).getTime()),
+              dataType: 'json',
+              success: function(data) {
+                resp($.map(data, function(val) {
+                  var o = {};
+                  o.label = '<div class="autocomplete_label">'+val.label+'</div>'+
+                    '<div class="autocomplete_sublabel">'+val.sublabel+'</div>';
+                  o.value = val.value;
+                  return o;
+                }));
+              },
+              error: function() { resp([]); }
+            });
+          }
+        });
+      });
 
       $.unblockUI();
       return deferred.promise();

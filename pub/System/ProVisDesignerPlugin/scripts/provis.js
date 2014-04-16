@@ -227,7 +227,7 @@ ProVis = function( appletId ) {
     if ( !window.opener.provisTab || window.opener.provisTab.closed ) {
       // ToDo. user darauf hinweisen, dass die zugehörige cke instanz bereits geschlossen wurde
       // speichern ist somit nicht mehr möglich.s
-      alert( 'foo');
+      alert( 'ToDo. cke disposed!');
       return;
     }
 

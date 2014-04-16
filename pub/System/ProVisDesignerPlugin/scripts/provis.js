@@ -437,7 +437,13 @@ ProVis = function( appletId ) {
           $.unblockUI();
         }
       });
+  } else {
+    if ( this.diagram.isEmpty() ) {
+      for( var i = 0; i < 3; ++i )
+        this.createSwimlane();
+    }
   }
+
   // wire up applet events.
   window.onNodeClicked = onNodeClicked;
   window.onKeyDown = onKeyDown;

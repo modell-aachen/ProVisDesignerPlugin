@@ -120,11 +120,18 @@ if ( ProVis && !ProVis.prototype.ui ) {
       var args = $(this).data( 'actionargs' );
       var retval = null;
       if ( action ) {
-        retval = provis[action]( args );
-        var actionName = action.toString();
-        if ( /zoom/.test( actionName ) ) {
-          $('#select-zoom option:selected').removeAttr( 'selected' );
-          $('#select-zoom option[value=' + retval + ']').attr( 'selected', 'selected' );
+        if ( action == 'save' ){
+          provis.save( true ).done( function() {
+            forceClose = true;
+            window.close();
+          }).fail( function( e ) { alert( e ); });
+        } else {
+          retval = provis[action]( args );
+          var actionName = action.toString();
+          if ( /zoom/.test( actionName ) ) {
+            $('#select-zoom option:selected').removeAttr( 'selected' );
+            $('#select-zoom option[value=' + retval + ']').attr( 'selected', 'selected' );
+          }
         }
       }
 

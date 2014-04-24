@@ -226,8 +226,7 @@ ProVis = function( appletId ) {
   ProVis.prototype.save = function( keepHidden ) {
     if ( !window.opener.provisTab || window.opener.provisTab.closed ) {
       // ToDo. user darauf hinweisen, dass die zugehörige cke instanz bereits geschlossen wurde
-      // speichern ist somit nicht mehr möglich.s
-      alert( 'ToDo. cke disposed!');
+      // speichern ist somit nicht mehr möglich.
       return;
     }
 
@@ -235,15 +234,7 @@ ProVis = function( appletId ) {
 
     $('applet').setHidden().done( function() { $.blockUI(); });
 
-    // Resize grid to minimum required size (margin: 5px)
-    var bounds = this.diagram.getBounds();
-    this.diagram.resizeToFitItems( 5 );
-
-    this.diagram.getSelection().clear();
-
-    // Disable grid
-    this.toggleGridVisibility();
-
+    this.applet.prepareSave();
     var imagemap = provis.applet.saveToMap('%MAPNAME%');
     var imagepng = provis.applet.saveToImage();
     var imageaqm = provis.applet.saveToString(true);
@@ -330,13 +321,6 @@ ProVis = function( appletId ) {
         });
       },
       complete: function() {
-        provis.diagram.setBounds( bounds );
-        provis.toggleGridVisibility();
-
-        if ( !keepHidden ) {
-          $('applet').setVisible();
-        }
-
         $.unblockUI();
       }
     });
@@ -439,9 +423,15 @@ ProVis = function( appletId ) {
       });
   } else {
     if ( this.diagram.isEmpty() ) {
-      for( var i = 0; i < 3; ++i )
+      var lc = this.diagram.getCurrentConfig().getInitialLanes();
+      for( var i = 0; i < lc; ++i )
         this.createSwimlane();
     }
+
+    var sm = this.diagram.getSnapshotManager();
+    sm.clear();
+    sm.markTransient();
+    sm.makeSnapshot("Loaded diagram");
   }
 
   // wire up applet events.

@@ -251,20 +251,6 @@ sub _restUpload {
 
   # Basename of the drawing
   my $fileName    = $query->param('drawing');
-  # ASSERT($fileName, $query->Dump()) if DEBUG;
-
-  # GenFileName:
-  # while ($fileName eq 'ProVis_') {
-  #   # Auto-generate name
-  #   $fileName .= sprintf("%08x_%04x", time, int(rand(65536)));
-  #   for (qw(aqm map png)) {
-  #     if (Foswiki::Func::attachmentExists($web, $topic, "$fileName.$_")) {
-  #       $fileName = 'ProVis_';
-  #       next GenFileName;
-  #     }
-  #   }
-  # }
-
   my $origName = $fileName;
   Foswiki::Func::setSessionValue($web.$topic.'name', $origName);
 

@@ -305,10 +305,10 @@ ProVis = function( appletId ) {
             var cke = opener.getEditor();
             var data = cke.getData();
 
-            var pattern = '%PROCESS{.*name="' + r.name + '".*}%';
+            var pattern = '%PROCESS{[^%}]+' + r.name + '[^%}]+}%';
+            var regexp = new RegExp( pattern, 'g' );
             var macro = '%PROCESS{name="' + r.name + '" aqmrev="' + r.aqmrev + '" maprev="' + r.maprev + '" pngrev="' + r.pngrev + '"}%';
 
-            var regexp = new RegExp( pattern, 'g' );
             data = data.replace( regexp, macro );
             cke.setData( data );
 

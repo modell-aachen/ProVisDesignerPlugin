@@ -62,3 +62,5 @@ pub/System/ProVisDesignerPlugin/scripts/provis.ui.js 0440
 pub/System/ProVisDesignerPlugin/scripts/deployJava.js 0444
 
 templates/foswiki.provis.tmpl 0440
+
+tools/ProVisConverter.class 0640

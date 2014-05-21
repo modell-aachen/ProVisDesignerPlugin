@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="BaseUserMapping_333" comment="reprev" date="1397749020" format="1.1" reprev="4" version="4"}%
+%META:TOPICINFO{author="BaseUserMapping_333" comment="reprev" date="1400673098" format="1.1" reprev="4" version="6"}%
 <verbatim>
 %STARTSECTION{"PROVISCONFIG"}%
 {
@@ -18,6 +18,7 @@
   "linkCascadeOrientation": 2,
   "linkEndsMovable": true,
   "linksSnapToBorders": true,
+  "mode": 0,
   "nodeVicinityCost": 50,
   "routeLinks": true,
   "showAnchors": 2,

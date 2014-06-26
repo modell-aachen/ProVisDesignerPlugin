@@ -393,6 +393,11 @@ ProVis = function( appletId ) {
 
   // load diagram
   var opener = window.opener;
+  if ( !opener || !opener.provis ) {
+    window.location = '/';
+    return;
+  }
+
   var file = opener.provis.name;
   var rev = opener.provis.aqmrev;
 

@@ -460,7 +460,11 @@ if ( ProVis && !ProVis.prototype.ui ) {
         isOptionsVisible = false;
         options.width( 450 );
 
-        options.show( 'slide', {direction: left}, 400, function() {
+        /*
+          ToDo. remove slide animation
+                as hotfix for know, set animation duration to 1ms (will cause flicker)
+         */
+        options.show( 'slide', {direction: left}, 1, function() {
           $('#preview-topic').setVisible();
           adorner.fadeIn();
           container.width( width - (70 + options.width() + left) );
@@ -472,7 +476,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
         options.hide();
         adorner.hide();
         $('#preview-topic').setHidden().done( function() {
-          rightbar.show( 'slide', {direction: left}, 400 );
+          rightbar.show( 'slide', {direction: left}, 1 );
           container.width( width - (90 + left) );
           if ( isFirstLoad ) {
             isFirstLoad = false;
@@ -482,6 +486,9 @@ if ( ProVis && !ProVis.prototype.ui ) {
         });
       }
     });
+
+    // fix ie10/11
+    $(window).trigger('resize');
 
     // observer callback. Called by CKE.
     window.notify = function( d ) {

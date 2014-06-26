@@ -26,6 +26,7 @@ sub initPlugin {
     return 0;
   }
 
+  Foswiki::Func::registerTagHandler( 'HIDENODE', \&_HIDENODE );
   Foswiki::Func::registerTagHandler( 'PROVISDESIGNER', \&_handleDesignerTag );
   Foswiki::Func::registerTagHandler( 'PROCESS', \&_DRAWING );
   Foswiki::Func::registerRESTHandler( 'upload', \&_restUpload, authenticate => 1, http_allow => 'POST' );
@@ -44,6 +45,17 @@ sub returnRESTResult {
   $response->print($text);
 
   print STDERR $text if ( $status >= 400 );
+}
+
+sub _HIDENODE {
+  my( $session, $params, $topic, $web, $topicObject ) = @_;
+
+  my $node = $params->{_DEFAULT};
+  return unless $node;
+
+  my $id = "Hide$node";
+  my $hide = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{$id} || 0;
+  return "node-hidden" if $hide;
 }
 
 # Tag handler
@@ -159,13 +171,14 @@ SCRIPT
 
   my $deployJava = <<SCRIPT;
 <!--
-deployJava.runApplet( {
+deployJava.runApplet({
     id: 'jDiagApplet',
     codebase: '$pubPath/$systemWeb/ProVisDesignerPlugin/applet/',
     code: 'com.mindfusion.diagramming.DiagramApplet',
     archive: 'ProVis.jar',
     width: '800px',
-    height: '600px'
+    height: '600px',
+    mayscript: true
   }, {
     separate_jvm: 'true',
     ProVisConfig: '$encoded',

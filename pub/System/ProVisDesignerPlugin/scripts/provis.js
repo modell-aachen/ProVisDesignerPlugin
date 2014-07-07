@@ -155,8 +155,6 @@ ProVis = function( appletId ) {
     var text = node.getText();
     var link = node.getHyperLink();
     provis.ui.selectLink( text, link, false ).done( function( link ) {
-      if ( !link ) return;
-
       node.setHyperLink( link );
       node.setToolTip( link );
     });

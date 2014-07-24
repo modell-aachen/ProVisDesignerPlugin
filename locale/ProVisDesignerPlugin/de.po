@@ -50,7 +50,7 @@ msgid "Paste"
 msgstr "Einfügen"
 
 msgid "Snap to grid"
-msgstr "An Raster ausrichten"
+msgstr "Am Raster ausrichten"
 
 msgid "Select"
 msgstr "Auswählen"

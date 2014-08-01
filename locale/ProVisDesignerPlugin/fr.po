@@ -2,18 +2,20 @@
 # Translators:
 #   Islem Haddar 2014.
 msgid ""
-msgstr "Project-Id-Version: fr\n"
-        "Report-Msgid-Bugs-To: \n"
-        "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-        "PO-Revision-Date: 2014-04-08 11:19+0200\n"
-        "Last-Translator: Islem Haddar <haddar@modell-aachen.de>\n"
-        "Language-Team: <support@modell-aachen.de>\n"
-        "Language: fr\n"
-        "MIME-Version: 1.0\n"
-        "Content-Type: text/plain; charset=UTF-8\n"
-        "Content-Transfer-Encoding: 8bit\n"
-        "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-        "X-Generator: Pootle 2.1.6\n"
+msgstr ""
+"Project-Id-Version: fr\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2014-08-01 15:20+0200\n"
+"Last-Translator: Modell Aachen <access@modell-aachen.de>\n"
+"Language-Team: French <http://translate.modell-"
+"aachen.de/projects/provisdesignerplugin/releasenew-york/fr/>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 1.9\n"
 
 #: templates/foswiki.provis.tmpl:148 templates/foswiki.provis.tmpl:177
 msgid "Cancel"
@@ -53,7 +55,7 @@ msgstr ""
 
 #: templates/foswiki.provis.tmpl:133
 msgid "If you quit ProVis now, these changes will be lost."
-msgstr "Si vous quittez ProVis maintenant, ces modifications seront perdues"
+msgstr "Si vous quittez ProVis maintenant, ces modifications seront perdues."
 
 #: templates/foswiki.provis.tmpl:104
 msgid "Junction"

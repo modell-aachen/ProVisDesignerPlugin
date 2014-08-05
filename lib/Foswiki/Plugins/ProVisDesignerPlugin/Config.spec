@@ -7,6 +7,9 @@ $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{InlinePrint} = 0;
 # **STRING**
 $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{TopicTitleField} = 'TopicTitle';
 
+# **STRING**
+$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{ApprovedField} = 'FREIGEGEBEN';
+
 #---+++ Node Visibility
 # **BOOLEAN**
 $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideProcess} = 0;

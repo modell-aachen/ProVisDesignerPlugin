@@ -42,6 +42,10 @@
     var prefs = foswiki.preferences;
     if ( prefs.provis && prefs.provis.title ) {
       title = prefs.provis.title;
+
+      if ( prefs.provis.version ) {
+        title += ', ' + prefs.provis.version;
+      }
     }
 
     var dim = 'width=' + w + ',height=' + h;

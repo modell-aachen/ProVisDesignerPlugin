@@ -62,15 +62,26 @@ sub afterCommonTagsHandler {
   my $print = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{InlinePrint} || 0;
   return unless $print;
 
+  #topic title
   my $name = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{TopicTitleField} || 'TopicTitle';
   my $tt = $meta->get( 'FIELD', $name );
   return unless $tt && $tt->{value};
   my $title = $tt->{value};
 
+  # kvp
+  my $approved = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{ApprovedField} || 'FREIGEGEBEN';
+  my $ver = $meta->get( 'WORKFLOW', $approved );
+  my $version = 'Version: ';
+  if ( $ver && $ver->{Revision} ) {
+    $version .= $ver->{Revision};
+  } else {
+    $version .= '%MAKETEXT{"Draft"}%';
+  }
+
   Foswiki::Func::addToZone(
     "script",
     "PROVISDESIGNER::PRINT::OPTIONS",
-    "<script type='text/javascript'>jQuery.extend( foswiki.preferences, { \"provis\": { \"title\": \"$title\" } } );</script>",
+    "<script type='text/javascript'>jQuery.extend( foswiki.preferences, { \"provis\": { \"title\": \"$title\", \"version\": \"$version\" } } );</script>",
     "PROVISDESIGNER::PRINT::SCRIPT" );
 
   $hasTitle = 1;

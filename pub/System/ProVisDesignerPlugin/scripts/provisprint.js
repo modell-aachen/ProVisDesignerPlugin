@@ -8,7 +8,8 @@
 
     $('.print-container').on( 'mouseenter', function() {
       var $this = $(this);
-      var $menu = $('<span class="print-button">Print this diagram</span>');
+      var label = window.foswiki.preferences.provis.label;
+      var $menu = $('<span class="print-button">' + label + '</span>');
 
       var height = $this.children('img').height();
       var width = $this.children('img').width();

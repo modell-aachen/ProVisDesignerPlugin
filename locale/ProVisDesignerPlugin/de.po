@@ -90,3 +90,6 @@ msgstr "Wenn Sie ProVis nun beenden, gehen diese Änderungen verloren."
 
 msgid "Topic preview"
 msgstr "Artikel-Vorschau"
+
+msgid "Print diagram"
+msgstr "Diagramm drucken"

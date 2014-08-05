@@ -81,7 +81,7 @@ sub afterCommonTagsHandler {
   Foswiki::Func::addToZone(
     "script",
     "PROVISDESIGNER::PRINT::OPTIONS",
-    "<script type='text/javascript'>jQuery.extend( foswiki.preferences, { \"provis\": { \"title\": \"$title\", \"version\": \"$version\" } } );</script>",
+    "<script type='text/javascript'>jQuery.extend( foswiki.preferences, { \"provis\": { \"title\": \"$title\", \"version\": \"$version\", \"label\": \"%MAKETEXT{\"Print diagram\"}%\" } } );</script>",
     "PROVISDESIGNER::PRINT::SCRIPT" );
 
   $hasTitle = 1;

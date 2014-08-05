@@ -29,6 +29,7 @@ sub initPlugin {
   Foswiki::Func::registerTagHandler( 'HIDENODE', \&_HIDENODE );
   Foswiki::Func::registerTagHandler( 'PROVISDESIGNER', \&_handleDesignerTag );
   Foswiki::Func::registerTagHandler( 'PROCESS', \&_DRAWING );
+  Foswiki::Func::registerTagHandler( 'NODECOLOR', \&_NODECOLOR );
   Foswiki::Func::registerRESTHandler( 'upload', \&_restUpload, authenticate => 1, http_allow => 'POST' );
   Foswiki::Func::registerRESTHandler( 'update', \&_restUpdate, authenticate => 1, http_allow => 'POST' );
 
@@ -56,17 +57,11 @@ sub afterCommonTagsHandler {
   return if $hasTitle;
   return unless $meta;
 
-  my $context = Foswiki::Func::getContext();
-  return if $context->{'edit'};
-
-  my $print = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{InlinePrint} || 0;
-  return unless $print;
-
   #topic title
   my $name = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{TopicTitleField} || 'TopicTitle';
   my $tt = $meta->get( 'FIELD', $name );
-  return unless $tt && $tt->{value};
-  my $title = $tt->{value};
+  # return unless $tt && $tt->{value};
+  my $title = $tt->{value} || '';
 
   # kvp
   my $approved = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{ApprovedField} || 'FREIGEGEBEN';
@@ -78,10 +73,31 @@ sub afterCommonTagsHandler {
     $version .= '%MAKETEXT{"Draft"}%';
   }
 
+  my $dyeing = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{EnableDyeing} || 0;
+  my $c1 = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{Color1} || 'yellow';
+  my $c2 = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{Color2} || 'orange';
+  my $c3 = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{Color3} || 'red';
+
+  my $script = <<"SCRIPT";
+<script type="text/javascript">
+  jQuery.extend( foswiki.preferences, {
+    "provis": {
+      "title": "$title",
+      "version": "$version",
+      "label": "%MAKETEXT{"Print diagram"}%",
+      "dyeing": $dyeing,
+      "color1": "$c1",
+      "color2": "$c2",
+      "color3": "$c3"
+    }
+  });
+</script>"
+SCRIPT
+
   Foswiki::Func::addToZone(
     "script",
     "PROVISDESIGNER::PRINT::OPTIONS",
-    "<script type='text/javascript'>jQuery.extend( foswiki.preferences, { \"provis\": { \"title\": \"$title\", \"version\": \"$version\", \"label\": \"%MAKETEXT{\"Print diagram\"}%\" } } );</script>",
+    $script,
     "PROVISDESIGNER::PRINT::SCRIPT" );
 
   $hasTitle = 1;
@@ -113,6 +129,13 @@ sub _HIDENODE {
   my $id = "Hide$node";
   my $hide = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{$id} || 0;
   return "node-hidden" if $hide;
+}
+
+sub _NODECOLOR {
+  my( $session, $params, $topic, $web, $topicObject ) = @_;
+
+  my $id = $params->{_DEFAULT};
+  return $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{$id} || '#000000';
 }
 
 # Tag handler

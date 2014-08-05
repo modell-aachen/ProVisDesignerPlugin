@@ -50,6 +50,12 @@
         --><a class='btn btn-toggled ' href='#' data-action='toggleGridVisibility' data-toggable='1' title='%MAKETEXT{"Show grid"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/showGrid.png' /></a><!--
         --><a class='btn ' href='#' data-action='toggleSnapToGrid' data-toggable='1' title='%MAKETEXT{"Snap to grid"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/snapToGrid.png' /></a>
       </div><!--
+       --><div class="toolbar-group" data-dyeing>
+        <a class='btn' href='#' data-action='undyeNode' title='%MAKETEXT{"Remove dyeing"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/undye.png' /></a><!--
+        --><a class='btn btn-color' href='#' data-action='dyeNode' data-actionargs='%NODECOLOR{"Color1"}%' title='%MAKETEXT{"Dye node"}%' data-tooltip-placement='bottom'><div class="color" style="background: %NODECOLOR{"Color1"}%"></div></a><!--
+        --><a class='btn btn-color' href='#' data-action='dyeNode' data-actionargs='%NODECOLOR{"Color2"}%' title='%MAKETEXT{"Dye node"}%' data-tooltip-placement='bottom'><div class="color" style="background: %NODECOLOR{"Color2"}%"></div></a><!--
+        --><a class='btn btn-color' href='#' data-action='dyeNode' data-actionargs='%NODECOLOR{"Color3"}%' title='%MAKETEXT{"Dye node"}%' data-tooltip-placement='bottom'><div class="color" style="background: %NODECOLOR{"Color3"}%"></div></a>
+      </div><!--
        --><select id='select-zoom'>
         <option value="200">200%</option>
         <option value="175">175%</option>

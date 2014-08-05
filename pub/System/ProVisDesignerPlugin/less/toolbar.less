@@ -1,3 +1,9 @@
+a.btn-color {
+  &:hover {
+    background-image: url('../assets/btn-inset.png');
+  }
+}
+
 a.btn {
   // bootstrap overrides
   padding: 0 !important;
@@ -8,6 +14,12 @@ a.btn {
     &:hover {
       background-image: url('../assets/btn-inset.png');
     }
+  }
+
+  > .color {
+    min-width: 16px;
+    min-height: 16px;
+    margin: 5px;
   }
 
   > div {

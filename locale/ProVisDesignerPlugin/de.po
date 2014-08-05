@@ -93,3 +93,9 @@ msgstr "Artikel-Vorschau"
 
 msgid "Print diagram"
 msgstr "Diagramm drucken"
+
+msgid "Remove dyeing"
+msgstr "Färbung entfernen"
+
+msgid "Dye node"
+msgstr "Schablone einfärben"

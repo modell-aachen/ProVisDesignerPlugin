@@ -5,13 +5,13 @@
 $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{EnableDyeing} = 0;
 
 # **STRING**
-$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{Color1} = 'yellow';
+$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{Color1} = '#ffffc0';
 
 # **STRING**
-$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{Color2} = 'orange';
+$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{Color2} = '#ffb260';
 
 # **STRING**
-$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{Color3} = 'red';
+$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{Color3} = '#ff8585';
 
 #---+++ Diagram Printing
 # **BOOLEAN**

@@ -1,5 +1,13 @@
 #---+ Extensions
 #---++ ProVisDesignerPlugin
+#---+++ Diagram Printing
+# **BOOLEAN**
+$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{InlinePrint} = 0;
+
+# **STRING**
+$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{TopicTitleField} = 'TopicTitle';
+
+#---+++ Node Visibility
 # **BOOLEAN**
 $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideProcess} = 0;
 

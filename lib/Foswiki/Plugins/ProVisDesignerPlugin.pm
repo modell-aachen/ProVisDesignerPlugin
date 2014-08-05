@@ -31,7 +31,53 @@ sub initPlugin {
   Foswiki::Func::registerTagHandler( 'PROCESS', \&_DRAWING );
   Foswiki::Func::registerRESTHandler( 'upload', \&_restUpload, authenticate => 1, http_allow => 'POST' );
   Foswiki::Func::registerRESTHandler( 'update', \&_restUpdate, authenticate => 1, http_allow => 'POST' );
+
+  my $print = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{InlinePrint} || 0;
+  return 1 unless $print;
+
+  # disable inline printing while in edit mode.
+  my $context = Foswiki::Func::getContext();
+  return 1 if $context->{'edit'};
+
+  my $path = '%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin';
+  my $script = "<script type=\"text/javascript\" src=\"$path/scripts/provisprint.js\"></script>";
+  Foswiki::Func::addToZone( 'script', 'PROVISDESIGNER::PRINT::SCRIPT', $script, 'JQUERYPLUGIN::FOSWIKI::PREFERENCES' );
+
+  my $style = "<link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"$path/css/provisprint.css\" />";
+  Foswiki::Func::addToZone( 'head', 'PROVISDESIGNER::PRINT::STYLE', $style );
+
   return 1;
+}
+
+my $hasTitle = 0;
+sub afterCommonTagsHandler {
+  my ( $text, $topic, $web, $meta ) = @_;
+
+  return if $hasTitle;
+  return unless $meta;
+
+  my $context = Foswiki::Func::getContext();
+  return if $context->{'edit'};
+
+  my $print = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{InlinePrint} || 0;
+  return unless $print;
+
+  my $name = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{TopicTitleField} || 'TopicTitle';
+  my $tt = $meta->get( 'FIELD', $name );
+  return unless $tt && $tt->{value};
+  my $title = $tt->{value};
+
+  Foswiki::Func::addToZone(
+    "script",
+    "PROVISDESIGNER::PRINT::OPTIONS",
+    "<script type='text/javascript'>jQuery.extend( foswiki.preferences, { \"provis\": { \"title\": \"$title\" } } );</script>",
+    "PROVISDESIGNER::PRINT::SCRIPT" );
+
+  $hasTitle = 1;
+}
+
+sub completePageHandler {
+  $hasTitle = 0;
 }
 
 sub returnRESTResult {

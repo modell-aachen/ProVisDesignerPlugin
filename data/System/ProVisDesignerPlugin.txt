@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="BaseUserMapping_333" comment="reprev" date="1400673098" format="1.1" reprev="4" version="6"}%
+%META:TOPICINFO{author="BaseUserMapping_333" comment="reprev" date="1406541594" format="1.1" reprev="4" version="8"}%
 <verbatim>
 %STARTSECTION{"PROVISCONFIG"}%
 {
@@ -22,6 +22,7 @@
   "nodeVicinityCost": 50,
   "routeLinks": true,
   "showAnchors": 2,
+  "skipBoundsConversion": 0,
   "snapToAnchor": 1,
   "undoCommandHistorySize": 25,
   "zoomStep": 25,
@@ -72,6 +73,23 @@
       "shadowOffsetX": 2,
       "shadowOffsetY": 2,
       "type": "Rectangle",
+      "useGradient": false,
+      "width": 105
+    },{
+      "adjustmentHandles": 256,
+      "background": "#dee7f3",
+      "borderColor": "#96bee3",
+      "borderWidth": 1,
+      "fontSize": 12,
+      "foreground": "#222222",
+      "gradient": "#000000",
+      "gradientAngle": 90,
+      "handleStyle": 7,
+      "height": 20,
+      "shadowColor": "#e5e5e5",
+      "shadowOffsetX": 2,
+      "shadowOffsetY": 2,
+      "type": "RectangleSmall",
       "useGradient": false,
       "width": 105
     },{

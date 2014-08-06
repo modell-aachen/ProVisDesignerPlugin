@@ -91,7 +91,7 @@ sub afterCommonTagsHandler {
       "color3": "$c3"
     }
   });
-</script>"
+</script>
 SCRIPT
 
   Foswiki::Func::addToZone(

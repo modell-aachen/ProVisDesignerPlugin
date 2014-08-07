@@ -149,14 +149,30 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Achtung.</h4>
+          <h4 class="modal-title">%MAKETEXT{"Attention"}%</h4>
         </div>
         <div class="modal-body">
-          <p>Das aktuelle Dokument beinhaltet ungespeicherte Änderungen.</p>
+          <p>%MAKETEXT{"This diagram contains unsaved changes."}%</p>
         </div>
         <div class="modal-footer">
           <button id="btn-close-save" type="button" class="btn btn-success">%MAKETEXT{"Save"}%</button>
           <button id="btn-close-discard" type="button" class="btn btn-danger">%MAKETEXT{"Discard"}%</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">%MAKETEXT{"Cancel"}%</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modal-offline" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">%MAKETEXT{"Attention"}%</h4>
+        </div>
+        <div class="modal-body">
+          <p>%MAKETEXT{"Currently there is no connection to Q.Wiki. Please try again later."}%</p>
+        </div>
+        <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">%MAKETEXT{"Cancel"}%</button>
         </div>
       </div>

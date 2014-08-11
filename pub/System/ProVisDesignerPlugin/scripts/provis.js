@@ -203,6 +203,34 @@ ProVis = function( appletId ) {
     return this.container;
   };
 
+  ProVis.prototype.dyeNode = function( colorStr ) {
+    var selection = this.diagram.getSelection();
+    var length = selection.size();
+    if ( length == 0 ) return;
+
+    var nodes = selection.getNodes();
+    for( var i = 0; i < length; ++i ) {
+      var node = nodes.get( i );
+      if ( /ShapeNode/.test( node.toString() ) ) {
+        node.dye( colorStr );
+      }
+    }
+  };
+
+  ProVis.prototype.undyeNode = function() {
+    var selection = this.diagram.getSelection();
+    var length = selection.size();
+    if ( length == 0 ) return;
+
+    var nodes = selection.getNodes();
+    for( var i = 0; i < length; ++i ) {
+      var node = nodes.get( i );
+      if ( /ShapeNode/.test( node.toString() ) ) {
+        node.undye();
+      }
+    }
+  }
+
   /**
    * Reverts the most recent undo operation.
    */

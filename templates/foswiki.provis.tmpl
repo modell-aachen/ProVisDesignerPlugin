@@ -50,6 +50,12 @@
         --><a class='btn btn-toggled ' href='#' data-action='toggleGridVisibility' data-toggable='1' title='%MAKETEXT{"Show grid"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/showGrid.png' /></a><!--
         --><a class='btn ' href='#' data-action='toggleSnapToGrid' data-toggable='1' title='%MAKETEXT{"Snap to grid"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/snapToGrid.png' /></a>
       </div><!--
+       --><div class="toolbar-group" data-dyeing>
+        <a class='btn' href='#' data-action='undyeNode' title='%MAKETEXT{"Remove dyeing"}%' data-tooltip-placement='bottom'><img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/undye.png' /></a><!--
+        --><a class='btn btn-color' href='#' data-action='dyeNode' data-actionargs='%NODECOLOR{"Color1"}%' title='%MAKETEXT{"Dye node"}%' data-tooltip-placement='bottom'><div class="color" style="background: %NODECOLOR{"Color1"}%"></div></a><!--
+        --><a class='btn btn-color' href='#' data-action='dyeNode' data-actionargs='%NODECOLOR{"Color2"}%' title='%MAKETEXT{"Dye node"}%' data-tooltip-placement='bottom'><div class="color" style="background: %NODECOLOR{"Color2"}%"></div></a><!--
+        --><a class='btn btn-color' href='#' data-action='dyeNode' data-actionargs='%NODECOLOR{"Color3"}%' title='%MAKETEXT{"Dye node"}%' data-tooltip-placement='bottom'><div class="color" style="background: %NODECOLOR{"Color3"}%"></div></a>
+      </div><!--
        --><select id='select-zoom'>
         <option value="200">200%</option>
         <option value="175">175%</option>
@@ -74,6 +80,12 @@
         <span>%MAKETEXT{"Process"}%</span>
         <div id='node-rectangle' class='node-bg'>
           <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_process.png' />
+        </div>
+      </div>
+      <div class='node %HIDENODE{"Title"}%' data-shape='RectangleSmall'>
+        <span>%MAKETEXT{"Title"}%</span>
+        <div id='node-rectangle' class='node-bg'>
+          <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_processsmall.png' />
         </div>
       </div>
       <div class='node %HIDENODE{"Decision"}%' data-shape='Decision2'>
@@ -137,14 +149,30 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Achtung.</h4>
+          <h4 class="modal-title">%MAKETEXT{"Attention"}%</h4>
         </div>
         <div class="modal-body">
-          <p>Das aktuelle Dokument beinhaltet ungespeicherte Änderungen.</p>
+          <p>%MAKETEXT{"This diagram contains unsaved changes."}%</p>
         </div>
         <div class="modal-footer">
           <button id="btn-close-save" type="button" class="btn btn-success">%MAKETEXT{"Save"}%</button>
           <button id="btn-close-discard" type="button" class="btn btn-danger">%MAKETEXT{"Discard"}%</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">%MAKETEXT{"Cancel"}%</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modal-offline" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">%MAKETEXT{"Attention"}%</h4>
+        </div>
+        <div class="modal-body">
+          <p>%MAKETEXT{"Currently there is no connection to Q.Wiki. Please try again later."}%</p>
+        </div>
+        <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">%MAKETEXT{"Cancel"}%</button>
         </div>
       </div>

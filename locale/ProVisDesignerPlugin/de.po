@@ -10,6 +10,9 @@ msgstr "Vorschau"
 msgid "Process"
 msgstr "Prozess"
 
+msgid "Title"
+msgstr "Titel"
+
 msgid "Decision"
 msgstr "Entscheidung"
 
@@ -90,3 +93,18 @@ msgstr "Wenn Sie ProVis nun beenden, gehen diese Änderungen verloren."
 
 msgid "Topic preview"
 msgstr "Artikel-Vorschau"
+
+msgid "Print diagram"
+msgstr "Diagramm drucken"
+
+msgid "Remove dyeing"
+msgstr "Färbung entfernen"
+
+msgid "Dye node"
+msgstr "Schablone einfärben"
+
+msgid "Attention"
+msgstr "Achtung"
+
+msgid "Currently there is no connection to Q.Wiki. Please try again later."
+msgstr "Derzeit besteht keine Verbindung zum Q.Wiki. Bitte versuchen Sie es später noch einmal."

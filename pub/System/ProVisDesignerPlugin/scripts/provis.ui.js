@@ -121,10 +121,32 @@ if ( ProVis && !ProVis.prototype.ui ) {
       var retval = null;
       if ( action ) {
         if ( action == 'save' ){
-          provis.save( true ).done( function() {
-            forceClose = true;
-            window.close();
-          }).fail( function( e ) { alert( e ); });
+          var doSave = function() {
+            provis.save( true ).done( function() {
+              forceClose = true;
+              window.close();
+            }).fail( function( e ) { alert( e ); });
+          };
+          
+          var p = foswiki.preferences;
+          var url = p.PUBURL + '/System/ModacSkinTheme/ModacSkinLogos/favicon.ico';
+          $.ajax({
+            url: url,
+            cache: false,
+            error: function( xhr, err, status ) {
+              if ( xhr && xhr.status === 404 ) {
+                doSave();
+                return;
+              }
+
+              $('applet').setHidden();
+              var offline = $('#modal-offline');
+              offline.modal('show');
+            },
+            success: function() {
+              doSave();
+            }
+          });
         } else {
           retval = provis[action]( args );
           var actionName = action.toString();
@@ -260,6 +282,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
 
       $('#modal-close').on( 'hidden.bs.modal', modalDismissed );
       $('#modal-link').on( 'hidden.bs.modal', modalDismissed );
+      $('#modal-offline').on( 'hidden.bs.modal', modalDismissed );
 
       $('#btn-close-save').on( 'click', closeModalSave );
       $('#btn-close-discard').on( 'click', closeModalDiscard );
@@ -444,6 +467,11 @@ if ( ProVis && !ProVis.prototype.ui ) {
   });
 
   $(document).ready( function() {
+    var prefs = foswiki.preferences.provis;
+    if ( prefs && prefs.dyeing == 0 ) {
+      $('[data-dyeing]').remove();
+    }
+
     var isFirstLoad = true;
     $(window).resize( function() {
       var options = $('#provis-preview');

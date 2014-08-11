@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2014-08-01 15:20+0200\n"
+"PO-Revision-Date: 2014-08-11 17:23+0200\n"
 "Last-Translator: Modell Aachen <access@modell-aachen.de>\n"
 "Language-Team: French <http://translate.modell-"
 "aachen.de/projects/provisdesignerplugin/releasenew-york/fr/>\n"
@@ -35,7 +35,7 @@ msgstr "décision"
 
 #: templates/foswiki.provis.tmpl:176
 msgid "Delete existing link"
-msgstr ""
+msgstr "Supprimer le lien existant"
 
 #: templates/foswiki.provis.tmpl:147
 msgid "Discard"
@@ -51,7 +51,7 @@ msgstr "Document"
 
 #: templates/foswiki.provis.tmpl:158
 msgid "Edit link"
-msgstr ""
+msgstr "Éditer le lien"
 
 #: templates/foswiki.provis.tmpl:133
 msgid "If you quit ProVis now, these changes will be lost."
@@ -75,7 +75,7 @@ msgstr "refaire"
 
 #: templates/foswiki.provis.tmpl:146
 msgid "Save"
-msgstr ""
+msgstr "Enregistrer"
 
 #: templates/foswiki.provis.tmpl:40
 msgid "Save changes"
@@ -87,7 +87,7 @@ msgstr "Sélectionner"
 
 #: templates/foswiki.provis.tmpl:163
 msgid "Shape"
-msgstr ""
+msgstr "Le modèle"
 
 #: templates/foswiki.provis.tmpl:50
 msgid "Show grid"
@@ -115,7 +115,7 @@ msgstr "Aperçu Sujet"
 
 #: templates/foswiki.provis.tmpl:44
 msgid "Undo"
-msgstr ""
+msgstr "Annuler"
 
 #: templates/foswiki.provis.tmpl:48
 msgid "Zoom in"

@@ -1,5 +1,8 @@
 #---+ Extensions
 #---++ ProVisDesignerPlugin
+# **BOOLEAN**
+$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{CompatibilityMode} = 0;
+
 #---+++ Node Dyeing
 # **BOOLEAN**
 $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{EnableDyeing} = 0;

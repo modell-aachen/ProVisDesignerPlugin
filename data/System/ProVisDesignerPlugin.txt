@@ -18,7 +18,6 @@
   "linkCascadeOrientation": 2,
   "linkEndsMovable": true,
   "linksSnapToBorders": true,
-  "mode": 0,
   "nodeVicinityCost": 50,
   "routeLinks": true,
   "showAnchors": 2,

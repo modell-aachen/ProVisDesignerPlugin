@@ -234,10 +234,13 @@ SCRIPT
   $section = "PROVISCONFIG" unless $section;
 
   my $macro = "%INCLUDE{\"$cfgTopic\" section=\"$section\" warn=\"off\"}%";
-  my $config = Foswiki::Func::expandCommonVariables( $macro );
+  my $text = Foswiki::Func::expandCommonVariables( $macro );
+  my $config = decode_json( $text );
+  my $isPro = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{CompatibilityMode} || 0;
+  $config->{mode} = $isPro ? 42 : 0;
 
   #todo error if $config undefined
-  my $encoded = encode_base64( $config );
+  my $encoded = encode_base64( encode_json( $config ) );
   $encoded =~ s/\n//g;
 
   my $langCode = $Foswiki::Plugins::SESSION->i18n->language;

@@ -9,6 +9,8 @@ lib/Foswiki/Configure/Checkers/Plugins/ProVisDesignerPlugin/Enabled.pm 0644
 
 locale/ProVisDesignerPlugin/de.po 0644
 locale/ProVisDesignerPlugin/fr.po 0644
+locale/ProVisDesignerPlugin/it.po 0644
+locale/ProVisDesignerPlugin/zh-cn.po 0644
 
 pub/System/ProVisDesignerPlugin/applet/ProVis.jar 0644
 

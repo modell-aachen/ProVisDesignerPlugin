@@ -1,6 +1,6 @@
 #: templates/foswiki.provis.tmpl
 msgid "Attention"
-msgstr "Achtung"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Cancel"
@@ -8,19 +8,19 @@ msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Comment"
-msgstr "Kommentar"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Currently there is no connection to Q.Wiki. Please try again later."
-msgstr "Derzeit besteht keine Verbindung zum Q.Wiki. Bitte versuchen Sie es spter noch einmal."
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Database"
-msgstr "Datenbank"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Decision"
-msgstr "Entscheidung"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Delete existing link"
@@ -28,15 +28,15 @@ msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Discard"
-msgstr "Verwerfen"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Discard changes"
-msgstr "nderungen verwerfen"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Document"
-msgstr "Dokument"
+msgstr ""
 
 #: lib/Foswiki/Plugins/ProVisDesignerPlugin.pm
 msgid "Draft"
@@ -44,110 +44,92 @@ msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Dye node"
-msgstr "Schablone einfrben"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Edit link"
-msgstr "Link bearbeiten"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "If you quit ProVis now, these changes will be lost."
-msgstr "Wenn Sie ProVis nun beenden, gehen diese nderungen verloren."
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Junction"
-msgstr "Knotenpunkt"
+msgstr ""
 
 #: data/System/ProVisDesignerPlugin.txt
 msgid "New swimlane"
-msgstr "Neue Schwimmbahn"
+msgstr ""
 
 #: lib/Foswiki/Plugins/ProVisDesignerPlugin.pm
 msgid "Print diagram"
-msgstr "Diagramm drucken"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Process"
-msgstr "Prozess"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Redo"
-msgstr "Wiederholen"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Remove dyeing"
-msgstr "Frbung entfernen"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Save"
-msgstr "Speichern"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Save changes"
-msgstr "nderungen speichern"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Select"
-msgstr "Auswhlen"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Shape"
-msgstr "Schablone"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Show grid"
-msgstr "Raster anzeigen"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Snap to grid"
-msgstr "Am Raster ausrichten"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Start/End"
-msgstr "Start/Ende"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Swimlane"
-msgstr "Schwimmbahn"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "This diagram contains unsaved changes."
-msgstr "Dieses Diagramm beinhaltet nicht gespeicherte nderungen."
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Title"
-msgstr "Titel"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Topic preview"
-msgstr "Artikel-Vorschau"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Undo"
-msgstr "Rckgngig"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Zoom in"
-msgstr "Vergrern"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Zoom out"
-msgstr "Verkleinern"
-
-#~ msgid "Copy"
-#~ msgstr "Kopieren"
-
-#~ msgid "Cut"
-#~ msgstr "Ausschneiden"
-
-#~ msgid "Paste"
-#~ msgstr "Einfgen"
-
-#~ msgid "Preview"
-#~ msgstr "Vorschau"
-
-#~ msgid "Save & close"
-#~ msgstr "Speichern & schlieen"
-
-#~ msgid "Shapes"
-#~ msgstr "Schablonen"
+msgstr ""

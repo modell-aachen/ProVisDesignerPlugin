@@ -8,8 +8,7 @@ msgstr ""
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2014-08-11 17:23+0200\n"
 "Last-Translator: Modell Aachen <access@modell-aachen.de>\n"
-"Language-Team: French <http://translate.modell-"
-"aachen.de/projects/provisdesignerplugin/releasenew-york/fr/>\n"
+"Language-Team: French <http://translate.modell-aachen.de/projects/provisdesignerplugin/releasenew-york/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,110 +16,138 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 1.9\n"
 
-#: templates/foswiki.provis.tmpl:148 templates/foswiki.provis.tmpl:177
+#: templates/foswiki.provis.tmpl
+msgid "Attention"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
 msgid "Cancel"
 msgstr "Annuler"
 
-#: templates/foswiki.provis.tmpl:110
+#: templates/foswiki.provis.tmpl
 msgid "Comment"
 msgstr "Commentaire"
 
-#: templates/foswiki.provis.tmpl:92
+#: templates/foswiki.provis.tmpl
+msgid "Currently there is no connection to Q.Wiki. Please try again later."
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
 msgid "Database"
 msgstr "Base de données"
 
-#: templates/foswiki.provis.tmpl:80
+#: templates/foswiki.provis.tmpl
 msgid "Decision"
 msgstr "décision"
 
-#: templates/foswiki.provis.tmpl:176
+#: templates/foswiki.provis.tmpl
 msgid "Delete existing link"
 msgstr "Supprimer le lien existant"
 
-#: templates/foswiki.provis.tmpl:147
+#: templates/foswiki.provis.tmpl
 msgid "Discard"
 msgstr "annuler"
 
-#: templates/foswiki.provis.tmpl:41
+#: templates/foswiki.provis.tmpl
 msgid "Discard changes"
 msgstr "Annuler les modifications"
 
-#: templates/foswiki.provis.tmpl:86
+#: templates/foswiki.provis.tmpl
 msgid "Document"
 msgstr "Document"
 
-#: templates/foswiki.provis.tmpl:158
+#: lib/Foswiki/Plugins/ProVisDesignerPlugin.pm
+msgid "Draft"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Dye node"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
 msgid "Edit link"
 msgstr "Éditer le lien"
 
-#: templates/foswiki.provis.tmpl:133
+#: templates/foswiki.provis.tmpl
 msgid "If you quit ProVis now, these changes will be lost."
 msgstr "Si vous quittez ProVis maintenant, ces modifications seront perdues."
 
-#: templates/foswiki.provis.tmpl:104
+#: templates/foswiki.provis.tmpl
 msgid "Junction"
 msgstr "jonction"
 
-#: data/System/ProVisDesignerPlugin.txt:11
+#: data/System/ProVisDesignerPlugin.txt
 msgid "New swimlane"
 msgstr "nouveau Swimlane"
 
-#: templates/foswiki.provis.tmpl:74
+#: lib/Foswiki/Plugins/ProVisDesignerPlugin.pm
+msgid "Print diagram"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
 msgid "Process"
 msgstr "processus"
 
-#: templates/foswiki.provis.tmpl:45
+#: templates/foswiki.provis.tmpl
 msgid "Redo"
 msgstr "refaire"
 
-#: templates/foswiki.provis.tmpl:146
+#: templates/foswiki.provis.tmpl
+msgid "Remove dyeing"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
 msgid "Save"
 msgstr "Enregistrer"
 
-#: templates/foswiki.provis.tmpl:40
+#: templates/foswiki.provis.tmpl
 msgid "Save changes"
 msgstr "enregistrer les modifications"
 
-#: templates/foswiki.provis.tmpl:178
+#: templates/foswiki.provis.tmpl
 msgid "Select"
 msgstr "Sélectionner"
 
-#: templates/foswiki.provis.tmpl:163
+#: templates/foswiki.provis.tmpl
 msgid "Shape"
 msgstr "Le modèle"
 
-#: templates/foswiki.provis.tmpl:50
+#: templates/foswiki.provis.tmpl
 msgid "Show grid"
 msgstr "Afficher la grille"
 
-#: templates/foswiki.provis.tmpl:51
+#: templates/foswiki.provis.tmpl
 msgid "Snap to grid"
 msgstr "Aligner sur la grille"
 
-#: templates/foswiki.provis.tmpl:98
+#: templates/foswiki.provis.tmpl
 msgid "Start/End"
 msgstr "Début/Fin"
 
-#: templates/foswiki.provis.tmpl:68
+#: templates/foswiki.provis.tmpl
 msgid "Swimlane"
 msgstr "Swimmlane"
 
-#: templates/foswiki.provis.tmpl:133
+#: templates/foswiki.provis.tmpl
 msgid "This diagram contains unsaved changes."
 msgstr "Ce diagramme contient des modifications non enregistrées."
 
-#: templates/foswiki.provis.tmpl:129
+#: templates/foswiki.provis.tmpl
+msgid "Title"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
 msgid "Topic preview"
 msgstr "Aperçu Sujet"
 
-#: templates/foswiki.provis.tmpl:44
+#: templates/foswiki.provis.tmpl
 msgid "Undo"
 msgstr "Annuler"
 
-#: templates/foswiki.provis.tmpl:48
+#: templates/foswiki.provis.tmpl
 msgid "Zoom in"
 msgstr "zoomer"
 
-#: templates/foswiki.provis.tmpl:49
+#: templates/foswiki.provis.tmpl
 msgid "Zoom out"
 msgstr "Zoom arrière"

@@ -1,0 +1,135 @@
+#: templates/foswiki.provis.tmpl
+msgid "Attention"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Cancel"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Comment"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Currently there is no connection to Q.Wiki. Please try again later."
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Database"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Decision"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Delete existing link"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Discard"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Discard changes"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Document"
+msgstr ""
+
+#: lib/Foswiki/Plugins/ProVisDesignerPlugin.pm
+msgid "Draft"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Dye node"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Edit link"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "If you quit ProVis now, these changes will be lost."
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Junction"
+msgstr ""
+
+#: data/System/ProVisDesignerPlugin.txt
+msgid "New swimlane"
+msgstr ""
+
+#: lib/Foswiki/Plugins/ProVisDesignerPlugin.pm
+msgid "Print diagram"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Process"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Redo"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Remove dyeing"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Save"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Save changes"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Select"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Shape"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Show grid"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Snap to grid"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Start/End"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Swimlane"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "This diagram contains unsaved changes."
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Title"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Topic preview"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Undo"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Zoom in"
+msgstr ""
+
+#: templates/foswiki.provis.tmpl
+msgid "Zoom out"
+msgstr ""

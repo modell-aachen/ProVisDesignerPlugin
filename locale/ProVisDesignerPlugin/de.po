@@ -1,10 +1,26 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-08-22 11:47+0200\n"
+"PO-Revision-Date: 2014-08-22 11:49+0200\n"
+"Last-Translator: Modell Aachen <access@modell-aachen.de>\n"
+"Language-Team: German <http://translate.modell-"
+"aachen.de/projects/provisdesignerplugin/releasenew-york/de/>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 1.9\n"
+
 #: templates/foswiki.provis.tmpl
 msgid "Attention"
 msgstr "Achtung"
 
 #: templates/foswiki.provis.tmpl
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #: templates/foswiki.provis.tmpl
 msgid "Comment"
@@ -12,7 +28,9 @@ msgstr "Kommentar"
 
 #: templates/foswiki.provis.tmpl
 msgid "Currently there is no connection to Q.Wiki. Please try again later."
-msgstr "Derzeit besteht keine Verbindung zum Q.Wiki. Bitte versuchen Sie es spter noch einmal."
+msgstr ""
+"Derzeit besteht keine Verbindung zum Q.Wiki. Bitte versuchen Sie es später "
+"noch einmal."
 
 #: templates/foswiki.provis.tmpl
 msgid "Database"
@@ -24,7 +42,7 @@ msgstr "Entscheidung"
 
 #: templates/foswiki.provis.tmpl
 msgid "Delete existing link"
-msgstr ""
+msgstr "Bestehenden Link entfernen"
 
 #: templates/foswiki.provis.tmpl
 msgid "Discard"
@@ -32,7 +50,7 @@ msgstr "Verwerfen"
 
 #: templates/foswiki.provis.tmpl
 msgid "Discard changes"
-msgstr "nderungen verwerfen"
+msgstr "Änderungen verwerfen"
 
 #: templates/foswiki.provis.tmpl
 msgid "Document"
@@ -40,11 +58,11 @@ msgstr "Dokument"
 
 #: lib/Foswiki/Plugins/ProVisDesignerPlugin.pm
 msgid "Draft"
-msgstr ""
+msgstr "Entwurf"
 
 #: templates/foswiki.provis.tmpl
 msgid "Dye node"
-msgstr "Schablone einfrben"
+msgstr "Schablone einfärben"
 
 #: templates/foswiki.provis.tmpl
 msgid "Edit link"
@@ -52,7 +70,7 @@ msgstr "Link bearbeiten"
 
 #: templates/foswiki.provis.tmpl
 msgid "If you quit ProVis now, these changes will be lost."
-msgstr "Wenn Sie ProVis nun beenden, gehen diese nderungen verloren."
+msgstr "Wenn Sie ProVis nun beenden, gehen diese Änderungen verloren."
 
 #: templates/foswiki.provis.tmpl
 msgid "Junction"
@@ -76,7 +94,7 @@ msgstr "Wiederholen"
 
 #: templates/foswiki.provis.tmpl
 msgid "Remove dyeing"
-msgstr "Frbung entfernen"
+msgstr "Färbung entfernen"
 
 #: templates/foswiki.provis.tmpl
 msgid "Save"
@@ -84,11 +102,11 @@ msgstr "Speichern"
 
 #: templates/foswiki.provis.tmpl
 msgid "Save changes"
-msgstr "nderungen speichern"
+msgstr "Änderungen speichern"
 
 #: templates/foswiki.provis.tmpl
 msgid "Select"
-msgstr "Auswhlen"
+msgstr "Auswählen"
 
 #: templates/foswiki.provis.tmpl
 msgid "Shape"
@@ -112,7 +130,7 @@ msgstr "Schwimmbahn"
 
 #: templates/foswiki.provis.tmpl
 msgid "This diagram contains unsaved changes."
-msgstr "Dieses Diagramm beinhaltet nicht gespeicherte nderungen."
+msgstr "Dieses Diagramm beinhaltet nicht gespeicherte Änderungen."
 
 #: templates/foswiki.provis.tmpl
 msgid "Title"
@@ -124,11 +142,11 @@ msgstr "Artikel-Vorschau"
 
 #: templates/foswiki.provis.tmpl
 msgid "Undo"
-msgstr "Rckgngig"
+msgstr "Rückgängig"
 
 #: templates/foswiki.provis.tmpl
 msgid "Zoom in"
-msgstr "Vergrern"
+msgstr "Vergrößern"
 
 #: templates/foswiki.provis.tmpl
 msgid "Zoom out"

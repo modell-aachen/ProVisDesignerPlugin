@@ -66,8 +66,8 @@ pub/System/ProVisDesignerPlugin/fonts/glyphicons-halflings-regular.woff 0644
 
 pub/System/ProVisDesignerPlugin/scripts/provis.js 0644
 pub/System/ProVisDesignerPlugin/scripts/provis.ui.js 0644
-pub/System/ProVisDesignerPlugin/scripts/deployJava.js 0444
-pub/System/ProVisDesignerPlugin/scripts/provisprint.js 0444
+pub/System/ProVisDesignerPlugin/scripts/deployJava.js 0644
+pub/System/ProVisDesignerPlugin/scripts/provisprint.js 0644
 
 templates/foswiki.provis.tmpl 0644
 

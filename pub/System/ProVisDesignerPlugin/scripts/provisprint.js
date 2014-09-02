@@ -7,6 +7,10 @@
     }
 
     $('.print-container').on( 'mouseenter', function() {
+      if ( !window.foswiki.preferences.provis || !window.foswiki.preferences.provis.label ) {
+        return;
+      }
+
       var $this = $(this);
       var label = window.foswiki.preferences.provis.label;
       var $menu = $('<span class="print-button">' + label + '</span>');

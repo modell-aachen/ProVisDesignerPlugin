@@ -427,13 +427,14 @@ ProVis = function( appletId ) {
 
   var file = opener.provis.name;
   var rev = opener.provis.aqmrev;
+  var query = rev ? ('?rev=' + rev) : '';
 
   // rev = 0 := new diagram
-  if ( file && rev > 0 ) {
+  if ( file && rev != 0 ) {
     var pub = opener.foswiki.getPreference( 'PUBURL' );
     var web = opener.provis.web;
     var topic = opener.provis.topic;
-    var url = pub + '/' + web + '/' + topic + '/' + file + '.aqm?rev=' + rev;
+    var url = pub + '/' + web + '/' + topic + '/' + file + '.aqm' + query;
 
     $.ajax({
         type: 'get',
@@ -449,7 +450,11 @@ ProVis = function( appletId ) {
           // java knows why...
           provis.view.scrollTo( -100, -100 );
         },
-        error: function() {
+        error: function( err ) {
+          if ( console && console.error ) {
+            console.error( err );
+          }
+
           $.unblockUI();
         }
       });

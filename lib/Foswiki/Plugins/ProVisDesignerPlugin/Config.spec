@@ -31,7 +31,7 @@ $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{ApprovedField} = 'FREIGEGEBEN';
 $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideProcess} = 0;
 
 # **BOOLEAN**
-$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideTitle} = 0;
+$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideTitle} = 1;
 
 # **BOOLEAN**
 $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideDecision} = 0;

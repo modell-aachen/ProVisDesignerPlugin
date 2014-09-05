@@ -38,7 +38,7 @@ msgstr "Datenbank"
 
 #: templates/foswiki.provis.tmpl
 msgid "Decision"
-msgstr "Entscheidung"
+msgstr "Beschluss"
 
 #: templates/foswiki.provis.tmpl
 msgid "Delete existing link"

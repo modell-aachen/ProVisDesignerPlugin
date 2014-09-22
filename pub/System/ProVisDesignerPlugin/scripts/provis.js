@@ -239,7 +239,7 @@ ProVis = function( appletId ) {
       this.snapshotManager.triggerRedo(this.view);
       this.container = this.diagram.getSwimlaneContainer(1);
     } catch ( ex ) {
-      if(console && console.log) console.log( ex.toString() );
+      if(window.console && window.console.log) console.log( ex.toString() );
     }
   };
 
@@ -382,7 +382,7 @@ ProVis = function( appletId ) {
       this.snapshotManager.triggerUndo(this.view);
       this.container = this.diagram.getSwimlaneContainer(1);
     } catch( ex ) {
-      if(console && console.log) console.log( ex );
+      if(window.console && window.console.log) console.log( ex );
     }
   };
 
@@ -451,7 +451,7 @@ ProVis = function( appletId ) {
           provis.view.scrollTo( -100, -100 );
         },
         error: function( err ) {
-          if ( console && console.error ) {
+          if ( window.console && window.console.error ) {
             console.error( err );
           }
 

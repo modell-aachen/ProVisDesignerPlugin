@@ -1,7 +1,7 @@
 !noci
 
 data/System/ProVisDesignerPlugin.txt 0664
-data/System/ProcessDesigner.txt 0640
+data/System/ProcessDesigner.txt 0664
 
 lib/Foswiki/Plugins/ProVisDesignerPlugin/Config.spec 0644
 lib/Foswiki/Plugins/ProVisDesignerPlugin.pm 0644

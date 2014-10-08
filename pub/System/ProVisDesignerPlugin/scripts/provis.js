@@ -432,8 +432,8 @@ ProVis = function( appletId ) {
   // rev = 0 := new diagram
   if ( file && rev != 0 ) {
     var pub = opener.foswiki.getPreference( 'PUBURL' );
-    var web = encodeURIComponent( opener.provis.web );
-    var topic = encodeURIComponent( opener.provis.topic );
+    var web = encodeURI( opener.provis.web );
+    var topic = encodeURI( opener.provis.topic );
     var url = pub + '/' + web + '/' + topic + '/' + file + '.aqm' + query;
 
     $.ajax({

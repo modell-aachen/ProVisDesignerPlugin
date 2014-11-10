@@ -127,7 +127,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
               window.close();
             }).fail( function( e ) { alert( e ); });
           };
-          
+
           var p = foswiki.preferences;
           var url = p.PUBURL + '/System/ModacSkinTheme/ModacSkinLogos/favicon.ico';
           $.ajax({
@@ -527,6 +527,14 @@ if ( ProVis && !ProVis.prototype.ui ) {
     if ( window.opener.provis ) {
       $('#preview-topic').html( window.opener.provis.topicContent );
     }
+
+    // enable slim scroll
+    $('#provis-shapes > .shape-container').slimScroll({
+      height: '95%',
+      position: 'left',
+      color: '#fff',
+      size: '5px'
+    });
   });
 })(jQuery);
 

@@ -127,7 +127,11 @@ sub _HIDENODE {
   return unless $node;
 
   my $id = "Hide$node";
-  my $hide = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{$id} || 0;
+  my $default = 0;
+  $default = 1 if ( $node =~ m/^(Title|Decision|Subprocess|Operation)$/);
+  my $hide = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{$id};
+  $hide = $default unless defined $hide;
+
   return "node-hidden" if $hide;
 }
 
@@ -213,6 +217,7 @@ STYLE
 <script type="text/javascript" src="$pluginURL/scripts/deployJava.js?version=$RELEASE"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.js?version=$RELEASE"></script>
 <script type="text/javascript" src="$pluginURL/scripts/provis.ui.js?version=$RELEASE"></script>
+<script type="text/javascript" src="$pluginURL/scripts/jquery.slimscroll.min.js?version=$RELEASE"></script>
 SCRIPT
 
   Foswiki::Func::addToZone( 'script', 'PROVIS::DESIGNER::SCRIPTS', $script, 'JQUERYPLUGIN::FOSWIKI' );

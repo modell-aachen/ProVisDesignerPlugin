@@ -27,6 +27,14 @@ msgid "Comment"
 msgstr "Kommentar"
 
 #: templates/foswiki.provis.tmpl
+msgid "Subprocess"
+msgstr "Unterprozess"
+
+#: templates/foswiki.provis.tmpl
+msgid "Operation"
+msgstr "Operation"
+
+#: templates/foswiki.provis.tmpl
 msgid "Currently there is no connection to Q.Wiki. Please try again later."
 msgstr ""
 "Derzeit besteht keine Verbindung zum Q.Wiki. Bitte versuchen Sie es später "

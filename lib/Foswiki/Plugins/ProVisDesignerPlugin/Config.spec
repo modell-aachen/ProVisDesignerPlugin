@@ -34,7 +34,7 @@ $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideProcess} = 0;
 $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideTitle} = 1;
 
 # **BOOLEAN**
-$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideDecision} = 0;
+$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideDecision2} = 0;
 
 # **BOOLEAN**
 $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideDocument} = 0;
@@ -50,3 +50,12 @@ $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideEllipse} = 0;
 
 # **BOOLEAN**
 $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideComment} = 0;
+
+# **BOOLEAN**
+$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideDecision} = 1;
+
+# **BOOLEAN**
+$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideSubprocess} = 1;
+
+# **BOOLEAN**
+$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideOperation} = 1;

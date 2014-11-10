@@ -69,7 +69,7 @@
     --></div>
   </div>
   <div id="provis-shapes">
-    <div>
+    <div class="shape-container">
       <div class='node lane' data-action='createSwimlane'>
         <span>%MAKETEXT{"Swimlane"}%</span>
         <div class='node-bg'>
@@ -82,16 +82,34 @@
           <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_process.png' />
         </div>
       </div>
+      <div class='node %HIDENODE{"Subprocess"}%' data-shape='Procedure'>
+        <span>%MAKETEXT{"Subprocess"}%</span>
+        <div id='node-procedure' class='node-bg'>
+          <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_procedure.png' />
+        </div>
+      </div>
       <div class='node %HIDENODE{"Title"}%' data-shape='RectangleSmall'>
         <span>%MAKETEXT{"Title"}%</span>
-        <div id='node-rectangle' class='node-bg'>
+        <div id='node-title' class='node-bg'>
           <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_processsmall.png' />
         </div>
       </div>
-      <div class='node %HIDENODE{"Decision"}%' data-shape='Decision2'>
+      <div class='node %HIDENODE{"Decision2"}%' data-shape='Decision2'>
+        <span>%MAKETEXT{"Decision"}%</span>
+        <div id='node-decision2' class='node-bg'>
+          <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_decision2.png' />
+        </div>
+      </div>
+      <div class='node %HIDENODE{"Decision"}%' data-shape='Decision'>
         <span>%MAKETEXT{"Decision"}%</span>
         <div id='node-decision' class='node-bg'>
-          <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_decision2.png' />
+          <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_decision.png' />
+        </div>
+      </div>
+      <div class='node %HIDENODE{"Operation"}%' data-shape='ManualOperation'>
+        <span>%MAKETEXT{"Operation"}%</span>
+        <div id='node-operation' class='node-bg'>
+          <img src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/node_operation.png' />
         </div>
       </div>
       <div class='node %HIDENODE{"Document"}%' data-shape='Document'>

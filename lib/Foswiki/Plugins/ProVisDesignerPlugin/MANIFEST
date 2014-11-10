@@ -1,7 +1,7 @@
 !noci
 
 data/System/ProVisDesignerPlugin.txt 0664
-data/System/ProcessDesigner.txt 0640
+data/System/ProcessDesigner.txt 0664
 
 lib/Foswiki/Plugins/ProVisDesignerPlugin/Config.spec 0644
 lib/Foswiki/Plugins/ProVisDesignerPlugin.pm 0644
@@ -39,7 +39,9 @@ pub/System/ProVisDesignerPlugin/assets/node_decision2.png 0644
 pub/System/ProVisDesignerPlugin/assets/node_document.png 0644
 pub/System/ProVisDesignerPlugin/assets/node_junction.png 0644
 pub/System/ProVisDesignerPlugin/assets/node_process.png 0644
+pub/System/ProVisDesignerPlugin/assets/node_procedure.png 0644
 pub/System/ProVisDesignerPlugin/assets/node_processsmall.png 0644
+pub/System/ProVisDesignerPlugin/assets/node_operation.png 0644
 pub/System/ProVisDesignerPlugin/assets/node_swimlane.png 0644
 pub/System/ProVisDesignerPlugin/assets/node_start.png 0644
 pub/System/ProVisDesignerPlugin/assets/redo.png 0644
@@ -68,6 +70,7 @@ pub/System/ProVisDesignerPlugin/scripts/provis.js 0644
 pub/System/ProVisDesignerPlugin/scripts/provis.ui.js 0644
 pub/System/ProVisDesignerPlugin/scripts/deployJava.js 0644
 pub/System/ProVisDesignerPlugin/scripts/provisprint.js 0644
+pub/System/ProVisDesignerPlugin/scripts/jquery.slimscroll.min.js 0644
 
 templates/foswiki.provis.tmpl 0644
 

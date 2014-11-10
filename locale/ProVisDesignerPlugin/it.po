@@ -1,3 +1,19 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-11-10 15:47+0200\n"
+"PO-Revision-Date: 2014-11-10 15:48+0200\n"
+"Last-Translator: Modell Aachen <access@modell-aachen.de>\n"
+"Language-Team: Italian <http://translate.modell-"
+"aachen.de/projects/provisdesignerplugin/releasenew-york/it/>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 1.9\n"
+
 #: templates/foswiki.provis.tmpl
 msgid "Attention"
 msgstr ""
@@ -14,7 +30,7 @@ msgstr "commento"
 msgid "Currently there is no connection to Q.Wiki. Please try again later."
 msgstr ""
 "Collegamento alla Q. Wiki momentaneamente non disponibile. Per favore "
-"riprovare pi첫 tardi"
+"riprovare più tardi."
 
 #: templates/foswiki.provis.tmpl
 msgid "Database"
@@ -54,7 +70,7 @@ msgstr "Modificare il collegamento"
 
 #: templates/foswiki.provis.tmpl
 msgid "If you quit ProVis now, these changes will be lost."
-msgstr "Se si esce ora da ProVis, queste modifiche verranno perse"
+msgstr "Se si esce ora da ProVis, queste modifiche verranno perse."
 
 #: templates/foswiki.provis.tmpl
 msgid "Junction"
@@ -110,11 +126,11 @@ msgstr "Inizio/Fine"
 
 #: templates/foswiki.provis.tmpl
 msgid "Swimlane"
-msgstr "Swimlane"
+msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "This diagram contains unsaved changes."
-msgstr "Questo diagramma contiene modifiche non salvate"
+msgstr "Questo diagramma contiene modifiche non salvate."
 
 #: templates/foswiki.provis.tmpl
 msgid "Title"

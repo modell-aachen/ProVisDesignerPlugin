@@ -10,55 +10,55 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ASCII\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: templates/foswiki.provis.tmpl
 msgid "Attention"
-msgstr ""
+msgstr "Figyelem"
 
 #: templates/foswiki.provis.tmpl
 msgid "Cancel"
-msgstr ""
+msgstr "Visszavon"
 
 #: templates/foswiki.provis.tmpl
 msgid "Comment"
-msgstr ""
+msgstr "Megjegyzés"
 
 #: templates/foswiki.provis.tmpl
 msgid "Currently there is no connection to Q.Wiki. Please try again later."
-msgstr ""
+msgstr "Nincs kapcsolat a Qwiki-hez. Kérem próbálja meg később."
 
 #: templates/foswiki.provis.tmpl
 msgid "Database"
-msgstr ""
+msgstr "Adatbázis"
 
 #: templates/foswiki.provis.tmpl
 msgid "Decision"
-msgstr ""
+msgstr "Határozat"
 
 #: templates/foswiki.provis.tmpl
 msgid "Delete existing link"
-msgstr ""
+msgstr "Meglévő link törlése"
 
 #: templates/foswiki.provis.tmpl
 msgid "Discard"
-msgstr ""
+msgstr "Elvet"
 
 #: templates/foswiki.provis.tmpl
 msgid "Discard changes"
-msgstr ""
+msgstr "Változások elvetése"
 
 #: templates/foswiki.provis.tmpl
 msgid "Document"
-msgstr ""
+msgstr "Dokumentum"
 
 #: lib/Foswiki/Plugins/ProVisDesignerPlugin.pm
 msgid "Draft"
-msgstr ""
+msgstr "Tervezet"
 
 #: templates/foswiki.provis.tmpl
 msgid "Dye node"
@@ -66,88 +66,88 @@ msgstr ""
 
 #: templates/foswiki.provis.tmpl
 msgid "Edit link"
-msgstr ""
+msgstr "Link szerkesztése"
 
 #: templates/foswiki.provis.tmpl
 msgid "If you quit ProVis now, these changes will be lost."
-msgstr ""
+msgstr "Ha most kilép a ProVis-ból, a változtatások elvesznek."
 
 #: templates/foswiki.provis.tmpl
 msgid "Junction"
-msgstr ""
+msgstr "Kapcsolódás"
 
 #: data/System/ProVisDesignerPlugin.txt
 msgid "New swimlane"
-msgstr ""
+msgstr "Új sáv"
 
 #: lib/Foswiki/Plugins/ProVisDesignerPlugin.pm
 msgid "Print diagram"
-msgstr ""
+msgstr "Diagramm nyomtatása"
 
 #: templates/foswiki.provis.tmpl
 msgid "Process"
-msgstr ""
+msgstr "Folyamat"
 
 #: templates/foswiki.provis.tmpl
 msgid "Redo"
-msgstr ""
+msgstr "Helyreállít"
 
 #: templates/foswiki.provis.tmpl
 msgid "Remove dyeing"
-msgstr ""
+msgstr "Jelölés eltávolítása"
 
 #: templates/foswiki.provis.tmpl
 msgid "Save"
-msgstr ""
+msgstr "Mentés"
 
 #: templates/foswiki.provis.tmpl
 msgid "Save changes"
-msgstr ""
+msgstr "Változások mentése"
 
 #: templates/foswiki.provis.tmpl
 msgid "Select"
-msgstr ""
+msgstr "Kiválaszt"
 
 #: templates/foswiki.provis.tmpl
 msgid "Shape"
-msgstr ""
+msgstr "Forma"
 
 #: templates/foswiki.provis.tmpl
 msgid "Show grid"
-msgstr ""
+msgstr "Mutasd a rácsvonalakat"
 
 #: templates/foswiki.provis.tmpl
 msgid "Snap to grid"
-msgstr ""
+msgstr "Vissza a rácsvonalakhoz"
 
 #: templates/foswiki.provis.tmpl
 msgid "Start/End"
-msgstr ""
+msgstr "Start/End"
 
 #: templates/foswiki.provis.tmpl
 msgid "Swimlane"
-msgstr ""
+msgstr "Folyamatsáv"
 
 #: templates/foswiki.provis.tmpl
 msgid "This diagram contains unsaved changes."
-msgstr ""
+msgstr "Ez a diagramm nem mentett változtatásokat tartalmaz."
 
 #: templates/foswiki.provis.tmpl
 msgid "Title"
-msgstr ""
+msgstr "Megnevezés"
 
 #: templates/foswiki.provis.tmpl
 msgid "Topic preview"
-msgstr ""
+msgstr "Téma bemutatása"
 
 #: templates/foswiki.provis.tmpl
 msgid "Undo"
-msgstr ""
+msgstr "Kibont"
 
 #: templates/foswiki.provis.tmpl
 msgid "Zoom in"
-msgstr ""
+msgstr "Kicsinyítés"
 
 #: templates/foswiki.provis.tmpl
 msgid "Zoom out"
-msgstr ""
+msgstr "Nagyítás"

@@ -162,9 +162,13 @@ sub _DRAWING {
   if ($drawingRevision != 0) {
     $imgParams = { src => "%SCRIPTURL{viewfile}%/%WEB%/%TOPIC%/$drawingName.png?rev=$drawingRevision" };
   } else {
-    my $imgTime =
-      Foswiki::Func::getRevisionInfo($web, $topic, 0, "$drawingName.png");
-    $imgParams = { src => "%PUBURLPATH%/%WEB%/%TOPIC%/$drawingName.png?t=$imgTime" };
+    my $ckeDev = $Foswiki::cfg{Plugins}{CKEditorPlugin}{UseSource} || 0;
+    my $ckePath = $ckeDev ? 'dev/ckeditor_source' : 'ckeditor';
+    $imgParams = {
+      src => "%PUBURL%/%SYSTEMWEB%/CKEditorPlugin/$ckePath/plugins/qwikiprovis/images/placeholder.png",
+      alt => "%MAKETEXT{Placeholder}%",
+      title => "%MAKETEXT{Placeholder}%"
+    };
   }
 
   my $result = '';

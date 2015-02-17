@@ -160,6 +160,9 @@ msgstr "Vergrößern"
 msgid "Zoom out"
 msgstr "Verkleinern"
 
+msgid "Placeholder"
+msgstr "Platzhalter"
+
 #~ msgid "Copy"
 #~ msgstr "Kopieren"
 

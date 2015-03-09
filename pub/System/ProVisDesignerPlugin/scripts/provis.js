@@ -295,6 +295,8 @@ ProVis = function( appletId ) {
       + imagepng );
     form.push( 'Content-Disposition: form-data; name="map"\r\n\r\n'
       + imagemap );
+    form.push( 'Content-Disposition: form-data; name="type"\r\n\r\n'
+      + drawingType );
 
     // Generate boundaries
     var sep;
@@ -327,7 +329,8 @@ ProVis = function( appletId ) {
             t: r.topic,
             aqmrev: r.aqmrev,
             pngrev: r.pngrev,
-            maprev: r.maprev
+            maprev: r.maprev,
+            type: r.type
           },
           success: function( data, status, xhr ) {
             provis.diagram.setDirty( false );
@@ -336,7 +339,7 @@ ProVis = function( appletId ) {
 
             var pattern = '%PROCESS{[^%}]+' + r.name + '[^%}]+}%';
             var regexp = new RegExp( pattern, 'g' );
-            var macro = '%PROCESS{name="' + r.name + '" aqmrev="' + r.aqmrev + '" maprev="' + r.maprev + '" pngrev="' + r.pngrev + '"}%';
+            var macro = '%PROCESS{name="' + r.name + '" type="' + r.type + '" aqmrev="' + r.aqmrev + '" maprev="' + r.maprev + '" pngrev="' + r.pngrev + '"}%';
 
             data = data.replace( regexp, macro );
             cke.setData( data );

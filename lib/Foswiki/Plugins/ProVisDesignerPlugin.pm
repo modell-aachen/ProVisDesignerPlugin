@@ -365,6 +365,7 @@ sub _restUpload {
 
   # Basename of the drawing
   my $fileName    = $query->param('drawing');
+  my $type = $query->param('type');
   my $origName = $fileName;
   Foswiki::Func::setSessionValue($web.$topic.'name', $origName);
 
@@ -419,6 +420,7 @@ sub _restUpload {
       aqmrev => $revisions{aqm},
       maprev => $revisions{map},
       pngrev => $revisions{png},
+      type => "$type"
     }));
   }
 
@@ -447,6 +449,7 @@ sub _restUpdate {
   return unless $web && $topic;
 
   my $name = $query->param( 'name' );
+  my $type = $query->param( 'type' );
   my $aqmrev = $query->param( 'aqmrev' );
   my $pngrev = $query->param( 'pngrev' );
   my $maprev = $query->param( 'maprev' );
@@ -456,7 +459,7 @@ sub _restUpdate {
     my $macro = $1;
     my %params = Foswiki::Func::extractParameters( $1 =~ /{(.*)}/ );
     if ( $params{name} eq $name ) {
-      my $newProcess = "%PROCESS{name=\"$name\" type=\"swimlane\" aqmrev=\"$aqmrev\" maprev=\"$maprev\" pngrev=\"$pngrev\"}%";
+      my $newProcess = "%PROCESS{name=\"$name\" type=\"$type\" aqmrev=\"$aqmrev\" maprev=\"$maprev\" pngrev=\"$pngrev\"}%";
       $text =~ s/$macro/$newProcess/;
       Foswiki::Func::saveTopic( $web, $topic, $meta, $text, { dontlog => 1 } );
       return;

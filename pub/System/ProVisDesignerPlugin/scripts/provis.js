@@ -173,6 +173,7 @@ ProVis = function( appletId ) {
   this.view = applet.getDiagramView();
   this.anchorPattern = null;
   this.container = null;
+  this.containerType = 1;
 
   /*****************************************************************************
    * public methods
@@ -184,7 +185,7 @@ ProVis = function( appletId ) {
   ProVis.prototype.createSwimlane = function() {
     if ( !this.container ) {
       // var type = provis.scriptHelper.getConstant( 'SwimlaneType', 'Vertical' );
-      if ( !this.createSwimlaneContainer( 1 ) ) return;
+      if ( !this.createSwimlaneContainer( this.containerType ) ) return;
     }
 
     this.container.addLane();
@@ -273,7 +274,8 @@ ProVis = function( appletId ) {
 
     var url = restUrl + '/ProVisDesignerPlugin/upload';
     var drawingTopic = opener.web + '.' + opener.topic;
-    var drawingType = 'swimlane';
+    var type = this.container.getContainerType();
+    var drawingType = type === 1 ? 'swimlane' : 'orglane';
 
     var drawingName;
     if ( opener.name ) {
@@ -428,9 +430,10 @@ ProVis = function( appletId ) {
   var file = opener.provis.name;
   var rev = opener.provis.aqmrev;
   var query = rev ? ('?rev=' + rev) : '';
+  this.containerType = opener.provis.type === 'orglane' ? 0 : 1;
 
   // rev = 0 := new diagram
-  if ( file && rev != 0 ) {
+  if ( file && rev !== 0 ) {
     var pub = opener.foswiki.getPreference( 'PUBURL' );
     var web = encodeURI( opener.provis.web );
     var topic = encodeURI( opener.provis.topic );
@@ -440,7 +443,6 @@ ProVis = function( appletId ) {
         type: 'get',
         dataType: 'text',
         url: url,
-        dataType: 'text',
         success: function( data ) {
           provis.applet.loadFromString( data );
           provis.snapshotManager.clear();
@@ -481,6 +483,4 @@ ProVis = function( appletId ) {
     setTimeout( function() { $(applet).height( 1 + $(applet).height() ); }, 500 );
     setTimeout( function() { $(applet).width( 1 + $(applet).width() ); }, 500 );
   });
-
-
 };

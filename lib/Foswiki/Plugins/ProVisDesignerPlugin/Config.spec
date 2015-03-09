@@ -1,8 +1,5 @@
 #---+ Extensions
 #---++ ProVisDesignerPlugin
-# **BOOLEAN**
-$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{CompatibilityMode} = 0;
-
 #---+++ Node Dyeing
 # **BOOLEAN**
 $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{EnableDyeing} = 0;
@@ -59,3 +56,20 @@ $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideSubprocess} = 1;
 
 # **BOOLEAN**
 $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HideOperation} = 1;
+
+#---+++ Even more settings
+# **BOOLEAN EXPERT**
+# pro: off
+$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{CenterChildren} = 1;
+
+# **BOOLEAN EXPERT**
+# pro: on
+$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{ResizeLanes} = 0;
+
+# **STRING EXPERT**
+# pro: 511
+$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{EnabledHandles} = 256;
+
+# **STRING EXPERT**
+# pro: 5
+$Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HandlesStyle} = 7;

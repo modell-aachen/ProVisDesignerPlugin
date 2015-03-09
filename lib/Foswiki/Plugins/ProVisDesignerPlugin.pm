@@ -245,8 +245,17 @@ SCRIPT
   my $macro = "%INCLUDE{\"$cfgTopic\" section=\"$section\" warn=\"off\"}%";
   my $text = Foswiki::Func::expandCommonVariables( $macro );
   my $config = decode_json( $text );
-  my $isPro = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{CompatibilityMode} || 0;
-  $config->{mode} = $isPro ? 42 : 0;
+
+  my $centerChildren = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{CenterChildren};
+  $centerChildren = 1 unless defined $centerChildren;
+  my $resizeLanes = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{ResizeLanes} || 0;
+  my $enabledHandles = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{EnabledHandles} || 256;
+  my $handleStyle = $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HandlesStyle} || 7;
+
+  $config->{cc} = ($centerChildren =~ m/^(1|true)$/i ? JSON::true : JSON::false);
+  $config->{rl} = ($resizeLanes =~ m/^(1|true)$/i ? JSON::true : JSON::false);
+  $config->{eh} = int($enabledHandles);
+  $config->{hs} = int($handleStyle);
 
   #todo error if $config undefined
   my $encoded = encode_base64( encode_json( $config ) );

@@ -1,4 +1,25 @@
-%META:TOPICINFO{author="BaseUserMapping_333" comment="reprev" date="1406541594" format="1.1" reprev="4" version="8"}%
+%META:TOPICPARENT{name="Plugins"}%
+---+ ProVisDesigner Plugin
+
+%SHORTDESCRIPTION%
+
+%TOC%
+
+<br />
+---++ Installation
+%$INSTALL_INSTRUCTIONS%
+
+<br />
+---++ Configuration
+By default _ProVisDesignerPlugin_ reads its configuration from this topic. In order to override the configuration, copy this topic to a destination of your choice and set the *PROVIS_CONFIG_TOPIC* variable in the according Web- or SitePreferences.
+
+<verbatim>
+   * Set PROVIS_CONFIG_TOPIC = Custom.MyConfig
+</verbatim>
+
+<br />
+---+++ Default Configuration
+%TWISTY{showlink="Show configuration" hidelink="Hide configuration" start="hide"}%
 <verbatim>
 %STARTSECTION{"PROVISCONFIG"}%
 {
@@ -250,3 +271,35 @@
 }
 %ENDSECTION{"PROVISCONFIG"}%
 </verbatim>
+%ENDTWISTY%
+
+<br />
+---+++ Enhanced Configuration Values
+The following options are available in configure:
+
+<br />
+---++++ CenterChildren
+Forces all nodes to be centered within their parent container.
+
+<br />
+---++++ ResizeLanes
+Toggles the resize handles for swimlanes.
+
+<br />
+---++++ EnabledHandles
+Enabled node handles. Defaults to _256_. Should be _511_ to allow resizing.
+
+<br />
+---++++ HandlesStyle
+The theme/style of the enabled handles. Defaults to _7_. Should be set to _5_ if node resizing is enabled.
+
+<br />
+---++ Plugin Info
+
+| Author: | Foswiki:Main.JanKrueger, Foswiki:Main.SvenMeyer |
+| Copyright: | &copy; 2015, Modell Aachen GmbH |
+| License: | proprietary |
+| Release: | %$RELEASE% |
+| Version: | %$VERSION% |
+| Home: | http://www.modell-aachen.de |
+| Support: | http://www.modell-aachen.de |

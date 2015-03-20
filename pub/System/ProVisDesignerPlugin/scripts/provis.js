@@ -238,7 +238,7 @@ ProVis = function( appletId ) {
   ProVis.prototype.redo = function() {
     try {
       this.snapshotManager.triggerRedo(this.view);
-      this.container = this.diagram.getSwimlaneContainer(1);
+      this.container = this.diagram.getSwimlaneContainer(this.containerType);
     } catch ( ex ) {
       if(window.console && window.console.log) console.log( ex.toString() );
     }
@@ -262,6 +262,10 @@ ProVis = function( appletId ) {
 
     $('applet').setHidden().done( function() { $.blockUI(); });
 
+    if ( !this.container ) {
+      this.container = this.diagram.getSwimlaneContainer(this.containerType);
+    }
+
     this.applet.prepareSave();
     var imagemap = provis.applet.saveToMap('%MAPNAME%');
     var imagepng = provis.applet.saveToImage();
@@ -274,6 +278,7 @@ ProVis = function( appletId ) {
 
     var url = restUrl + '/ProVisDesignerPlugin/upload';
     var drawingTopic = opener.web + '.' + opener.topic;
+
     var type = this.container.getContainerType();
     var drawingType = type === 1 ? 'swimlane' : 'orglane';
 
@@ -385,7 +390,7 @@ ProVis = function( appletId ) {
   ProVis.prototype.undo = function() {
     try {
       this.snapshotManager.triggerUndo(this.view);
-      this.container = this.diagram.getSwimlaneContainer(1);
+      this.container = this.diagram.getSwimlaneContainer(this.containerType);
     } catch( ex ) {
       if(window.console && window.console.log) console.log( ex );
     }

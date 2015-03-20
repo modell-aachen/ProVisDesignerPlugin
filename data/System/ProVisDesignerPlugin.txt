@@ -294,6 +294,24 @@ Enabled node handles. Defaults to _256_. Should be _511_ to allow resizing.
 The theme/style of the enabled handles. Defaults to _7_. Should be set to _5_ if node resizing is enabled.
 
 <br />
+---++++ CKEditor Integration
+By default CKEditor ships with an plugin which allows the user to create swimlanes.
+Depending on the current CKE build it might be necessary to enable the according plugin.
+In order to do so add the following to your CKE configuration:
+<verbatim>
+...
+extraPlugins: "..., qwikiprovis, ..."
+...
+</verbatim>
+
+ProvisDesigner also supports orglanes (horizontal swimlanes).
+In order to enable orglanes add the following to your CKE configuration:
+
+<verbatim>
+provisTypes: ['swimlane', 'orglane']
+</verbatim>
+
+<br />
 ---++ Plugin Info
 
 | Author: | Foswiki:Main.JanKrueger, Foswiki:Main.SvenMeyer |

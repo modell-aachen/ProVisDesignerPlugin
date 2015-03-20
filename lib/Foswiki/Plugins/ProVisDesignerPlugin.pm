@@ -276,7 +276,7 @@ deployJava.runApplet({
     id: 'jDiagApplet',
     codebase: '$pubPath/$systemWeb/ProVisDesignerPlugin/applet/',
     code: 'com.mindfusion.diagramming.DiagramApplet',
-    archive: 'ProVis.jar',
+    archive: 'ProVis.jar?version=$RELEASE',
     width: '800px',
     height: '600px',
     mayscript: true

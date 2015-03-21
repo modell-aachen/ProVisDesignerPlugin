@@ -521,7 +521,7 @@ if ( ProVis && !ProVis.prototype.ui ) {
     // observer callback. Called by CKE.
     window.notify = function( d ) {
       $('#preview-topic').html( d );
-    }
+    };
 
     // set initial topic content within preview area
     if ( window.opener.provis ) {

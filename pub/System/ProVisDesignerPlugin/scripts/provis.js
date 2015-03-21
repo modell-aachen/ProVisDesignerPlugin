@@ -1,4 +1,4 @@
-// Copyright (C) 2013 Modell Aachen GmbH
+// Copyright (C) 2015 Modell Aachen GmbH
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ ProVis = function( appletId ) {
    */
   var getRandomString = function( length ) {
     var string = '';
-    var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     if ( !length || length < 1 ) length = 32;
     for ( var i = 0; i < length; i++ ) {
@@ -142,7 +142,7 @@ ProVis = function( appletId ) {
   var onKeyUp = function( d, e ) {
     var key = e.getKeycode();
     if ( key == 17 ) isCtrlDown = false;
-  }
+  };
 
   /**
    * Link dialog.
@@ -207,7 +207,7 @@ ProVis = function( appletId ) {
   ProVis.prototype.dyeNode = function( colorStr ) {
     var selection = this.diagram.getSelection();
     var length = selection.size();
-    if ( length == 0 ) return;
+    if ( length === 0 ) return;
 
     var nodes = selection.getNodes();
     for( var i = 0; i < length; ++i ) {
@@ -221,7 +221,7 @@ ProVis = function( appletId ) {
   ProVis.prototype.undyeNode = function() {
     var selection = this.diagram.getSelection();
     var length = selection.size();
-    if ( length == 0 ) return;
+    if ( length === 0 ) return;
 
     var nodes = selection.getNodes();
     for( var i = 0; i < length; ++i ) {
@@ -230,7 +230,7 @@ ProVis = function( appletId ) {
         node.undye();
       }
     }
-  }
+  };
 
   /**
    * Reverts the most recent undo operation.
@@ -252,9 +252,8 @@ ProVis = function( appletId ) {
    * Saves all changes and uploads the resulting documents to the server.
    */
   ProVis.prototype.save = function( keepHidden ) {
-    if ( !window.opener.provisTab || window.opener.provisTab.closed ) {
-      // ToDo. user darauf hinweisen, dass die zugehörige cke instanz bereits geschlossen wurde
-      // speichern ist somit nicht mehr möglich.
+    if ( !window.opener || !window.opener.provisTab || window.opener.provisTab.closed ) {
+      alert( $('#missing-cke').text() );
       return;
     }
 
@@ -290,18 +289,12 @@ ProVis = function( appletId ) {
     }
 
     var form = [];
-    form.push( 'Content-Disposition: form-data; name="topic"\r\n\r\n'
-      + drawingTopic );
-    form.push( 'Content-Disposition: form-data; name="drawing"\r\n\r\n'
-      + drawingName );
-    form.push( 'Content-Disposition: form-data; name="aqm"\r\n\r\n'
-      + imageaqm );
-    form.push( 'Content-Disposition: form-data; name="png"\r\n\r\n'
-      + imagepng );
-    form.push( 'Content-Disposition: form-data; name="map"\r\n\r\n'
-      + imagemap );
-    form.push( 'Content-Disposition: form-data; name="type"\r\n\r\n'
-      + drawingType );
+    form.push( 'Content-Disposition: form-data; name="topic"\r\n\r\n' + drawingTopic );
+    form.push( 'Content-Disposition: form-data; name="drawing"\r\n\r\n' + drawingName );
+    form.push( 'Content-Disposition: form-data; name="aqm"\r\n\r\n' + imageaqm );
+    form.push( 'Content-Disposition: form-data; name="png"\r\n\r\n' + imagepng );
+    form.push( 'Content-Disposition: form-data; name="map"\r\n\r\n' + imagemap );
+    form.push( 'Content-Disposition: form-data; name="type"\r\n\r\n' + drawingType );
 
     // Generate boundaries
     var sep;
@@ -340,14 +333,14 @@ ProVis = function( appletId ) {
           success: function( data, status, xhr ) {
             provis.diagram.setDirty( false );
             var cke = opener.getEditor();
-            var data = cke.getData();
+            var ckeData = cke.getData();
 
             var pattern = '%PROCESS{[^%}]+' + r.name + '[^%}]+}%';
             var regexp = new RegExp( pattern, 'g' );
             var macro = '%PROCESS{name="' + r.name + '" type="' + r.type + '" aqmrev="' + r.aqmrev + '" maprev="' + r.maprev + '" pngrev="' + r.pngrev + '"}%';
 
-            data = data.replace( regexp, macro );
-            cke.setData( data );
+            ckeData = ckeData.replace( regexp, macro );
+            cke.setData( ckeData );
 
             // fixme!
             setTimeout( deferred.resolve, 1000 );
@@ -441,7 +434,7 @@ ProVis = function( appletId ) {
   this.containerType = opener.provis.type === 'orglane' ? 0 : 1;
 
   // rev = 0 := new diagram
-  if ( file && rev !== 0 ) {
+  if ( file && !/^0$/.test( rev ) ) {
     var pub = opener.foswiki.getPreference( 'PUBURL' );
     var web = encodeURI( opener.provis.web );
     var topic = encodeURI( opener.provis.topic );

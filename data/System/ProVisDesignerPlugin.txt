@@ -17,6 +17,15 @@ By default _ProVisDesignerPlugin_ reads its configuration from this topic. In or
    * Set PROVIS_CONFIG_TOPIC = Custom.MyConfig
 </verbatim>
 
+In addition you might want to wrap flowcharts within a twisty. To do so set
+<verbatim>
+   * Set PROVIS_TWISTY = on|open
+</verbatim>
+
+where
+   * on: wrap into twisty, hidden by default
+   * open: wrap into twisty, shown by default
+
 <br />
 ---+++ Default Configuration
 %TWISTY{showlink="Show configuration" hidelink="Hide configuration" start="hide"}%

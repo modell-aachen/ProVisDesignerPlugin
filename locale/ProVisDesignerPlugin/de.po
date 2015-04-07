@@ -166,3 +166,6 @@ msgstr "Dieses Diagramm kann nicht mehr gespeichert werden, da der zugehörige E
 
 msgid "Show flowchart"
 msgstr "Flowchart anzeigen"
+
+msgid "Hide flowchart"
+msgstr "Flowchart verstecken"

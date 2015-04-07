@@ -200,8 +200,8 @@ sub _DRAWING {
   my $twisty = lc(Foswiki::Func::getPreferencesValue("PROVIS_TWISTY")) || 'off';
   return $result if ($twisty eq 'off');
   return "%TWISTY{start=\"". (($twisty eq 'open') ? 'show' : 'hide') ."\" ".
-    "hidelink=\"%MAKETEXT{Hide flowchart...}%\" ".
-    "showlink=\"%MAKETEXT{Show flowchart...}%\" ".
+    "hidelink=\"%MAKETEXT{Hide flowchart}%\" ".
+    "showlink=\"%MAKETEXT{Show flowchart}%\" ".
     "}%$result%ENDTWISTY%";
 }
 

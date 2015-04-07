@@ -163,3 +163,6 @@ msgstr "Platzhalter"
 
 msgid "This diagram cannot be saved anymore because the according editor has been closed already."
 msgstr "Dieses Diagramm kann nicht mehr gespeichert werden, da der zugehörige Editor bereits geschlossen wurde."
+
+msgid "Show flowchart"
+msgstr "Flowchart anzeigen"

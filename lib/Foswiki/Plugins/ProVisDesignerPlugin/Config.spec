@@ -71,5 +71,5 @@ $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{ResizeLanes} = 0;
 $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{EnabledHandles} = 256;
 
 # **STRING EXPERT**
-# pro: 5
+# pro: 4
 $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{HandlesStyle} = 7;

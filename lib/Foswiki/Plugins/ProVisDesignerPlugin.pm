@@ -197,11 +197,13 @@ sub _DRAWING {
     $result             = CGI::img($imgParams);
   }
 
+  my $twistyOpened = Foswiki::Func::getPreferencesValue("PROVIS_TWISTY_TITLE_OPENED") || 'Hide flowchart';
+  my $twistyClosed = Foswiki::Func::getPreferencesValue("PROVIS_TWISTY_TITLE_CLOSED") || 'Show flowchart';
   my $twisty = lc(Foswiki::Func::getPreferencesValue("PROVIS_TWISTY")) || 'off';
   return $result if ($twisty eq 'off');
   return "%TWISTY{start=\"". (($twisty eq 'open') ? 'show' : 'hide') ."\" ".
-    "hidelink=\"%MAKETEXT{Hide flowchart}%\" ".
-    "showlink=\"%MAKETEXT{Show flowchart}%\" ".
+    "hidelink=\"%MAKETEXT{$twistyOpened}%\" ".
+    "showlink=\"%MAKETEXT{$twistyClosed}%\" ".
     "}%$result%ENDTWISTY%";
 }
 

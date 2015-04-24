@@ -26,6 +26,14 @@ where
    * on: wrap into twisty, hidden by default
    * open: wrap into twisty, shown by default
 
+To change the hide/show link text of the twisty you may set one or both of the following preferences:
+   * PROVIS_TWISTY_TITLE_OPENED
+      * hidelink text
+      * defaults to: Hide flowchart
+   * PROVIS_TWISTY_TITLE_CLOSED
+      * showlink text
+      * defaults to: Show flowchart
+
 <br />
 ---+++ Default Configuration
 %TWISTY{showlink="Show configuration" hidelink="Hide configuration" start="hide"}%

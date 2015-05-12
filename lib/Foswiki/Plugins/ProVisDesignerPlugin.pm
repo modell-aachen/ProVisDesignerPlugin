@@ -152,7 +152,8 @@ sub _DRAWING {
   my $drawingRevision = int($attributes->{pngrev} || 0) || int($attributes->{rev} || 0);
 
   #Alex: Type laden, oder Standard setzen
-  my $drawingType = lc($attributes->{type}) || 'swimlane';
+  my $attr_type = $attributes->{type} || '';
+  my $drawingType = lc($attr_type) || 'swimlane';
 
   $drawingName = ( Foswiki::Func::sanitizeAttachmentName($drawingName) )[0];
   my $query = $session->{request};
@@ -199,7 +200,8 @@ sub _DRAWING {
 
   my $twistyOpened = Foswiki::Func::getPreferencesValue("PROVIS_TWISTY_TITLE_OPENED") || 'Hide flowchart';
   my $twistyClosed = Foswiki::Func::getPreferencesValue("PROVIS_TWISTY_TITLE_CLOSED") || 'Show flowchart';
-  my $twisty = lc(Foswiki::Func::getPreferencesValue("PROVIS_TWISTY")) || 'off';
+  my $tw_pref = Foswiki::Func::getPreferencesValue("PROVIS_TWISTY") || '';
+  my $twisty = lc($tw_pref) || 'off';
   return $result if ($twisty eq 'off');
   return "%TWISTY{start=\"". (($twisty eq 'open') ? 'show' : 'hide') ."\" ".
     "hidelink=\"%MAKETEXT{$twistyOpened}%\" ".

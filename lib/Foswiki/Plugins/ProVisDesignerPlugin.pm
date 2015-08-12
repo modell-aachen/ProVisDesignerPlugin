@@ -30,6 +30,7 @@ sub initPlugin {
   Foswiki::Func::registerTagHandler( 'PROVISDESIGNER', \&_handleDesignerTag );
   Foswiki::Func::registerTagHandler( 'PROCESS', \&_DRAWING );
   Foswiki::Func::registerTagHandler( 'NODECOLOR', \&_NODECOLOR );
+  Foswiki::Func::registerTagHandler( 'NODEDYING', \&_DYEING );
   Foswiki::Func::registerRESTHandler( 'upload', \&_restUpload, authenticate => 1, http_allow => 'POST' );
   Foswiki::Func::registerRESTHandler( 'update', \&_restUpdate, authenticate => 1, http_allow => 'POST' );
 
@@ -133,6 +134,26 @@ sub _HIDENODE {
   $hide = $default unless defined $hide;
 
   return "node-hidden" if $hide;
+}
+
+sub _DYEING {
+  return '' unless $Foswiki::cfg{Plugins}{ProVisDesignerPlugin}{EnableDyeing};
+  return <<HTML;
+<div class="toolbar-group" data-dyeing>
+  <a class='btn' href='#' data-action='undyeNode' title='%MAKETEXT{"Remove dyeing"}%' data-tooltip-placement='bottom'>
+    <img border='0' src='%PUBURLPATH%/%SYSTEMWEB%/ProVisDesignerPlugin/assets/undye.png' />
+  </a>
+  <a class='btn btn-color' href='#' data-action='dyeNode' data-actionargs='%NODECOLOR{"Color1"}%' title='%MAKETEXT{"Dye node"}%' data-tooltip-placement='bottom'>
+    <div class="color" style="background: %NODECOLOR{"Color1"}%"></div>
+  </a>
+  <a class='btn btn-color' href='#' data-action='dyeNode' data-actionargs='%NODECOLOR{"Color2"}%' title='%MAKETEXT{"Dye node"}%' data-tooltip-placement='bottom'>
+    <div class="color" style="background: %NODECOLOR{"Color2"}%"></div>
+  </a>
+  <a class='btn btn-color' href='#' data-action='dyeNode' data-actionargs='%NODECOLOR{"Color3"}%' title='%MAKETEXT{"Dye node"}%' data-tooltip-placement='bottom'>
+    <div class="color" style="background: %NODECOLOR{"Color3"}%"></div>
+  </a>
+</div>
+HTML
 }
 
 sub _NODECOLOR {

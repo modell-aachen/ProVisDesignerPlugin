@@ -467,11 +467,6 @@ if ( ProVis && !ProVis.prototype.ui ) {
   });
 
   $(document).ready( function() {
-    var prefs = foswiki.preferences.provis;
-    if ( prefs && prefs.dyeing == 0 ) {
-      $('[data-dyeing]').remove();
-    }
-
     var isFirstLoad = true;
     $(window).resize( function() {
       var options = $('#provis-preview');

@@ -1,4 +1,42 @@
-%META:TOPICINFO{author="BaseUserMapping_333" comment="reprev" date="1406541594" format="1.1" reprev="4" version="8"}%
+%META:TOPICPARENT{name="Plugins"}%
+---+ ProVisDesigner Plugin
+
+%SHORTDESCRIPTION%
+
+%TOC%
+
+<br />
+---++ Installation
+%$INSTALL_INSTRUCTIONS%
+
+<br />
+---++ Configuration
+By default _ProVisDesignerPlugin_ reads its configuration from this topic. In order to override the configuration, copy this topic to a destination of your choice and set the *PROVIS_CONFIG_TOPIC* variable in the according Web- or SitePreferences.
+
+<verbatim>
+   * Set PROVIS_CONFIG_TOPIC = Custom.MyConfig
+</verbatim>
+
+In addition you might want to wrap flowcharts within a twisty. To do so set
+<verbatim>
+   * Set PROVIS_TWISTY = on|open
+</verbatim>
+
+where
+   * on: wrap into twisty, hidden by default
+   * open: wrap into twisty, shown by default
+
+To change the hide/show link text of the twisty you may set one or both of the following preferences:
+   * PROVIS_TWISTY_TITLE_OPENED
+      * hidelink text
+      * defaults to: Hide flowchart
+   * PROVIS_TWISTY_TITLE_CLOSED
+      * showlink text
+      * defaults to: Show flowchart
+
+<br />
+---+++ Default Configuration
+%TWISTY{showlink="Show configuration" hidelink="Hide configuration" start="hide"}%
 <verbatim>
 %STARTSECTION{"PROVISCONFIG"}%
 {
@@ -250,3 +288,53 @@
 }
 %ENDSECTION{"PROVISCONFIG"}%
 </verbatim>
+%ENDTWISTY%
+
+<br />
+---+++ Enhanced Configuration Values
+The following options are available in configure:
+
+<br />
+---++++ CenterChildren
+Forces all nodes to be centered within their parent container.
+
+<br />
+---++++ ResizeLanes
+Toggles the resize handles for swimlanes.
+
+<br />
+---++++ EnabledHandles
+Enabled node handles. Defaults to _256_. Should be _511_ to allow resizing.
+
+<br />
+---++++ HandlesStyle
+The theme/style of the enabled handles. Defaults to _7_. Should be set to _5_ if node resizing is enabled.
+
+<br />
+---++++ CKEditor Integration
+By default CKEditor ships with an plugin which allows the user to create swimlanes.
+Depending on the current CKE build it might be necessary to enable the according plugin.
+In order to do so add the following to your CKE configuration:
+<verbatim>
+...
+extraPlugins: "..., qwikiprovis, ..."
+...
+</verbatim>
+
+ProvisDesigner also supports orglanes (horizontal swimlanes).
+In order to enable orglanes add the following to your CKE configuration:
+
+<verbatim>
+provisTypes: ['swimlane', 'orglane']
+</verbatim>
+
+<br />
+---++ Plugin Info
+
+| Author: | Foswiki:Main.JanKrueger, Foswiki:Main.SvenMeyer |
+| Copyright: | &copy; 2015, Modell Aachen GmbH |
+| License: | proprietary |
+| Release: | %$RELEASE% |
+| Version: | %$VERSION% |
+| Home: | http://www.modell-aachen.de |
+| Support: | http://www.modell-aachen.de |

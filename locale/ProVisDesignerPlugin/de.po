@@ -36,9 +36,7 @@ msgstr "Operation"
 
 #: templates/foswiki.provis.tmpl
 msgid "Currently there is no connection to Q.Wiki. Please try again later."
-msgstr ""
-"Derzeit besteht keine Verbindung zum Q.Wiki. Bitte versuchen Sie es später "
-"noch einmal."
+msgstr "Derzeit besteht keine Verbindung zum Q.Wiki. Bitte versuchen Sie es später noch einmal."
 
 #: templates/foswiki.provis.tmpl
 msgid "Database"
@@ -160,20 +158,14 @@ msgstr "Vergrößern"
 msgid "Zoom out"
 msgstr "Verkleinern"
 
-#~ msgid "Copy"
-#~ msgstr "Kopieren"
+msgid "Placeholder"
+msgstr "Platzhalter"
 
-#~ msgid "Cut"
-#~ msgstr "Ausschneiden"
+msgid "This diagram cannot be saved anymore because the according editor has been closed already."
+msgstr "Dieses Diagramm kann nicht mehr gespeichert werden, da der zugehörige Editor bereits geschlossen wurde."
 
-#~ msgid "Paste"
-#~ msgstr "Einfgen"
+msgid "Show flowchart"
+msgstr "Flowchart anzeigen"
 
-#~ msgid "Preview"
-#~ msgstr "Vorschau"
-
-#~ msgid "Save & close"
-#~ msgstr "Speichern & schlieen"
-
-#~ msgid "Shapes"
-#~ msgstr "Schablonen"
+msgid "Hide flowchart"
+msgstr "Flowchart verstecken"

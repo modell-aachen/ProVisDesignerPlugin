@@ -7,148 +7,151 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ASCII\n"
-"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-11-10 15:28+0200\n"
+"Last-Translator: Modell Aachen <access@modell-aachen.de>\n"
+"Language-Team: Polish <http://translate.modell-"
+"aachen.de/projects/provisdesignerplugin/releasenew-york/pl/>\n"
 "Language: pl\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 1.9\n"
 
 #: templates/foswiki.provis.tmpl
 msgid "Attention"
-msgstr ""
+msgstr "Uwaga"
 
 #: templates/foswiki.provis.tmpl
 msgid "Cancel"
-msgstr ""
+msgstr "Anuluj"
 
 #: templates/foswiki.provis.tmpl
 msgid "Comment"
-msgstr ""
+msgstr "Komentarz"
 
 #: templates/foswiki.provis.tmpl
 msgid "Currently there is no connection to Q.Wiki. Please try again later."
 msgstr ""
+"Obecnie nie ma połączenia do Q.Wiki. Proszę spróbować później jeszcze raz"
 
 #: templates/foswiki.provis.tmpl
 msgid "Database"
-msgstr ""
+msgstr "Baza danych"
 
 #: templates/foswiki.provis.tmpl
 msgid "Decision"
-msgstr ""
+msgstr "Decyzja"
 
 #: templates/foswiki.provis.tmpl
 msgid "Delete existing link"
-msgstr ""
+msgstr "Usuń istniejący link"
 
 #: templates/foswiki.provis.tmpl
 msgid "Discard"
-msgstr ""
+msgstr "Odrzucać"
 
 #: templates/foswiki.provis.tmpl
 msgid "Discard changes"
-msgstr ""
+msgstr "Odrzucać zmiany"
 
 #: templates/foswiki.provis.tmpl
 msgid "Document"
-msgstr ""
+msgstr "dokument"
 
 #: lib/Foswiki/Plugins/ProVisDesignerPlugin.pm
 msgid "Draft"
-msgstr ""
+msgstr "Projekt"
 
 #: templates/foswiki.provis.tmpl
 msgid "Dye node"
-msgstr ""
+msgstr "pokolorować szablon"
 
 #: templates/foswiki.provis.tmpl
 msgid "Edit link"
-msgstr ""
+msgstr "link edytować"
 
 #: templates/foswiki.provis.tmpl
 msgid "If you quit ProVis now, these changes will be lost."
-msgstr ""
+msgstr "Jeśli teraz zakończysz ProVis, zmiany będą utracone"
 
 #: templates/foswiki.provis.tmpl
 msgid "Junction"
-msgstr ""
+msgstr "punkt węzłowy"
 
 #: data/System/ProVisDesignerPlugin.txt
 msgid "New swimlane"
-msgstr ""
+msgstr "Nowy pas"
 
 #: lib/Foswiki/Plugins/ProVisDesignerPlugin.pm
 msgid "Print diagram"
-msgstr ""
+msgstr "wydrukować diagram"
 
 #: templates/foswiki.provis.tmpl
 msgid "Process"
-msgstr ""
+msgstr "Proces"
 
 #: templates/foswiki.provis.tmpl
 msgid "Redo"
-msgstr ""
+msgstr "powtórzyć"
 
 #: templates/foswiki.provis.tmpl
 msgid "Remove dyeing"
-msgstr ""
+msgstr "Usuń barwienie"
 
 #: templates/foswiki.provis.tmpl
 msgid "Save"
-msgstr ""
+msgstr "Zapisz"
 
 #: templates/foswiki.provis.tmpl
 msgid "Save changes"
-msgstr ""
+msgstr "Zapisz zmiany"
 
 #: templates/foswiki.provis.tmpl
 msgid "Select"
-msgstr ""
+msgstr "Wybierz"
 
 #: templates/foswiki.provis.tmpl
 msgid "Shape"
-msgstr ""
+msgstr "Szablon"
 
 #: templates/foswiki.provis.tmpl
 msgid "Show grid"
-msgstr ""
+msgstr "Pokaż kratę"
 
 #: templates/foswiki.provis.tmpl
 msgid "Snap to grid"
-msgstr ""
+msgstr "Przyciągaj do kratki"
 
 #: templates/foswiki.provis.tmpl
 msgid "Start/End"
-msgstr ""
+msgstr "Start/Koniec"
 
 #: templates/foswiki.provis.tmpl
 msgid "Swimlane"
-msgstr ""
+msgstr "Pas"
 
 #: templates/foswiki.provis.tmpl
 msgid "This diagram contains unsaved changes."
-msgstr ""
+msgstr "Ten diagram jest bez zapisanych zmian"
 
 #: templates/foswiki.provis.tmpl
 msgid "Title"
-msgstr ""
+msgstr "tytuł"
 
 #: templates/foswiki.provis.tmpl
 msgid "Topic preview"
-msgstr ""
+msgstr "Przegląd w przód"
 
 #: templates/foswiki.provis.tmpl
 msgid "Undo"
-msgstr ""
+msgstr "Cofnij"
 
 #: templates/foswiki.provis.tmpl
 msgid "Zoom in"
-msgstr ""
+msgstr "Zwiększyć"
 
 #: templates/foswiki.provis.tmpl
 msgid "Zoom out"
-msgstr ""
+msgstr "Zmniejszyć"

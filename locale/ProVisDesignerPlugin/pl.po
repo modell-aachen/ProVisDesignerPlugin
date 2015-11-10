@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2015-11-10 15:28+0200\n"
+"PO-Revision-Date: 2015-11-10 15:35+0200\n"
 "Last-Translator: Modell Aachen <access@modell-aachen.de>\n"
 "Language-Team: Polish <http://translate.modell-"
 "aachen.de/projects/provisdesignerplugin/releasenew-york/pl/>\n"
@@ -34,7 +34,7 @@ msgstr "Komentarz"
 #: templates/foswiki.provis.tmpl
 msgid "Currently there is no connection to Q.Wiki. Please try again later."
 msgstr ""
-"Obecnie nie ma połączenia do Q.Wiki. Proszę spróbować później jeszcze raz"
+"Obecnie nie ma połączenia do Q.Wiki. Proszę spróbować później jeszcze raz."
 
 #: templates/foswiki.provis.tmpl
 msgid "Database"
@@ -74,7 +74,7 @@ msgstr "link edytować"
 
 #: templates/foswiki.provis.tmpl
 msgid "If you quit ProVis now, these changes will be lost."
-msgstr "Jeśli teraz zakończysz ProVis, zmiany będą utracone"
+msgstr "Jeśli teraz zakończysz ProVis, zmiany będą utracone."
 
 #: templates/foswiki.provis.tmpl
 msgid "Junction"
@@ -134,7 +134,7 @@ msgstr "Pas"
 
 #: templates/foswiki.provis.tmpl
 msgid "This diagram contains unsaved changes."
-msgstr "Ten diagram jest bez zapisanych zmian"
+msgstr "Ten diagram jest bez zapisanych zmian."
 
 #: templates/foswiki.provis.tmpl
 msgid "Title"

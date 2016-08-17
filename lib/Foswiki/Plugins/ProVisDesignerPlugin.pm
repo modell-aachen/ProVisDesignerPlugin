@@ -477,11 +477,11 @@ sub _restUpdate {
   my $maprev = $query->param( 'maprev' );
 
   my ( $meta, $text ) = Foswiki::Func::readTopic( $web, $topic );
-  while( $text =~ /(%PROCESS{.*}%)/g ) {
+  while( $text =~ /(%PROCESS\{.*\}%)/g ) {
     my $macro = $1;
     my %params = Foswiki::Func::extractParameters( $1 =~ /{(.*)}/ );
     if ( $params{name} eq $name ) {
-      my $newProcess = "%PROCESS{name=\"$name\" type=\"$type\" aqmrev=\"$aqmrev\" maprev=\"$maprev\" pngrev=\"$pngrev\"}%";
+      my $newProcess = "%PROCESS\{name=\"$name\" type=\"$type\" aqmrev=\"$aqmrev\" maprev=\"$maprev\" pngrev=\"$pngrev\"\}%";
       $text =~ s/$macro/$newProcess/;
       Foswiki::Func::saveTopic( $web, $topic, $meta, $text, { dontlog => 1 } );
       return;
